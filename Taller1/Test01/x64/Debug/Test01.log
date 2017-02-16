@@ -1,6 +1,2 @@
-﻿  main.cpp
-c:\users\efarriol\programacionenred\taller1\test01\main.cpp(14): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\efarriol\programacionenred\taller1\test01\main.cpp(214): warning C4244: 'argument': conversion from 'std::size_t' to 'float', possible loss of data
-c:\users\efarriol\programacionenred\taller1\test01\main.cpp(88): warning C4101: 'nameSize': unreferenced local variable
-  Test01.vcxproj -> C:\Users\efarriol\ProgramacionEnRed\Taller1\x64\Debug\Test01.exe
+﻿  Test01.vcxproj -> C:\Users\efarriol\ProgramacionEnRed\Taller1\x64\Debug\Test01.exe
   Test01.vcxproj -> C:\Users\efarriol\ProgramacionEnRed\Taller1\x64\Debug\Test01.pdb (Full PDB)

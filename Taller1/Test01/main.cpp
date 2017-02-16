@@ -1,14 +1,11 @@
-#include <SFML\Graphics.hpp>
-#include <SFML\Network.hpp>
-#include <string>
-#include <cstring>
-#include <iostream>
-#include <vector>
-
+#include "Framework.h"
+#include "Receive.h"
+#include "Send.h"
 #define MAX_MENSAJES 30
+sf::Mutex mutex;
 
 
-void Send(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes, char &mode, 
+void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes, char &mode, 
 			sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name, std::string &text2) {
 	
 	int nameSize = name.size() + 5;
@@ -59,32 +56,35 @@ void Send(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string>
 	}
 }
 
-void Receive(sf::TcpSocket &socket,std::size_t &received, std::vector<std::string> &aMensajes, char &mode){
-	
-	char buffer[2000];
-	socket.receive(buffer, sizeof(buffer), received);
-	if (received > 0)
-	{
-		aMensajes.push_back(buffer);
-		mode = 's';
-		//if (strcmp(buffer, "exit") == 0)
-		//{
-		//	break;
-		//}
-	}
-}
+//void ReceiveFunction(Receive receive){
+//	
+//	char buffer[2000];
+//	receive.socket.receive(buffer, sizeof(buffer), receive.received);
+//	if (received > 0)
+//	{
+//		aMensajes.push_back(buffer);
+//		mode = 's';
+//		//if (strcmp(buffer, "exit") == 0)
+//		//{
+//		//	break;
+//		//}
+//	}
+//}
 
 
 int main()
 {
 
-	sf::IpAddress ip = sf::IpAddress("192.168.23.212");//;// sf::IpAddress::getLocalAddress();
+	sf::IpAddress ip = sf::IpAddress::getLocalAddress();//;// sf::IpAddress::getLocalAddress();
 	sf::TcpSocket socketSend, socketRecieve;
 	char connectionType, mode;
 	char buffer[2000];
 	std::size_t received;
 	std::string text2 = "Connected to: ";
 	std::string name;
+	std::vector<std::string> aMensajes;
+
+
 	int nameSize;
 
 	std::cout << "Enter your name \n";
@@ -98,7 +98,6 @@ int main()
 		sf::TcpListener listener;
 		listener.listen(5000);
 		listener.accept(socketRecieve);
-		listener.listen(5001);
 		listener.accept(socketSend);
 		text2 += "Server";
 		mode = 's';
@@ -107,7 +106,7 @@ int main()
 	else if (connectionType == 'c')
 	{
 		socketSend.connect(ip, 5000);
-		socketRecieve.connect(ip, 5001);
+		socketRecieve.connect(ip, 5000);
 		text2 += "Client";
 		mode = 'r';
 	}
@@ -115,9 +114,6 @@ int main()
 	socketSend.send(text2.c_str(), text2.length() + 1);
 	socketRecieve.receive(buffer, sizeof(buffer), received);
 	std::cout << buffer << std::endl;
-
-	std::vector<std::string> aMensajes;
-	//sf::Thread threadReceive(&Receive, socketSend, received, aMensajes, mode);
 
 	
 
@@ -148,17 +144,22 @@ int main()
 	separator.setFillColor(sf::Color(200, 200, 200, 255));
 	separator.setPosition(0, 550);
 
+	sf::Event evento;
+
+	Receive receive(socketSend, received, aMensajes, mode);
+	Send send(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
+	sf::Thread threadReceive(&Receive::ReceiveFunction, &receive);
+	sf::Thread threadSend(&Send::SendFunction, &send);
+
 	while (window.isOpen())
 	{
-		sf::Event evento;
-		if (mode == 's') {
-			Send(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
+		
+		//mutex;
+		threadSend.launch();
 
-		}
-		else if (mode == 'r') {
-			//threadReceive.launch();
-			Receive(socketSend, received, aMensajes, mode);
-		}
+		//mutex;
+		threadReceive.launch();
+
 
 		for (size_t i = 0; i < aMensajes.size(); i++)
 		{
@@ -180,7 +181,8 @@ int main()
 		
 	}
 
-	socket.disconnect();
+	socketSend.disconnect();
+	socketRecieve.disconnect();
 	system("pause");
 
 	return 0;
