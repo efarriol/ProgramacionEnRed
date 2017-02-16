@@ -78,8 +78,8 @@ void Receive(sf::TcpSocket &socket,std::size_t &received, std::vector<std::strin
 int main()
 {
 
-	sf::IpAddress ip = sf::IpAddress::getLocalAddress();//("192.168.23.212");// sf::IpAddress::getLocalAddress();
-	sf::TcpSocket socket;
+	sf::IpAddress ip = sf::IpAddress("192.168.23.212");//;// sf::IpAddress::getLocalAddress();
+	sf::TcpSocket socketSend, socketRecieve;
 	char connectionType, mode;
 	char buffer[2000];
 	std::size_t received;
@@ -97,23 +97,29 @@ int main()
 	{
 		sf::TcpListener listener;
 		listener.listen(5000);
-		listener.accept(socket);
+		listener.accept(socketRecieve);
+		listener.listen(5001);
+		listener.accept(socketSend);
 		text2 += "Server";
 		mode = 's';
 		listener.close();
 	}
 	else if (connectionType == 'c')
 	{
-		socket.connect(ip, 5000);
+		socketSend.connect(ip, 5000);
+		socketRecieve.connect(ip, 5001);
 		text2 += "Client";
 		mode = 'r';
 	}
 
-	socket.send(text2.c_str(), text2.length() + 1);
-	socket.receive(buffer, sizeof(buffer), received);
+	socketSend.send(text2.c_str(), text2.length() + 1);
+	socketRecieve.receive(buffer, sizeof(buffer), received);
 	std::cout << buffer << std::endl;
 
 	std::vector<std::string> aMensajes;
+	//sf::Thread threadReceive(&Receive, socketSend, received, aMensajes, mode);
+
+	
 
 	sf::Vector2i screenDimensions(800, 600);
 
@@ -146,66 +152,12 @@ int main()
 	{
 		sf::Event evento;
 		if (mode == 's') {
-			Send(socket, received, aMensajes, mode, window, evento, mensaje, name, text2);
+			Send(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
 
-		/*	while (window.pollEvent(evento)) {
-				switch (evento.type)
-				{
-				case sf::Event::Closed:
-					window.close();
-					break;
-				case sf::Event::KeyPressed:
-					if (evento.key.code == sf::Keyboard::Escape) {
-						window.close();
-						break;
-					}
-					else if (evento.key.code == sf::Keyboard::Return) {
-						if (mensaje.getSize() > nameSize) {
-							aMensajes.push_back(mensaje);
-							if (aMensajes.size() > 25)
-							{
-								aMensajes.erase(aMensajes.begin(), aMensajes.begin() + 1);
-							}
-						}
-					}
-					break;
-				case sf::Event::TextEntered:
-					if (evento.text.unicode >= 32 && evento.text.unicode <= 126)
-						mensaje += (char)evento.text.unicode;
-					else if (evento.text.unicode == 8 && mensaje.getSize() > nameSize)
-						mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
-					break;
-				}
-			}
-
-			if (evento.key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
-				text2 = mensaje;
-			}
-			else text2 = "";
-			if (text2.length() > 0)
-			{
-				mensaje = " > " + name + ": ";
-				socket.send(text2.c_str(), text2.length() + 1);
-				mode = 'r';
-				if (text2 == "exit")
-				{
-					break;
-				}
-			}*/
 		}
 		else if (mode == 'r') {
-			Receive(socket, received, aMensajes, mode);
-
-			//socket.receive(buffer, sizeof(buffer), received);
-			//if (received > 0)
-			//{
-			//	aMensajes.push_back(buffer);
-			//	mode = 's';
-			//	if (strcmp(buffer, "exit") == 0)
-			//	{
-			//		break;
-			//	}
-			//}
+			//threadReceive.launch();
+			Receive(socketSend, received, aMensajes, mode);
 		}
 
 		for (size_t i = 0; i < aMensajes.size(); i++)
