@@ -11,9 +11,9 @@ public:
 		mode = &_mode;
 		window = &_window;
 		evento = &_evento;
-		mensaje = &_mensaje;
+		//mensaje = &_mensaje;
 		name = &_name;
-		text2 = &_text2;
+		//text2 = &_text2;
 	}
 	sf::TcpSocket *socket;
 	std::size_t *received;
@@ -21,9 +21,9 @@ public:
 	char *mode;
 	sf::RenderWindow *window;
 	sf::Event *evento;
-	sf::String *mensaje;
+	sf::String mensaje;
 	std::string *name;
-	std::string *text2;
+	std::string text2;
 
 
 	void SendFunction();
@@ -45,8 +45,8 @@ void Send::SendFunction() {
 				break;
 			}
 			else if (evento->key.code == sf::Keyboard::Return) {
-				if (mensaje->getSize() > nameSize) {
-					aMensajes->push_back(*mensaje);
+				if (mensaje.getSize() > nameSize) {
+					aMensajes->push_back(mensaje);
 					if (aMensajes->size() > 25)
 					{
 						aMensajes->erase(aMensajes->begin(), aMensajes->begin() + 1);
@@ -57,24 +57,24 @@ void Send::SendFunction() {
 		case sf::Event::TextEntered:
 			if (evento->text.unicode >= 32 && evento->text.unicode <= 126)
 				mensaje += (char)evento->text.unicode;
-			else if (evento->text.unicode == 8 && mensaje->getSize() > nameSize)
-				mensaje->erase(mensaje->getSize() - 1, mensaje->getSize());
+			else if (evento->text.unicode == 8 && mensaje.getSize() > nameSize)
+				mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
 			break;
 		}
 	}
 
-	if (evento->key.code == sf::Keyboard::Return && mensaje->getSize() > nameSize) {
-		*text2 = *mensaje;
+	if (evento->key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
+		text2 = mensaje;
 	}
-	else *text2 = "";
-	if (text2->length() > 0)
+	else text2 = "";
+	if (text2.length() > 0)
 	{
-		*mensaje = " > " + *name + ": ";
-		socket->send(text2->c_str(), text2->length() + 1);
-		//*mode = 'r';
-		if (*text2 == "exit")
-		{
+		mensaje = " > " + *name + ": ";
+		socket->send(text2.c_str(), text2.length() + 1);
+		*mode = 'r';
+		//if (*text2 == "exit")
+		//{
 			//break;
-		}
+		//}
 	}
 }

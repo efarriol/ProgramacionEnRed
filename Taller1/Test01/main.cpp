@@ -49,6 +49,7 @@ void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std:
 		mensaje = " > " + name + ": ";
 		socket.send(text2.c_str(), text2.length() + 1);
 		mode = 'r';
+
 		if (text2 == "exit")
 		{
 			//break;
@@ -150,15 +151,25 @@ int main()
 	Send send(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
 	sf::Thread threadReceive(&Receive::ReceiveFunction, &receive);
 	sf::Thread threadSend(&Send::SendFunction, &send);
+	threadReceive.launch();
 
 	while (window.isOpen())
 	{
-		
+		SendFunction(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
+
+		if (mode == 's')
+		{
+			//threadSend.launch();
+		}
+		else if (mode == 'r')
+		{
+			//receive.ReceiveFunction();
+		}
 		//mutex;
-		threadSend.launch();
+		
 
 		//mutex;
-		threadReceive.launch();
+		//threadReceive.launch();
 
 
 		for (size_t i = 0; i < aMensajes.size(); i++)

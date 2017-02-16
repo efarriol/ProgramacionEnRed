@@ -20,14 +20,17 @@ public:
 void Receive::ReceiveFunction() {
 
 	char buffer[2000];
-	socket->receive(buffer, sizeof(buffer), *received);
-	if (received > 0)
-	{
-		aMensajes->push_back(buffer);
-		//mode = (char*)'s';
-		//if (strcmp(buffer, "exit") == 0)
-		//{
-		//	break;
-		//}
+	while (true) {
+		socket->receive(buffer, sizeof(buffer), *received);
+		if (received > 0)
+		{
+			aMensajes->push_back(buffer);
+			*mode = 's';
+			//if (strcmp(buffer, "exit") == 0)
+			//{
+			//	break;
+			//}
+		}
 	}
+	
 }
