@@ -25,6 +25,10 @@ void Receive::ReceiveFunction() {
 		if (received > 0)
 		{
 			aMensajes->push_back(buffer);
+			if (aMensajes->size() > 25)
+			{
+				aMensajes->erase(aMensajes->begin(), aMensajes->begin() + 1);
+			}
 			*mode = 's';
 			//if (strcmp(buffer, "exit") == 0)
 			//{
