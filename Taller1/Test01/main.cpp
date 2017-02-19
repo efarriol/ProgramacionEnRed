@@ -5,9 +5,10 @@
 sf::Mutex mutex;
 
 
-void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes, char &mode, 
-			sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name, std::string &text2) {
-	
+void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes, 
+			sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name) {
+	std::string text;
+
 	int nameSize = name.size() + 5;
 
 	while (window.pollEvent(evento)) {
@@ -41,43 +42,27 @@ void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std:
 	}
 
 	if (evento.key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
-		text2 = mensaje;
+		text = mensaje;
 	}
-	else text2 = "";
-	if (text2.length() > 0)
+	else text = "";
+	if (text.length() > 0)
 	{
 		mensaje = " > " + name + ": ";
-		socket.send(text2.c_str(), text2.length() + 1);
-		mode = 'r';
-
-		if (text2 == "exit")
+		socket.send(text.c_str(), text.length() + 1);
+		if (text == " > " + name + ": " + "/exit")
 		{
-			//break;
+			socket.send("Disconnected", 12 + 1);
+			socket.disconnect();
+			exit(0);
 		}
 	}
 }
 
-//void ReceiveFunction(Receive receive){
-//	
-//	char buffer[2000];
-//	receive.socket.receive(buffer, sizeof(buffer), receive.received);
-//	if (received > 0)
-//	{
-//		aMensajes.push_back(buffer);
-//		mode = 's';
-//		//if (strcmp(buffer, "exit") == 0)
-//		//{
-//		//	break;
-//		//}
-//	}
-//}
-
-
 int main()
 {
-
+	mutex.lock();
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();//;// sf::IpAddress::getLocalAddress();
-	sf::TcpSocket socketSend, socketRecieve;
+	sf::TcpSocket socketSend, socketReceive;
 	char connectionType, mode;
 	char buffer[2000];
 	std::size_t received;
@@ -98,7 +83,7 @@ int main()
 	{
 		sf::TcpListener listener;
 		listener.listen(5000);
-		listener.accept(socketRecieve);
+		listener.accept(socketReceive);
 		listener.accept(socketSend);
 		text2 += "Server";
 		mode = 's';
@@ -107,16 +92,15 @@ int main()
 	else if (connectionType == 'c')
 	{
 		socketSend.connect(ip, 5000);
-		socketRecieve.connect(ip, 5000);
+		socketReceive.connect(ip, 5000);
+
 		text2 += "Client";
 		mode = 'r';
 	}
 
 	socketSend.send(text2.c_str(), text2.length() + 1);
-	socketRecieve.receive(buffer, sizeof(buffer), received);
+	socketReceive.receive(buffer, sizeof(buffer), received);
 	std::cout << buffer << std::endl;
-
-	
 
 	sf::Vector2i screenDimensions(800, 600);
 
@@ -147,30 +131,13 @@ int main()
 
 	sf::Event evento;
 
-	Receive receive(socketSend, received, aMensajes, mode);
-	Send send(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
+	Receive receive(socketSend, received, aMensajes, name, window);
 	sf::Thread threadReceive(&Receive::ReceiveFunction, &receive);
-	sf::Thread threadSend(&Send::SendFunction, &send);
 	threadReceive.launch();
 
 	while (window.isOpen())
 	{
-		SendFunction(socketRecieve, received, aMensajes, mode, window, evento, mensaje, name, text2);
-
-		if (mode == 's')
-		{
-			//threadSend.launch();
-		}
-		else if (mode == 'r')
-		{
-			//receive.ReceiveFunction();
-		}
-		//mutex;
-		
-
-		//mutex;
-		//threadReceive.launch();
-
+		SendFunction(socketReceive, received, aMensajes,window, evento, mensaje, name);
 
 		for (size_t i = 0; i < aMensajes.size(); i++)
 		{
@@ -189,12 +156,7 @@ int main()
 
 		window.display();
 		window.clear();
-		
 	}
-
-	socketSend.disconnect();
-	socketRecieve.disconnect();
-	system("pause");
-
+	mutex.unlock();
 	return 0;
 }
