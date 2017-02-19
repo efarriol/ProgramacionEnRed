@@ -3,19 +3,14 @@
 class Receive {
 
 public:
-	Receive(sf::TcpSocket &_socket, std::size_t &_received, std::vector<std::string> &_aMensajes,std::string &_name, sf::RenderWindow &_window) {
+	Receive(sf::TcpSocket &_socket, std::size_t &_received, std::vector<std::string> &_aMensajes) {
 		socket = &_socket;
 		received = &_received;
 		aMensajes = &_aMensajes;
-		window = &_window;
 	};
 	sf::TcpSocket *socket;
 	std::size_t *received;
 	std::vector<std::string> *aMensajes;
-	std::string *name;
-	sf::RenderWindow *window;
-
-	char *mode;
 
 	void ReceiveFunction();
 };
