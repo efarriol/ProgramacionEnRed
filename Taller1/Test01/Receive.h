@@ -1,5 +1,7 @@
 #pragma once
 #include "Framework.h"
+#include <Windows.h>
+
 class Receive {
 
 public:
@@ -24,17 +26,20 @@ void Receive::ReceiveFunction() {
 
 		if (received > 0)
 		{
+			if (strcmp(buffer, "Disconnected") == 0)
+			{
+				socket->receive(buffer, sizeof(buffer), *received);
+				aMensajes->push_back(buffer);
+				Sleep(5000);
+				socket->disconnect();
+				exit(0);
+			}
 			aMensajes->push_back(buffer);
 			if (aMensajes->size() > 25)
 			{
 				aMensajes->erase(aMensajes->begin(), aMensajes->begin() + 1);
 			}
 
-			if (strcmp(buffer, "Disconnected")==0)
-			{
-				socket->disconnect();
-				exit(0);
-			}
 		}
 	}
 	

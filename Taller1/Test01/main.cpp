@@ -1,7 +1,64 @@
 #include "Framework.h"
 #include "Receive.h"
+
 #define MAX_MENSAJES 30
 sf::Mutex mutex;
+
+
+void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes,
+	sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name) {
+
+	std::string text;
+	int nameSize = name.size() + 5;
+
+	while (window.pollEvent(evento)) {
+		switch (evento.type)
+		{
+		case sf::Event::Closed:
+			window.close();
+			break;
+		case sf::Event::KeyPressed:
+			if (evento.key.code == sf::Keyboard::Escape) {
+				window.close();
+				break;
+			}
+			else if (evento.key.code == sf::Keyboard::Return) {
+				if (mensaje.getSize() > nameSize) {
+					aMensajes.push_back(mensaje);
+					if (aMensajes.size() > 25)
+					{
+						aMensajes.erase(aMensajes.begin(), aMensajes.begin() + 1);
+					}
+				}
+			}
+			break;
+		case sf::Event::TextEntered:
+			if (evento.text.unicode >= 32 && evento.text.unicode <= 126)
+				mensaje += (char)evento.text.unicode;
+			else if (evento.text.unicode == 8 && mensaje.getSize() > nameSize)
+				mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
+			break;
+		}
+	}
+
+	if (evento.key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
+		text = mensaje;
+	}
+	else text = "";
+	if (text.length() > 0)
+	{
+		mensaje = " > " + name + ": ";
+		socket.send(text.c_str(), text.length() + 1);
+		if (text == " > " + name + ": " + "/exit")
+		{
+			socket.send("Disconnected", 12 + 1);
+			text = " > " + (std::string)name + " has left the chat, you are going to be disconnected in 5 seconds...";
+			socket.send(text.c_str(),text.length()+ 1);
+			socket.disconnect();
+			exit(0);
+		}
+	}
+}
 
 
 int main()
@@ -108,55 +165,3 @@ int main()
 }
 
 
-void SendFunction(sf::TcpSocket &socket, std::size_t &received, std::vector<std::string> &aMensajes,
-	sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name) {
-
-	std::string text;
-	int nameSize = name.size() + 5;
-
-	while (window.pollEvent(evento)) {
-		switch (evento.type)
-		{
-		case sf::Event::Closed:
-			window.close();
-			break;
-		case sf::Event::KeyPressed:
-			if (evento.key.code == sf::Keyboard::Escape) {
-				window.close();
-				break;
-			}
-			else if (evento.key.code == sf::Keyboard::Return) {
-				if (mensaje.getSize() > nameSize) {
-					aMensajes.push_back(mensaje);
-					if (aMensajes.size() > 25)
-					{
-						aMensajes.erase(aMensajes.begin(), aMensajes.begin() + 1);
-					}
-				}
-			}
-			break;
-		case sf::Event::TextEntered:
-			if (evento.text.unicode >= 32 && evento.text.unicode <= 126)
-				mensaje += (char)evento.text.unicode;
-			else if (evento.text.unicode == 8 && mensaje.getSize() > nameSize)
-				mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
-			break;
-		}
-	}
-
-	if (evento.key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
-		text = mensaje;
-	}
-	else text = "";
-	if (text.length() > 0)
-	{
-		mensaje = " > " + name + ": ";
-		socket.send(text.c_str(), text.length() + 1);
-		if (text == " > " + name + ": " + "/exit")
-		{
-			socket.send("Disconnected", 12 + 1);
-			socket.disconnect();
-			exit(0);
-		}
-	}
-}
