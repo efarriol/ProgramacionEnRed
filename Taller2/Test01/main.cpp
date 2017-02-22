@@ -25,11 +25,8 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 			break;
 		case sf::Event::KeyPressed:
 			if (evento.key.code == sf::Keyboard::Escape) {
-				mensaje = " > "  + name + ": " + "/exit";
-				aMensajes.push_back(mensaje);
-				text = mensaje;
-				socket.send(text.c_str(), text.length() + 1);
-
+				socket.disconnect();
+				exit(0);
 				break;
 			}
 			else if (evento.key.code == sf::Keyboard::Return) {
@@ -73,28 +70,23 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 
 }
 
-
-
 int main()
 {
 	sf::TcpListener listener;
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusListen; 
-	char connectionType, mode;
+	char connectionType;
 	char buffer[2000];
 	std::size_t received;
-	std::string text2 = "Connected to: ";
 	std::string name;
 	std::vector<std::string> aMensajes;
 	int nameSize;
 
-	
 	std::cout << "Enter your name \n";
 	std::cin >> name;
 	std::cout << "Enter (s) for Server, Enter (c) for Client: ";
 	std::cin >> connectionType;
-
 	
 	if (connectionType == 's')
 	{
@@ -110,21 +102,14 @@ int main()
 			sf::Socket::Status statusAccept = listener.accept(*tcpSocket);
 			if (statusAccept == sf::Socket::Done) break;
 		}
-		
-		text2 += "Server";
-		mode = 's';
 		listener.close();
 	}
 	else if (connectionType == 'c')
 	{
 		tcpSocket->connect(ip, 5000);
 		tcpSocket->setBlocking(false);
-		text2 += "Client";
-		mode = 'r';
 	}
 
-
-	tcpSocket->send(text2.c_str(), text2.length() + 1);
 	sf::Vector2i screenDimensions(800, 600);
 
 	sf::RenderWindow window;
@@ -135,7 +120,6 @@ int main()
 		std::cout << "Can't load the font file" << std::endl;
 	}
 
-	
 	sf::String mensaje = " > " + name + ": ";
 
 	sf::Text chattingText(mensaje, font, 14);
@@ -153,7 +137,6 @@ int main()
 	separator.setPosition(0, 550);
 
 	sf::Event evento;
-
 
 	while (true) {
 		tcpSocket->setBlocking(false);
@@ -189,19 +172,15 @@ int main()
 		text.setString(mensaje_);
 
 		window.draw(text);
-
-
 		window.display();
 		window.clear();
 
-		
 		if (statusReceive == sf::Socket::Disconnected) {
 			Sleep(5000);
 			break;
 		}
 	}
 	tcpSocket->disconnect();
-
 	return 0;
 }
 
