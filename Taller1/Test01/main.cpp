@@ -103,7 +103,6 @@ int main()
 
 	socketSend.send(text2.c_str(), text2.length() + 1);
 	socketReceive.receive(buffer, sizeof(buffer), received);
-	std::cout << buffer << std::endl;
 
 	sf::Vector2i screenDimensions(800, 600);
 
@@ -136,7 +135,7 @@ int main()
 
 	Receive receive(socketSend, received, aMensajes);
 	sf::Thread threadReceive(&Receive::ReceiveFunction, &receive);
-	threadReceive.launch();
+//	threadReceive.launch();
 
 	while (window.isOpen())
 	{
