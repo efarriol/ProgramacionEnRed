@@ -50,8 +50,8 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 						socket.send(text.c_str(), text.length() + 1, sent);
 						while (true) {
 							if (statusReceive == sf::Socket::Partial) {
-								std::string text2 = text.substr(sent);
-								socket.send(text2.c_str(), text.length() + 1, sent);
+								std::string text2 = text.substr(sent); 
+								socket.send(text2.c_str(), text.length() + 1, sent); 
 							}
 							else break;
 						}
@@ -82,7 +82,7 @@ int main()
 	std::string name;
 	std::vector<std::string> aMensajes;
 	int nameSize;
-
+	tcpSocket->setBlocking(false);
 	std::cout << "Enter your name \n";
 	std::cin >> name;
 	std::cout << "Enter (s) for Server, Enter (c) for Client: ";
@@ -107,7 +107,6 @@ int main()
 	else if (connectionType == 'c')
 	{
 		tcpSocket->connect(ip, 5000);
-		tcpSocket->setBlocking(false);
 	}
 
 	sf::Vector2i screenDimensions(800, 600);
@@ -139,14 +138,13 @@ int main()
 	sf::Event evento;
 
 	while (true) {
-		tcpSocket->setBlocking(false);
-		
 		char data[1300];
 		std::size_t bytesReceived;
 		sf::Socket::Status statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
 
-		if (statusReceive == sf::Socket::NotReady) SendFunction(*tcpSocket, aMensajes, window, evento, mensaje, name, statusReceive);
-		
+		if (statusReceive == sf::Socket::NotReady) {
+			SendFunction(*tcpSocket, aMensajes, window, evento, mensaje, name, statusReceive);
+		}
 		else if (statusReceive == sf::Socket::Done) {
 			std::string str = data;
 			aMensajes.push_back(str);
