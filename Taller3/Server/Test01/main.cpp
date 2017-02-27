@@ -75,7 +75,9 @@ int main()
 
 			else if (statusReceive == sf::Socket::Disconnected) {
 				socketList[i]->disconnect();
-				//socketList.erase(i);
+				delete socketList[i];
+				socketList.erase(socketList.begin() + i);
+				socketCount--;
 			}
 		}
 	}
