@@ -1,8 +1,7 @@
 ﻿  main.cpp
-c:\users\efarriol\desktop\programacionenred\taller2\test01\main.cpp(18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\efarriol\desktop\programacionenred\taller2\test01\main.cpp(159): warning C4244: 'argument': conversion from 'std::size_t' to 'float', possible loss of data
-c:\users\efarriol\desktop\programacionenred\taller2\test01\main.cpp(81): warning C4101: 'received': unreferenced local variable
-c:\users\efarriol\desktop\programacionenred\taller2\test01\main.cpp(84): warning C4101: 'nameSize': unreferenced local variable
-c:\users\efarriol\desktop\programacionenred\taller2\test01\main.cpp(80): warning C4101: 'buffer': unreferenced local variable
-  Test01.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\Taller2\x64\Debug\Test01.exe
-  Test01.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\Taller2\x64\Debug\Test01.pdb (Full PDB)
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller2\test01\main.cpp(18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller2\test01\main.cpp(159): warning C4244: 'argument': conversion from 'size_t' to 'float', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller2\test01\main.cpp(81): warning C4101: 'received': unreferenced local variable
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller2\test01\main.cpp(84): warning C4101: 'nameSize': unreferenced local variable
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller2\test01\main.cpp(80): warning C4101: 'buffer': unreferenced local variable
+  Test01.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\Taller2\x64\Debug\Test01.exe

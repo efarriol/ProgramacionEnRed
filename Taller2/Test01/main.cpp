@@ -98,7 +98,7 @@ int main()
 		}
 		listener.setBlocking(false);
 		std::time_t startTime = time(NULL);
-		while (startTime + 10 >= time(NULL)) {
+		while (true) {
 			sf::Socket::Status statusAccept = listener.accept(*tcpSocket);
 			if (statusAccept == sf::Socket::Done) break;
 		}

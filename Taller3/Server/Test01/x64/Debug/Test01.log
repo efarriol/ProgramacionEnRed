@@ -1,0 +1,4 @@
+﻿  main.cpp
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller3\server\test01\main.cpp(34): warning C4101: 'received': unreferenced local variable
+d:\pol_b\documents\enti\sourcetree\programacionenred\taller3\server\test01\main.cpp(33): warning C4101: 'buffer': unreferenced local variable
+  Test01.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\Taller3\Server\x64\Debug\Server.exe
