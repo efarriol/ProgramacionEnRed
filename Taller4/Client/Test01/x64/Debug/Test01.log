@@ -1,8 +1,2 @@
-﻿  main.cpp
-c:\users\efarriol\desktop\programacionenred\taller4\client\test01\main.cpp(26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\efarriol\desktop\programacionenred\taller4\client\test01\main.cpp(199): warning C4244: 'argument': conversion from 'std::size_t' to 'float', possible loss of data
-c:\users\efarriol\desktop\programacionenred\taller4\client\test01\main.cpp(83): warning C4101: 'statusListen': unreferenced local variable
-c:\users\efarriol\desktop\programacionenred\taller4\client\test01\main.cpp(90): warning C4101: 'nameSize': unreferenced local variable
-c:\users\efarriol\desktop\programacionenred\taller4\client\test01\main.cpp(84): warning C4101: 'buffer': unreferenced local variable
-  Test01.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\Taller4\Client\x64\Debug\Client.exe
-  Test01.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\Taller4\Client\x64\Debug\Client.pdb (Full PDB)
+﻿  Test01.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\Client\x64\Debug\Client.exe
+  Test01.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\Client\x64\Debug\Client.pdb (Full PDB)

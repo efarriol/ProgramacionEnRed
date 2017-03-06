@@ -11,12 +11,9 @@
 sf::Mutex mutex;
 
 void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
-	while (true) {
-		if (statusReceive == sf::Socket::Partial) {
+	while (statusReceive == sf::Socket::Partial) {
 			std::string text2 = text.substr(sent);
 			socket.send(text2.c_str(), text.length() + 1, sent);
-		}
-		else break;
 	}
 }
 
@@ -49,6 +46,7 @@ int main()
 
 	while (true) {
 
+		sf::sleep(sf::milliseconds(200));
 		statusAccept = listener.accept(*socketList[socketCount]);
 		if (statusAccept == sf::Socket::Done) {
 			socketList.push_back(new sf::TcpSocket);
@@ -68,7 +66,7 @@ int main()
 				aMensajes.push_back(str);
 				for (int j = 0; j < socketCount; j++) { 
 					size_t send;
-					socketList[j]->send(str.c_str(), str.length() + 1); 
+					socketList[j]->send(str.c_str(), str.length() + 1, send); 
 					CheckSended(statusReceive, str, *socketList[j], send);
 				}
 			}

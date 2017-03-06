@@ -144,7 +144,7 @@ int main()
 	opponentName.setPosition(420, 75);
 	
 	sf::Text opponentScore("0", font, 16);
-	opponentScore.setFillColor(sf::Color(0, 200, 200));
+	opponentScore.setFillColor(sf::Color(0, 150, 200));
 	opponentScore.setStyle(sf::Text::Bold);
 	opponentScore.setPosition(700, 75);
 

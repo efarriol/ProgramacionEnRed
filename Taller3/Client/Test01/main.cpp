@@ -11,12 +11,9 @@
 sf::Mutex mutex;
 
 void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
-	while (true) {
-		if (statusReceive == sf::Socket::Partial) {
+	while (statusReceive == sf::Socket::Partial) {
 			std::string text2 = text.substr(sent);
 			socket.send(text2.c_str(), text.length() + 1, sent);
-		}
-		else break;
 	}
 }
 
@@ -59,7 +56,7 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 			if (text == " > " + name + ": " + "/exit")
 			{
 				text = "----- " + name + " has left the chat -----";
-				socket.send(text.c_str(), text.length() + 1);
+				socket.send(text.c_str(), text.length() + 1, sent);
 				CheckSended(statusReceive, text, socket, sent);
 				socket.disconnect();
 				exit(0);
@@ -100,7 +97,7 @@ int main()
 
 	tcpSocket->connect(ip, 5000);
 	statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
-	tcpSocket->send(text2.c_str(), text2.length()+1);
+	tcpSocket->send(text2.c_str(), text2.length()+1, received);
 	CheckSended(statusReceive, text2, *tcpSocket, received);
 
 	sf::Vector2i screenDimensions(800, 600);
@@ -133,6 +130,7 @@ int main()
 
 	while (true) {
 
+		sf::sleep(sf::milliseconds(100));
 		statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
 
 		if (statusReceive == sf::Socket::NotReady) {
