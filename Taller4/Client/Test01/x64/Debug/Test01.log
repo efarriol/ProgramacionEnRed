@@ -1,7 +1,0 @@
-﻿  main.cpp
-d:\enti\6º semestre\programacionenred\taller4\client\test01\main.cpp(26): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-d:\enti\6º semestre\programacionenred\taller4\client\test01\main.cpp(83): warning C4101: 'statusListen': unreferenced local variable
-d:\enti\6º semestre\programacionenred\taller4\client\test01\main.cpp(90): warning C4101: 'nameSize': unreferenced local variable
-d:\enti\6º semestre\programacionenred\taller4\client\test01\main.cpp(84): warning C4101: 'buffer': unreferenced local variable
-cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-LINK : fatal error LNK1104: cannot open file 'D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\Client\x64\Debug\Client.exe'
