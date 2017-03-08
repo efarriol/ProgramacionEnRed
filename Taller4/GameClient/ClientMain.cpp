@@ -78,22 +78,27 @@ int main()
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
 	sf::Socket::Status statusListen;
-	char buffer[2000];
-	char data[1300];
-	std::size_t bytesReceived;
-	std::size_t received;
-	std::vector<std::string> aMensajes;
-	int nameSize;
+	//char buffer[2000];
+	//char data[1300];
+	//std::size_t bytesReceived;
+	//std::size_t received;
+	//int nameSize;
 	tcpSocket->setBlocking(false);
 	PlayerInfo p1;
-	
+	PlayerInfo p2("");
+	p2.name = "";
+	bool first = true;
+	int time = 0;
+	std::string opponentInput;
+
 	std::string toSend =  p1.name;
-	sf::Packet packetToSend;
-	packetToSend << p1.name;
+	sf::Packet sendPacket;
+	sf::Packet receivePacket;
+	sendPacket << p1.name;
 	
 	tcpSocket->connect(ip, 5000);
 	//statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
-	tcpSocket->send(packetToSend);
+	tcpSocket->send(sendPacket);
 	//CheckSended(statusReceive, toSend, *tcpSocket, received);
 
 	sf::Vector2i screenDimensions(800, 600);
@@ -121,28 +126,28 @@ int main()
 	userInput.setStyle(sf::Text::Bold);
 	userInput.setPosition(0, 560);
 
-	sf::Text opponentInput("_", font, 14);
-	opponentInput.setFillColor(sf::Color(0, 160, 0));
-	opponentInput.setStyle(sf::Text::Bold);
-	opponentInput.setPosition(415, 560);
+	sf::Text opponentInputText(opponentInput, font, 14);
+	opponentInputText.setFillColor(sf::Color(0, 160, 0));
+	opponentInputText.setStyle(sf::Text::Bold);
+	opponentInputText.setPosition(415, 560);
 
 	sf::Text userName(p1.name, font, 16);
 	userName.setFillColor(sf::Color(200, 200, 200));
 	userName.setStyle(sf::Text::Bold);
 	userName.setPosition(20, 75);
 
-	sf::Text userScore("0", font, 16);
+	sf::Text userScore(std::to_string(p1.score), font, 16);
 	userScore.setFillColor(sf::Color(0, 150, 200));
 	userScore.setStyle(sf::Text::Bold);
 	userScore.setPosition(300, 75);
 
 
-	sf::Text opponentName("Pol", font, 16);
+	sf::Text opponentName(p2.name, font, 16);
 	opponentName.setFillColor(sf::Color(200, 200, 200));
 	opponentName.setStyle(sf::Text::Bold);
 	opponentName.setPosition(420, 75);
 
-	sf::Text opponentScore("0", font, 16);
+	sf::Text opponentScore(std::to_string(p2.score), font, 16);
 	opponentScore.setFillColor(sf::Color(0, 150, 200));
 	opponentScore.setStyle(sf::Text::Bold);
 	opponentScore.setPosition(700, 75);
@@ -152,7 +157,7 @@ int main()
 	wordToWrite.setStyle(sf::Text::Bold);
 	wordToWrite.setPosition(20, 20);
 
-	sf::Text timer("5555", font, 18);
+	sf::Text timer(std::to_string(time), font, 18);
 	timer.setFillColor(sf::Color(200, 50, 0));
 	timer.setStyle(sf::Text::Bold);
 	timer.setPosition(750, 20);
@@ -179,39 +184,66 @@ int main()
 	while (true) {
 
 		sf::sleep(sf::milliseconds(100));
-		statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
-
+		//statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
+		statusReceive = tcpSocket->receive(receivePacket);
 		if (statusReceive == sf::Socket::NotReady) {
-			SendFunction(*tcpSocket, aMensajes, window, evento, mensaje, p1.name, statusReceive);
+			SendFunction(*tcpSocket, p1.messages, window, evento, mensaje, p1.name, statusReceive);
 		}
 		else if (statusReceive == sf::Socket::Done) {
-			std::string str = data;
-			aMensajes.push_back(str);
-			str = str.substr(0, bytesReceived);
+			if (first) {
+				receivePacket >> p2.name;
+				opponentName.setString(p2.name);
+				first = false;
+			}
+			else {
+				std::string inName;
+				int inScore;
+				std::string inMessage;
+				bool isAnswer;
+				//packet << players[i].name << players[i].score << message << time << isAnswer;
+
+				receivePacket >> inName >> inScore >> inMessage >> time >> isAnswer;
+				if (inName == p1.name) {
+					p1.score = inScore;
+					if (isAnswer) {
+						p1.messages.push_back(inMessage);
+					}
+				}
+				else {
+					p2.score = inScore;
+					if (isAnswer)
+					{
+						p2.messages.push_back(inMessage);
+					}
+					else opponentInput = " - " + inMessage;
+
+				}
+
+			}
 		}
-		else if (statusReceive == sf::Socket::Disconnected) aMensajes.push_back(" > The server has closed the party, disconnection in 5 seconds...");
+		else if (statusReceive == sf::Socket::Disconnected)  p1.messages.push_back(" > The server has closed the party, disconnection in 5 seconds...");
 
 
-		for (size_t i = 0; i < aMensajes.size(); i++)
+		for (size_t i = 0; i <  p1.messages.size(); i++)
 		{
-			std::string chatting = aMensajes[i];
+			std::string chatting = p1.messages[i];
 			userText.setPosition(sf::Vector2f(0, screenDimensions.y*0.25f + 20 * i));
 			userText.setString(chatting);
 			window.draw(userText);
 
 		}
-		for (size_t i = 0; i < aMensajes.size(); i++)
+		for (size_t i = 0; i <  p1.messages.size(); i++)
 		{
-			std::string chatting = aMensajes[i];
+			std::string chatting = p1.messages[i];
 			opponentText.setPosition(sf::Vector2f(screenDimensions.x*0.5f, screenDimensions.y*0.25f + 20 * i));
 			opponentText.setString(chatting);
 			window.draw(opponentText);
 
 		}
 
-		if (aMensajes.size() > 17)
+		if (p1.messages.size() > 17)
 		{
-			aMensajes.erase(aMensajes.begin(), aMensajes.begin() + 1);
+			p1.messages.erase(p1.messages.begin(), p1.messages.begin() + 1);
 		}
 		window.draw(separator_bottom);
 		window.draw(separator_top_h);
@@ -222,7 +254,7 @@ int main()
 		userInput.setString(mensaje_);
 
 		window.draw(userInput);
-		window.draw(opponentInput);
+		window.draw(opponentInputText);
 		window.draw(userName);
 		window.draw(userScore);
 		window.draw(opponentName);

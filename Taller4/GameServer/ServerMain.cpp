@@ -35,8 +35,7 @@ int main()
 	sf::TcpListener listener;
 	sf::Socket::Status statusAccept;
 	sf::Socket::Status statusReceive;
-	sf::Packet receivePacket;
-	sf::Packet sendPacket;
+	sf::Packet packet;
 
 	std::string targetWord;
 	std::string message;
@@ -76,8 +75,8 @@ int main()
 			statusAccept = listener.accept(*playerSocket[socketCount]);
 			if (statusAccept == sf::Socket::Done) {
 				playerSocket[socketCount]->setBlocking(false);
-				playerSocket[socketCount]->receive(receivePacket);
-				receivePacket >> players[socketCount].name;
+				playerSocket[socketCount]->receive(packet);
+				packet >> players[socketCount].name;
 				std::cout << players[socketCount].name << std::endl;
 				socketCount++;
 				//if players are connected send opponent's name
@@ -90,9 +89,9 @@ int main()
 
 		else {
 			for (int i = 0; i < 2; i++) {
-				statusReceive = playerSocket[i]->receive(receivePacket);
+				statusReceive = playerSocket[i]->receive(packet);
 				if (statusReceive == sf::Socket::Done) {
-					receivePacket >> message >> isAnswer;
+					packet >> message >> isAnswer;
 					if (isAnswer) {
 						if (message == targetWord) {
 							players[i].score += 10;
@@ -103,15 +102,11 @@ int main()
 						else {
 							message += " - error";
 						}
-						//receivePacket << players[i].name << players[i].score << message << time;
-						for (int j = 0; j < 2; j++) {
-							playerSocket[j]->send(receivePacket);
-						}
 					}
-					else {
-						for (int j = 0; j < 2; j++) {
-							if (j != i)playerSocket[j]->send(receivePacket);
-						}
+
+					packet << players[i].name << players[i].score << message << time << isAnswer;
+					for (int j = 0; j < 2; j++) {
+						if(!isAnswer && j!=i || isAnswer) playerSocket[j]->send(packet);
 					}
 				}
 
