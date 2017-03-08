@@ -8,7 +8,16 @@
 #include <Windows.h>
 #include <PlayerInfo.h>
 
+void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, PlayerInfo &player2) {
+	sf::Packet sendPacket;
+	sendPacket << player1.name;
+	playerSockets[1]->send(sendPacket);
+	sendPacket << player2.name;
+	playerSockets[0]->send(sendPacket);
+	player1.score = 0;
+	player2.score = 0;
 
+}
 
 void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
 	//	while (true) {
@@ -27,6 +36,12 @@ int main()
 	sf::Socket::Status statusAccept;
 	sf::Socket::Status statusReceive;
 	sf::Packet receivePacket;
+	sf::Packet sendPacket;
+
+	std::string targetWord;
+	std::string message;
+	bool isAnswer = false;
+
 	//char data[1300];
 //	std::size_t bytesReceived;
 	//std::vector<sf::TcpSocket*> socketList;
@@ -34,7 +49,6 @@ int main()
 	std::vector <sf::TcpSocket*> playerSocket;
 	playerSocket.push_back(new sf::TcpSocket);
 	playerSocket.push_back(new sf::TcpSocket);
-
 
 
 	sf::Socket::Status statusListen;
@@ -66,35 +80,49 @@ int main()
 				receivePacket >> players[socketCount].name;
 				std::cout << players[socketCount].name << std::endl;
 				socketCount++;
+				//if players are connected send opponent's name
+				if (socketCount == 2) {
+					InitGame(playerSocket, players[0], players[1]);
+				}
 			}
 		}
 
 
-		//if (p1StatusAccept == sf::Socket::Done && p2StatusAccept == sf::Socket::Done) {
-		//	for (int i = 0; i < 2; i++) {
+		else {
+			for (int i = 0; i < 2; i++) {
+				statusReceive = playerSocket[i]->receive(receivePacket);
+				if (statusReceive == sf::Socket::Done) {
+					receivePacket >> message >> isAnswer;
+					if (isAnswer) {
+						if (message == targetWord) {
+							players[i].score += 10;
+							message += " - correcto";
+							//restart time
+							//crear nueva palabra
+						}
+						else {
+							message += " - error";
+						}
+						//receivePacket << players[i].name << players[i].score << message << time;
+						for (int j = 0; j < 2; j++) {
+							playerSocket[j]->send(receivePacket);
+						}
+					}
+					else {
+						for (int j = 0; j < 2; j++) {
+							if (j != i)playerSocket[j]->send(receivePacket);
+						}
+					}
+				}
 
-
-
-		//		//statusReceive = playerSocket[i].receive(data, 1300, bytesReceived);
-
-		//		if (statusReceive == sf::Socket::Done) {
-		//			//	std::string str = data;
-		//			//	aMensajes.push_back(str);
-		//			for (int j = 0; j < 2; j++) {
-		//				//					size_t send;
-		//				//					playerSocket[j].send(str.c_str(), str.length() + 1, send);
-		//				//					CheckSended(statusReceive, str, playerSocket[j], send);
-		//			}
-		//		}
-
-		//		else if (statusReceive == sf::Socket::Disconnected) {
-		//			playerSocket[i]->disconnect();
-		//			//delete  playerSocket[i];
-		//			//playerSocket.erase(socketList.begin() + i);
-		//			//socketCount--;
-		//		}
-		//	}
-		//}
+				else if (statusReceive == sf::Socket::Disconnected) {
+					playerSocket[i]->disconnect();
+					//delete  playerSocket[i];
+					//playerSocket.erase(socketList.begin() + i);
+					//socketCount--;
+				}
+			}
+		}
 }
 	listener.close();
 //	for (int i = 0; i < socketCount; i++) socketList[i]->disconnect();
