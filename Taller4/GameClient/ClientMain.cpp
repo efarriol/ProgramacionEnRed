@@ -7,11 +7,6 @@
 #include <vector>
 #include <Windows.h>
 #include <PlayerInfo.h>
-//---------------------------------------------------------------
-
-//Preguntar si los SFML Packets generan Partial
-
-//---------------------------------------------------------------
 
 void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
 	while (statusReceive == sf::Socket::Partial) {
@@ -45,7 +40,6 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 				else text = "";
 				if (text.length() > 0 && text != "/exit")
 				{
-					std::cout << text << std::endl;
 					packet << text << true;
 					mensaje = "";
 					socket.send(packet);
@@ -54,15 +48,16 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 			}
 			if (text == "/exit")
 			{
-				text = "----- " + name + " has left the chat -----";
-				socket.send(text.c_str(), text.length() + 1, sent);
-				CheckSended(statusReceive, text, socket, sent);
+				text = "----- " + name + " has left the game -----";
+				packet.clear();
+				packet << text << true;
+				socket.send(packet);
 				socket.disconnect();
 				exit(0);
 			}
 			break;
 		case sf::Event::TextEntered:
-			if (evento.text.unicode >= 32 && evento.text.unicode <= 126 && mensaje.getSize() < 43){
+			if (evento.text.unicode >= 32 && evento.text.unicode <= 126 && mensaje.getSize() < 35){
 				mensaje += (char)evento.text.unicode;
 				
 			}
@@ -93,7 +88,7 @@ int main()
 	bool isAnswer = true;
 
 	int tempTime = 0;
-	int time = 5;
+	int time = 0;
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	std::string opponentInput;
@@ -120,7 +115,7 @@ int main()
 	sf::Text userText(mensaje, font, 14);
 	userText.setFillColor(sf::Color(0, 160, 0));
 	userText.setStyle(sf::Text::Bold);
-
+	
 	sf::Text opponentText(mensaje, font, 14);
 	opponentText.setFillColor(sf::Color(0, 160, 0));
 	opponentText.setStyle(sf::Text::Bold);
@@ -193,24 +188,20 @@ int main()
 		}
 		else if (statusReceive == sf::Socket::Done) {
 			if (first) {
-				int faketime;
-				receivePacket >> p2.name >> targetWord >> faketime;
+				receivePacket >> p2.name >> targetWord;
 				opponentName.setString(p2.name);
 				wordToWrite.setString(targetWord);
 				//timer.setString(std::to_string(time));
 				deltaClock.restart();
-				time = 1000;
 				first = false;
 			}
 			else {
 				std::string inName;
 				int inScore;
 				std::string inMessage;
-				int faketime;
-				receivePacket >> inName >> inScore >> inMessage >> faketime >> isAnswer >> targetWord;
+				receivePacket >> inName >> inScore >> inMessage >> isAnswer >> targetWord;
 				wordToWrite.setString(targetWord);
-				//timer.setString(std::to_string(time));
-				//deltaClock.restart();
+		
 				if (inName.size() > 0) {
 					if (inName == p1.name) {
 						p1.score = inScore;
@@ -221,7 +212,7 @@ int main()
 					}
 					else {
 						p2.score = inScore;
-						userScore.setString(std::to_string(p2.score));
+						opponentScore.setString(std::to_string(p2.score));
 						if (isAnswer)
 						{
 							p2.messages.push_back(inMessage);
@@ -235,16 +226,16 @@ int main()
 
 					}
 				}
-
+				else  deltaClock.restart();
 			}
 		}
-		else if (statusReceive == sf::Socket::Disconnected)  p1.messages.push_back(" > The server has closed the party, disconnection in 5 seconds...");
+		else if (statusReceive == sf::Socket::Disconnected)  p1.messages.push_back("Disconnection in 5 seconds...");
 		
 		//Time management
 		deltaTime = deltaClock.getElapsedTime();
 
 		if ((int)deltaTime.asSeconds() != tempTime) {
-			time = 5 - (int)deltaTime.asSeconds();
+			time = TIME - (int)deltaTime.asSeconds();
 			timer.setString(std::to_string(time));
 			tempTime = (int)deltaTime.asSeconds();
 		}
@@ -253,7 +244,7 @@ int main()
 		for (size_t i = 0; i <  p1.messages.size(); i++)
 		{
 			std::string chatting = p1.messages[i];
-			userText.setPosition(sf::Vector2f(0, screenDimensions.y*0.25f + 20 * i));
+			userText.setPosition(sf::Vector2f(5, screenDimensions.y*0.25f + 20 * i));
 			userText.setString(chatting);
 			window.draw(userText);
 
@@ -261,12 +252,12 @@ int main()
 		for (size_t i = 0; i <  p2.messages.size(); i++)
 		{
 			std::string chatting = p2.messages[i];
-			opponentText.setPosition(sf::Vector2f(screenDimensions.x*0.5f+5.0f, screenDimensions.y*0.25f + 20 * i));
+			opponentText.setPosition(sf::Vector2f(screenDimensions.x*0.5f+10.0f, screenDimensions.y*0.25f + 20 * i));
 			opponentText.setString(chatting);
 			window.draw(opponentText);
 
 		}
-		//scroll
+		//
 		if (p1.messages.size() > 17)
 		{
 			p1.messages.erase(p1.messages.begin(), p1.messages.begin() + 1);
@@ -297,10 +288,12 @@ int main()
 		window.clear();
 
 		if (statusReceive == sf::Socket::Disconnected) {
-
+			sf::sleep(sf::milliseconds(5000));
+			break;
 		}
 	}
 	tcpSocket->disconnect();
+	delete tcpSocket;
 	return 0;
 }
 

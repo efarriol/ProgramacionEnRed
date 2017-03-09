@@ -2,6 +2,8 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
 
+#define TIME 5
+#define MAX_WORDS 10
 class PlayerInfo
 {
 public:

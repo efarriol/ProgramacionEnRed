@@ -1,4 +1,4 @@
 ﻿  ServerMain.cpp
-d:\enti\6º semestre\programacionenred\taller4\gameserver\servermain.cpp(18): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\enti\6º semestre\programacionenred\taller4\gameserver\servermain.cpp(17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\x64\Debug\GameServer.exe
   GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\x64\Debug\GameServer.pdb (Full PDB)
