@@ -10,8 +10,9 @@
 
 void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, PlayerInfo &player2) {
 	sf::Packet sendPacket;
-	sendPacket << player1.name;
+	sendPacket << player1.name;;
 	playerSockets[1]->send(sendPacket);
+	sendPacket.clear();
 	sendPacket << player2.name;
 	playerSockets[0]->send(sendPacket);
 	player1.score = 0;
@@ -36,25 +37,16 @@ int main()
 	sf::Socket::Status statusAccept;
 	sf::Socket::Status statusReceive;
 	sf::Packet packet;
-
+	int time = 0;
 	std::string targetWord;
 	std::string message;
 	bool isAnswer = false;
 
-	//char data[1300];
-//	std::size_t bytesReceived;
-	//std::vector<sf::TcpSocket*> socketList;
-	//socketList.push_back(new sf::TcpSocket);
 	std::vector <sf::TcpSocket*> playerSocket;
 	playerSocket.push_back(new sf::TcpSocket);
 	playerSocket.push_back(new sf::TcpSocket);
-
-
 	sf::Socket::Status statusListen;
-	//	char buffer[2000];
-	//	std::size_t received;
 	std::vector<std::string> aMensajes;
-
 
 	statusListen = listener.listen(5000);
 	if (statusListen != sf::Socket::Done) {
@@ -64,13 +56,11 @@ int main()
 	}
 
 	listener.setBlocking(false);
-
-
 	sf::String mensaje;
 
 	while (true) {
-
-		sf::sleep(sf::milliseconds(200));
+		packet.clear();
+		//sf::sleep(sf::milliseconds(200));
 		if (socketCount < 2) {
 			statusAccept = listener.accept(*playerSocket[socketCount]);
 			if (statusAccept == sf::Socket::Done) {
@@ -85,13 +75,12 @@ int main()
 				}
 			}
 		}
-
-
 		else {
 			for (int i = 0; i < 2; i++) {
 				statusReceive = playerSocket[i]->receive(packet);
 				if (statusReceive == sf::Socket::Done) {
 					packet >> message >> isAnswer;
+					std::cout << message << std::endl;
 					if (isAnswer) {
 						if (message == targetWord) {
 							players[i].score += 10;
@@ -103,24 +92,20 @@ int main()
 							message += " - error";
 						}
 					}
-
+					packet.clear();
 					packet << players[i].name << players[i].score << message << time << isAnswer;
 					for (int j = 0; j < 2; j++) {
+						//sends to all if is an answer or only to the opponent if is input text
 						if(!isAnswer && j!=i || isAnswer) playerSocket[j]->send(packet);
 					}
 				}
-
 				else if (statusReceive == sf::Socket::Disconnected) {
 					playerSocket[i]->disconnect();
-					//delete  playerSocket[i];
-					//playerSocket.erase(socketList.begin() + i);
-					//socketCount--;
 				}
 			}
 		}
 }
 	listener.close();
-//	for (int i = 0; i < socketCount; i++) socketList[i]->disconnect();
 	return 0;
 }
 

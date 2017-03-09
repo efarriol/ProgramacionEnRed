@@ -7,7 +7,11 @@
 #include <vector>
 #include <Windows.h>
 #include <PlayerInfo.h>
+//---------------------------------------------------------------
 
+//Preguntar si los SFML Packets generan Partial
+
+//---------------------------------------------------------------
 
 void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
 	while (statusReceive == sf::Socket::Partial) {
@@ -21,6 +25,7 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 
 	std::string text;
 	std::size_t sent;
+	sf::Packet packet;
 
 	int nameSize = name.size() + 5;
 
@@ -32,25 +37,24 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 			break;
 		case sf::Event::KeyPressed:
 			if (evento.key.code == sf::Keyboard::Escape) {
-			
-				text = " > " + name + ": " + "/exit";
+
+				text = "/exit";
 			}
 			else if (evento.key.code == sf::Keyboard::Return) {
-				if (mensaje.getSize() > nameSize) {
-
-					if (evento.key.code == sf::Keyboard::Return && mensaje.getSize() > nameSize) {
-						text = mensaje;
-					}
-					else text = "";
-					if (text.length() > 0 && text != " > " + name + ": " + "/exit")
-					{
-						mensaje = " > " + name + ": ";
-						socket.send(text.c_str(), text.length() + 1, sent);
-						CheckSended(statusReceive, text, socket, sent);
-					}
+				if (mensaje.getSize()>0) {
+					text = mensaje;
+				}
+				else text = "";
+				if (text.length() > 0 && text != "/exit")
+				{
+					std::cout << text << std::endl;
+					packet << text << true;
+					mensaje = "";
+					socket.send(packet);
+					packet.clear();
 				}
 			}
-			if (text == " > " + name + ": " + "/exit")
+			if (text == "/exit")
 			{
 				text = "----- " + name + " has left the chat -----";
 				socket.send(text.c_str(), text.length() + 1, sent);
@@ -60,9 +64,14 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 			}
 			break;
 		case sf::Event::TextEntered:
-			if (evento.text.unicode >= 32 && evento.text.unicode <= 126)
+			if (evento.text.unicode >= 32 && evento.text.unicode <= 126 && mensaje.getSize() < 43){
 				mensaje += (char)evento.text.unicode;
-			else if (evento.text.unicode == 8 && mensaje.getSize() > nameSize)
+				packet.clear();	
+				text = mensaje;
+				packet << text << false;
+				socket.send(packet);
+			}
+			else if (evento.text.unicode == 8 && mensaje.getSize() > 0)
 				mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
 			break;
 		}
@@ -78,16 +87,13 @@ int main()
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
 	sf::Socket::Status statusListen;
-	//char buffer[2000];
-	//char data[1300];
-	//std::size_t bytesReceived;
-	//std::size_t received;
-	//int nameSize;
 	tcpSocket->setBlocking(false);
 	PlayerInfo p1;
 	PlayerInfo p2("");
 	p2.name = "";
 	bool first = true;
+	bool isAnswer = true;
+
 	int time = 0;
 	std::string opponentInput;
 
@@ -97,10 +103,7 @@ int main()
 	sendPacket << p1.name;
 	
 	tcpSocket->connect(ip, 5000);
-	//statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
 	tcpSocket->send(sendPacket);
-	//CheckSended(statusReceive, toSend, *tcpSocket, received);
-
 	sf::Vector2i screenDimensions(800, 600);
 
 	sf::RenderWindow window;
@@ -111,7 +114,7 @@ int main()
 		std::cout << "Can't load the font file" << std::endl;
 	}
 
-	sf::String mensaje = " > " + p1.name + ": ";
+	sf::String mensaje;
 
 	sf::Text userText(mensaje, font, 14);
 	userText.setFillColor(sf::Color(0, 160, 0));
@@ -182,9 +185,7 @@ int main()
 	sf::Event evento;
 
 	while (true) {
-
-		sf::sleep(sf::milliseconds(100));
-		//statusReceive = tcpSocket->receive(data, 1300, bytesReceived);
+		//sf::sleep(sf::milliseconds(100));
 		statusReceive = tcpSocket->receive(receivePacket);
 		if (statusReceive == sf::Socket::NotReady) {
 			SendFunction(*tcpSocket, p1.messages, window, evento, mensaje, p1.name, statusReceive);
@@ -199,8 +200,6 @@ int main()
 				std::string inName;
 				int inScore;
 				std::string inMessage;
-				bool isAnswer;
-				//packet << players[i].name << players[i].score << message << time << isAnswer;
 
 				receivePacket >> inName >> inScore >> inMessage >> time >> isAnswer;
 				if (inName == p1.name) {
@@ -215,7 +214,10 @@ int main()
 					{
 						p2.messages.push_back(inMessage);
 					}
-					else opponentInput = " - " + inMessage;
+					else {
+						opponentInput = inMessage + "_";
+						opponentInputText.setString(opponentInput);
+					}
 
 				}
 
@@ -232,19 +234,25 @@ int main()
 			window.draw(userText);
 
 		}
-		for (size_t i = 0; i <  p1.messages.size(); i++)
+		for (size_t i = 0; i <  p2.messages.size(); i++)
 		{
-			std::string chatting = p1.messages[i];
-			opponentText.setPosition(sf::Vector2f(screenDimensions.x*0.5f, screenDimensions.y*0.25f + 20 * i));
+			std::string chatting = p2.messages[i];
+			opponentText.setPosition(sf::Vector2f(screenDimensions.x*0.5f+5.0f, screenDimensions.y*0.25f + 20 * i));
 			opponentText.setString(chatting);
 			window.draw(opponentText);
 
 		}
-
+		//scroll
 		if (p1.messages.size() > 17)
 		{
 			p1.messages.erase(p1.messages.begin(), p1.messages.begin() + 1);
 		}
+		if (p2.messages.size() > 17)
+		{
+			p2.messages.erase(p2.messages.begin(), p2.messages.begin() + 1);
+		}
+
+
 		window.draw(separator_bottom);
 		window.draw(separator_top_h);
 		window.draw(separator_top2_h);
@@ -265,8 +273,7 @@ int main()
 		window.clear();
 
 		if (statusReceive == sf::Socket::Disconnected) {
-			//Sleep(5000);
-			//break;
+
 		}
 	}
 	tcpSocket->disconnect();
