@@ -9,6 +9,8 @@
 #include <Windows.h>
 #include <PlayerInfo.h>
 
+#define TIME 5
+
 std::string GenerateWord() {
 
 	std::string targetWord;
@@ -18,7 +20,7 @@ std::string GenerateWord() {
 	file.open("WordsBasedata.txt");
 	if (file.is_open()) {
 		file >> numWords;
-		int randomWord = rand() % (numWords + 1);
+		int randomWord = rand() % numWords;
 		for (int i = 0; i < randomWord; i++) {
 			file >> targetWord;
 		}
@@ -30,10 +32,10 @@ void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, P
 	sf::Packet sendPacket;
 	targetWord = GenerateWord();
 	sendPacket.clear();
-	sendPacket << player1.name << targetWord;
+	sendPacket << player1.name << targetWord << TIME;
 	playerSockets[1]->send(sendPacket);
 	sendPacket.clear();
-	sendPacket << player2.name << targetWord;
+	sendPacket << player2.name << targetWord << TIME;
 	playerSockets[0]->send(sendPacket);
 	player1.score = 0;
 	player2.score = 0;
@@ -49,17 +51,14 @@ void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSoc
 	//else break;
 }
 
-
 int main()
 {
-
 	PlayerInfo players[2] = { "eloi", "pol" };
 	int socketCount = 0;
 	sf::TcpListener listener;
 	sf::Socket::Status statusAccept;
 	sf::Socket::Status statusReceive;
 	sf::Packet packet;
-	int time = 10;
 	std::string targetWord;
 	std::string message;
 	bool isAnswer = false;
@@ -78,7 +77,8 @@ int main()
 	}
 
 	listener.setBlocking(false);
-	sf::String mensaje;
+	sf::Clock deltaClock;
+	sf::Time deltaTime;
 
 	while (true) {
 		packet.clear();
@@ -94,34 +94,46 @@ int main()
 				//if players are connected send opponent's name
 				if (socketCount == 2) {
 					InitGame(playerSocket, players[0], players[1], targetWord);
+					deltaClock.restart();
 				}
 			}
 		}
 		else {
+			deltaTime = deltaClock.getElapsedTime();
 			for (int i = 0; i < 2; i++) {
 				statusReceive = playerSocket[i]->receive(packet);
 				if (statusReceive == sf::Socket::Done) {
 					packet >> message >> isAnswer;
-					if (isAnswer) {
+					deltaTime = deltaClock.getElapsedTime();
+					if (isAnswer && deltaTime.asSeconds() < TIME) {
 						if (message == targetWord) {
 							players[i].score += 10;
 							message += " - correcto";
 							targetWord = GenerateWord();
 							//restart time
+							deltaClock.restart();
 						}
 						else {
 							message += " - error";
 						}
 					}
 					packet.clear();
-					packet << players[i].name << players[i].score << message << time << isAnswer << targetWord;
+					packet << players[i].name << players[i].score << message << TIME - (int)deltaTime.asSeconds() << isAnswer << targetWord;
 					for (int j = 0; j < 2; j++) {
 						//sends to all if is an answer or only to the opponent if is input text
-						if(!isAnswer && j!=i || isAnswer) playerSocket[j]->send(packet);
+						if (!isAnswer && j != i || isAnswer) playerSocket[j]->send(packet);
 					}
 				}
 				else if (statusReceive == sf::Socket::Disconnected) {
 					playerSocket[i]->disconnect();
+				}
+				if (deltaTime.asSeconds() > TIME) {
+					deltaClock.restart();
+					deltaTime = deltaClock.getElapsedTime();
+					targetWord = GenerateWord();
+					packet.clear();
+					packet << std::string("") <<  players[i].score << std::string("") << TIME - (int)deltaTime.asSeconds() << isAnswer << targetWord;
+					for (int j = 0; j < 2; j++) playerSocket[j]->send(packet);
 				}
 			}
 		}

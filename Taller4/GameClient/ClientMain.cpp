@@ -27,8 +27,6 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 	std::size_t sent;
 	sf::Packet packet;
 
-	int nameSize = name.size() + 5;
-
 	while (window.pollEvent(evento)) {
 		switch (evento.type)
 		{
@@ -66,13 +64,14 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 		case sf::Event::TextEntered:
 			if (evento.text.unicode >= 32 && evento.text.unicode <= 126 && mensaje.getSize() < 43){
 				mensaje += (char)evento.text.unicode;
-				packet.clear();	
-				text = mensaje;
-				packet << text << false;
-				socket.send(packet);
+				
 			}
 			else if (evento.text.unicode == 8 && mensaje.getSize() > 0)
 				mensaje.erase(mensaje.getSize() - 1, mensaje.getSize());
+			packet.clear();
+			text = mensaje;
+			packet << text << false;
+			socket.send(packet);
 			break;
 		}
 	}
@@ -86,7 +85,6 @@ int main()
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
-	sf::Socket::Status statusListen;
 	tcpSocket->setBlocking(false);
 	PlayerInfo p1;
 	PlayerInfo p2("");
@@ -94,7 +92,10 @@ int main()
 	bool first = true;
 	bool isAnswer = true;
 
-	int time = 0;
+	int tempTime = 0;
+	int time = 5;
+	sf::Clock deltaClock;
+	sf::Time deltaTime;
 	std::string opponentInput;
 	std::string targetWord;
 	std::string toSend =  p1.name;
@@ -127,7 +128,7 @@ int main()
 	sf::Text userInput(mensaje, font, 14);
 	userInput.setFillColor(sf::Color(0, 160, 0));
 	userInput.setStyle(sf::Text::Bold);
-	userInput.setPosition(0, 560);
+	userInput.setPosition(5, 560);
 
 	sf::Text opponentInputText(opponentInput, font, 14);
 	opponentInputText.setFillColor(sf::Color(0, 160, 0));
@@ -192,46 +193,62 @@ int main()
 		}
 		else if (statusReceive == sf::Socket::Done) {
 			if (first) {
-				receivePacket >> p2.name >> targetWord;
+				int faketime;
+				receivePacket >> p2.name >> targetWord >> faketime;
 				opponentName.setString(p2.name);
 				wordToWrite.setString(targetWord);
+				//timer.setString(std::to_string(time));
+				deltaClock.restart();
+				time = 1000;
 				first = false;
 			}
 			else {
 				std::string inName;
 				int inScore;
 				std::string inMessage;
-
-				receivePacket >> inName >> inScore >> inMessage >> time >> isAnswer >> targetWord;
+				int faketime;
+				receivePacket >> inName >> inScore >> inMessage >> faketime >> isAnswer >> targetWord;
 				wordToWrite.setString(targetWord);
-
-				if (inName == p1.name) {
-					p1.score = inScore;
-					userScore.setString(std::to_string(p1.score));
-					if (isAnswer) {
-						p1.messages.push_back(inMessage);
-					}
-				}
-				else {
-					p2.score = inScore;
-					userScore.setString(std::to_string(p2.score));
-					if (isAnswer)
-					{
-						p2.messages.push_back(inMessage);
-						opponentInput = "_";
-						opponentInputText.setString(opponentInput);
+				//timer.setString(std::to_string(time));
+				//deltaClock.restart();
+				if (inName.size() > 0) {
+					if (inName == p1.name) {
+						p1.score = inScore;
+						userScore.setString(std::to_string(p1.score));
+						if (isAnswer) {
+							p1.messages.push_back(inMessage);
+						}
 					}
 					else {
-						opponentInput = inMessage + "_";
-						opponentInputText.setString(opponentInput);
-					}
+						p2.score = inScore;
+						userScore.setString(std::to_string(p2.score));
+						if (isAnswer)
+						{
+							p2.messages.push_back(inMessage);
+							opponentInput = "_";
+							opponentInputText.setString(opponentInput);
+						}
+						else {
+							opponentInput = inMessage + "_";
+							opponentInputText.setString(opponentInput);
+						}
 
+					}
 				}
 
 			}
 		}
 		else if (statusReceive == sf::Socket::Disconnected)  p1.messages.push_back(" > The server has closed the party, disconnection in 5 seconds...");
+		
+		//Time management
+		deltaTime = deltaClock.getElapsedTime();
 
+		if ((int)deltaTime.asSeconds() != tempTime) {
+			time = 5 - (int)deltaTime.asSeconds();
+			timer.setString(std::to_string(time));
+			tempTime = (int)deltaTime.asSeconds();
+		}
+		if (time == -1) deltaClock.restart();
 
 		for (size_t i = 0; i <  p1.messages.size(); i++)
 		{
