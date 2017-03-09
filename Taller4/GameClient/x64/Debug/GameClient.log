@@ -1,5 +1,4 @@
 ﻿  ClientMain.cpp
-d:\enti\6º semestre\programacionenred\taller4\gameclient\clientmain.cpp(33): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-d:\enti\6º semestre\programacionenred\taller4\gameclient\clientmain.cpp(94): warning C4101: 'statusListen': unreferenced local variable
-  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\x64\Debug\GameClient.exe
-  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller4\x64\Debug\GameClient.pdb (Full PDB)
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller4\gameclient\clientmain.cpp(30): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller4\gameclient\clientmain.cpp(89): warning C4101: 'statusListen': unreferenced local variable
+  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Taller4\x64\Debug\GameClient.exe

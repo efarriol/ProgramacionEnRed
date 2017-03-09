@@ -4,16 +4,36 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <Windows.h>
 #include <PlayerInfo.h>
 
-void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, PlayerInfo &player2) {
+std::string GenerateWord() {
+
+	std::string targetWord;
+	int numWords = 0;
+	srand(time(NULL));
+	std::ifstream file;
+	file.open("WordsBasedata.txt");
+	if (file.is_open()) {
+		file >> numWords;
+		int randomWord = rand() % (numWords + 1);
+		for (int i = 0; i < randomWord; i++) {
+			file >> targetWord;
+		}
+	} file.close();
+	return targetWord;
+}
+
+void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, PlayerInfo &player2, std::string &targetWord) {
 	sf::Packet sendPacket;
-	sendPacket << player1.name;;
+	targetWord = GenerateWord();
+	sendPacket.clear();
+	sendPacket << player1.name << targetWord;
 	playerSockets[1]->send(sendPacket);
 	sendPacket.clear();
-	sendPacket << player2.name;
+	sendPacket << player2.name << targetWord;
 	playerSockets[0]->send(sendPacket);
 	player1.score = 0;
 	player2.score = 0;
@@ -29,15 +49,17 @@ void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSoc
 	//else break;
 }
 
+
 int main()
 {
+
 	PlayerInfo players[2] = { "eloi", "pol" };
 	int socketCount = 0;
 	sf::TcpListener listener;
 	sf::Socket::Status statusAccept;
 	sf::Socket::Status statusReceive;
 	sf::Packet packet;
-	int time = 0;
+	int time = 10;
 	std::string targetWord;
 	std::string message;
 	bool isAnswer = false;
@@ -71,7 +93,7 @@ int main()
 				socketCount++;
 				//if players are connected send opponent's name
 				if (socketCount == 2) {
-					InitGame(playerSocket, players[0], players[1]);
+					InitGame(playerSocket, players[0], players[1], targetWord);
 				}
 			}
 		}
@@ -80,20 +102,19 @@ int main()
 				statusReceive = playerSocket[i]->receive(packet);
 				if (statusReceive == sf::Socket::Done) {
 					packet >> message >> isAnswer;
-					std::cout << message << std::endl;
 					if (isAnswer) {
 						if (message == targetWord) {
 							players[i].score += 10;
 							message += " - correcto";
+							targetWord = GenerateWord();
 							//restart time
-							//crear nueva palabra
 						}
 						else {
 							message += " - error";
 						}
 					}
 					packet.clear();
-					packet << players[i].name << players[i].score << message << time << isAnswer;
+					packet << players[i].name << players[i].score << message << time << isAnswer << targetWord;
 					for (int j = 0; j < 2; j++) {
 						//sends to all if is an answer or only to the opponent if is input text
 						if(!isAnswer && j!=i || isAnswer) playerSocket[j]->send(packet);

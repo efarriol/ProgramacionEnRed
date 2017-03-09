@@ -96,7 +96,7 @@ int main()
 
 	int time = 0;
 	std::string opponentInput;
-
+	std::string targetWord;
 	std::string toSend =  p1.name;
 	sf::Packet sendPacket;
 	sf::Packet receivePacket;
@@ -155,7 +155,7 @@ int main()
 	opponentScore.setStyle(sf::Text::Bold);
 	opponentScore.setPosition(700, 75);
 
-	sf::Text wordToWrite("p2", font, 18);
+	sf::Text wordToWrite(targetWord, font, 18);
 	wordToWrite.setFillColor(sf::Color(255, 255, 0));
 	wordToWrite.setStyle(sf::Text::Bold);
 	wordToWrite.setPosition(20, 20);
@@ -192,8 +192,9 @@ int main()
 		}
 		else if (statusReceive == sf::Socket::Done) {
 			if (first) {
-				receivePacket >> p2.name;
+				receivePacket >> p2.name >> targetWord;
 				opponentName.setString(p2.name);
+				wordToWrite.setString(targetWord);
 				first = false;
 			}
 			else {
@@ -201,18 +202,24 @@ int main()
 				int inScore;
 				std::string inMessage;
 
-				receivePacket >> inName >> inScore >> inMessage >> time >> isAnswer;
+				receivePacket >> inName >> inScore >> inMessage >> time >> isAnswer >> targetWord;
+				wordToWrite.setString(targetWord);
+
 				if (inName == p1.name) {
 					p1.score = inScore;
+					userScore.setString(std::to_string(p1.score));
 					if (isAnswer) {
 						p1.messages.push_back(inMessage);
 					}
 				}
 				else {
 					p2.score = inScore;
+					userScore.setString(std::to_string(p2.score));
 					if (isAnswer)
 					{
 						p2.messages.push_back(inMessage);
+						opponentInput = "_";
+						opponentInputText.setString(opponentInput);
 					}
 					else {
 						opponentInput = inMessage + "_";
