@@ -38,16 +38,8 @@ void InitGame(std::vector<sf::TcpSocket*> &playerSockets, PlayerInfo &player1, P
 	playerSockets[0]->send(sendPacket);
 	player1.score = 0;
 	player2.score = 0;
+	sf::sleep(sf::microseconds(5000));
 
-}
-
-void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
-	//	while (true) {
-	while (statusReceive == sf::Socket::Partial) {
-		std::string text2 = text.substr(sent);
-		socket.send(text2.c_str(), text.length() + 1, sent);
-	}
-	//else break;
 }
 
 int main()

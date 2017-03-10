@@ -8,13 +8,6 @@
 #include <Windows.h>
 #include <PlayerInfo.h>
 
-void CheckSended(sf::Socket::Status &statusReceive, std::string text, sf::TcpSocket &socket, std::size_t &sent) {
-	while (statusReceive == sf::Socket::Partial) {
-		std::string text2 = text.substr(sent);
-		socket.send(text2.c_str(), text.length() + 1, sent);
-	}
-}
-
 void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 	sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name, sf::Socket::Status &statusReceive) {
 
@@ -75,8 +68,6 @@ void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 
 int main()
 {
-	
-	sf::TcpListener listener;
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
@@ -85,6 +76,7 @@ int main()
 	PlayerInfo p2("");
 	p2.name = "";
 	bool first = true;
+	bool firstWait = false;
 	bool isAnswer = true;
 
 	int tempTime = 0;
@@ -93,7 +85,7 @@ int main()
 	sf::Time deltaTime;
 	std::string opponentInput;
 	std::string targetWord = "Waiting for the Opponent";
-	std::string toSend =  p1.name;
+	std::string previusTargetWord;
 	sf::Packet sendPacket;
 	sf::Packet receivePacket;
 	sendPacket << p1.name;
@@ -190,10 +182,10 @@ int main()
 			if (first) {
 				receivePacket >> p2.name >> targetWord;
 				opponentName.setString(p2.name);
-				wordToWrite.setString(targetWord);
-				//timer.setString(std::to_string(time));
+				wordToWrite.setString("Waiting...");
+				p1.messages.push_back("Game will start in 5 seconds...");
 				deltaClock.restart();
-				first = false;
+				firstWait = true;
 			}
 			else {
 				std::string inName;
@@ -227,6 +219,10 @@ int main()
 					}
 				}
 				else  deltaClock.restart();
+				if (previusTargetWord != targetWord) {
+					deltaClock.restart();
+					previusTargetWord = targetWord;
+				}
 			}
 		}
 		else if (statusReceive == sf::Socket::Disconnected)  p1.messages.push_back("Disconnection in 5 seconds...");
@@ -257,7 +253,7 @@ int main()
 			window.draw(opponentText);
 
 		}
-		//
+		
 		if (p1.messages.size() > 17)
 		{
 			p1.messages.erase(p1.messages.begin(), p1.messages.begin() + 1);
@@ -286,6 +282,14 @@ int main()
 		window.draw(timer);
 		window.display();
 		window.clear();
+
+		if (firstWait) {
+			sf::sleep(sf::milliseconds(5000));
+			p1.messages.push_back("GO!!");
+			firstWait = false;
+			first = false;
+		}
+
 
 		if (statusReceive == sf::Socket::Disconnected) {
 			sf::sleep(sf::milliseconds(5000));
