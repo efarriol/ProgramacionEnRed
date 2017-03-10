@@ -92,7 +92,7 @@ int main()
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	std::string opponentInput;
-	std::string targetWord;
+	std::string targetWord = "Waiting for the Opponent";
 	std::string toSend =  p1.name;
 	sf::Packet sendPacket;
 	sf::Packet receivePacket;
