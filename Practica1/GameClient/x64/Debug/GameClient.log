@@ -1,7 +1,5 @@
 ﻿  ClientMain.cpp
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(15): warning C4101: 'sent': unreferenced local variable
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(87): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(25): warning C4101: 'statusReceive': unreferenced local variable
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(79): warning C4101: 'mouseEvenet': unreferenced local variable
-  GameClient.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.pdb (Full PDB)
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(18): warning C4101: 'sent': unreferenced local variable
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(80): warning C4101: 'mouseEvent': unreferenced local variable
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(28): warning C4101: 'statusReceive': unreferenced local variable
+  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe

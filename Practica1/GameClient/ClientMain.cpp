@@ -5,8 +5,11 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#include <Vector4.h>
 #include <Windows.h>
 #include <PlayerInfo.h>
+#include <Ship.h>
+
 
 void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
 	sf::RenderWindow &window, sf::Event& evento, sf::String &mensaje, std::string &name, sf::Socket::Status &statusReceive) {
@@ -44,7 +47,7 @@ int main()
 	
 	tcpSocket->connect(ip, 5000);
 	tcpSocket->send(sendPacket);
-	sf::Vector2i screenDimensions(1920, 1080);
+	sf::Vector2i screenDimensions(1280, 740);
 
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Galactic Spaceship - Revenge of the mecha-Putin");
@@ -71,24 +74,45 @@ int main()
 	grid2.setTexture(red_grid);
 	grid2.setPosition(640, 0);
 	grid2.setScale(1, 1);
-	std::vector<sf::Sprite> fleet;
-
 
 	sf::String mensaje;
 	sf::Event evento;
-	sf::Mouse mouseEvenet;
+	sf::Mouse mouseEvent;
+
+	int shipCount = 0;
+	int shipType = 0;
+	std::vector<Ship> fleet;
+	fleet.push_back(Ship(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA));
+
+
 	while (true) {
-		window.pollEvent(evento);
-		
-		if (mouseEvenet.isButtonPressed(sf::Mouse::Left)) {
-			sf::Sprite ship;
-			ship.setTexture(ship_txt);
-			ship.setTextureRect(sf::IntRect(0, 0, 64, 246));
-			ship.setPosition(evento.mouseButton.x, evento.mouseButton.y);
-			ship.setScale(1, 1);
-			fleet.push_back(ship);
+
+		while (window.pollEvent(evento)) {
+			if (shipCount < MAX_SHIPS) {
+				if (!fleet[shipCount].GetPlaced()) {
+					if (mouseEvent.getPosition(window).x > 0 && (int)mouseEvent.getPosition(window).x / 64 * 64 < screenDimensions.x / 2 &&
+						mouseEvent.getPosition(window).y > 0 && (int)mouseEvent.getPosition(window).y / 64 * 64 < 640) {
+
+						if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Right) fleet[shipCount].SetRotation();
+
+						fleet[shipCount].SetPosition((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64);
+						fleet[shipCount].Update();
+
+						if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left) {
+							fleet[shipCount].SetPlaced(true);
+						}
+					}
+				}
+				else {
+					if (shipCount == 0) shipType++;
+					else if (shipCount == 2) shipType++;
+					Ship newShip(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA);
+					fleet.push_back(newShip);
+					shipCount++;
+				}
+			}
 		}
-		
+
 		//if (statusReceive == sf::Socket::NotReady) {
 		//}
 		//else if (statusReceive == sf::Socket::Done) {
@@ -96,9 +120,11 @@ int main()
 		//else if (statusReceive == sf::Socket::Disconnected) {
 
 		//}
+
+		std::cout << shipCount << std::endl;
 		window.draw(grid1);
 		window.draw(grid2);
-		for (int i = 0; i < fleet.size(); i++) window.draw(fleet[i]);
+		for (int i = 0; i < fleet.size(); i++) fleet[i].Render(window);
 		window.display();
 		window.clear();
 	}
