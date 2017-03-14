@@ -58,8 +58,8 @@ int main()
 	}
 
 	//Init Textures
-	sf::Texture ship_txt;
-	ship_txt.loadFromFile("./../Resources/Images/Spaceships.png");
+	sf::Texture shipTexture;
+	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
 
 	sf::Texture blue_grid;
 	blue_grid.loadFromFile("./../Resources/Images/blue_grid.png");
@@ -82,7 +82,7 @@ int main()
 	int shipCount = 0;
 	int shipType = 0;
 	std::vector<Ship> fleet;
-	fleet.push_back(Ship(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA));
+	fleet.push_back(Ship(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA, shipTexture));
 
 
 	while (true) {
@@ -106,7 +106,7 @@ int main()
 				else {
 					if (shipCount == 0) shipType++;
 					else if (shipCount == 2) shipType++;
-					Ship newShip(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA);
+					Ship newShip(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA, shipTexture);
 					fleet.push_back(newShip);
 					shipCount++;
 				}
@@ -121,7 +121,6 @@ int main()
 
 		//}
 
-		std::cout << shipCount << std::endl;
 		window.draw(grid1);
 		window.draw(grid2);
 		for (int i = 0; i < fleet.size(); i++) fleet[i].Render(window);

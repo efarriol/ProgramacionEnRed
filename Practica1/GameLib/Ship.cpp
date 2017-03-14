@@ -2,7 +2,7 @@
 
 
 
-Ship::Ship(sf::Vector2i _position, ShipType shipType, Faction faction)
+Ship::Ship(sf::Vector2i _position, ShipType shipType, Faction faction, sf::Texture &texture)
 {
 	position = _position;
 	isRotated = false;
@@ -24,6 +24,10 @@ Ship::Ship(sf::Vector2i _position, ShipType shipType, Faction faction)
 	}
 	sprite.setPosition(position.x, position.y);
 	sprite.setScale(1, 1);
+}
+
+Ship::Ship()
+{
 }
 
 

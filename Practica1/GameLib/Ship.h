@@ -18,14 +18,13 @@ class Ship
 {
 private:
 	sf::Sprite sprite;
-	sf::Texture texture;
 	sf::Vector2i position;
 	//Vector4i dimensions;
 	bool isRotated;
 	bool isPlaced;
 
 public:
-	Ship(sf::Vector2i _position, ShipType shipType, Faction faction);
+	Ship(sf::Vector2i _position, ShipType shipType, Faction faction, sf::Texture &texture);
 	Ship();
 	~Ship();
 	void Update();
