@@ -9,6 +9,8 @@
 #include <Windows.h>
 #include <PlayerInfo.h>
 #include <Ship.h>
+#include <Fleet.h>
+#include <Grid.h>
 
 
 void SendFunction(sf::TcpSocket &socket, std::vector<std::string> &aMensajes,
@@ -63,55 +65,22 @@ int main()
 
 	sf::Texture blue_grid;
 	blue_grid.loadFromFile("./../Resources/Images/blue_grid.png");
-	sf::Sprite grid1;
-	grid1.setTexture(blue_grid);
-	grid1.setPosition(0, 0);
-	grid1.setScale(1, 1);
+	Grid grid1(sf::Vector2i(0,0), blue_grid);
 
 	sf::Texture red_grid;
 	red_grid.loadFromFile("./../Resources/Images/red_grid.png");
-	sf::Sprite grid2;
-	grid2.setTexture(red_grid);
-	grid2.setPosition(640, 0);
-	grid2.setScale(1, 1);
+	Grid grid2(sf::Vector2i(640, 0), red_grid);
+
 
 	sf::String mensaje;
 	sf::Event evento;
 	sf::Mouse mouseEvent;
 
-	int shipCount = 0;
-	int shipType = 0;
-	std::vector<Ship> fleet;
-	fleet.push_back(Ship(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA, shipTexture));
-
+	Fleet alliedFleet(ISA, shipTexture, grid1);
 
 	while (true) {
 
-		while (window.pollEvent(evento)) {
-			if (shipCount < MAX_SHIPS) {
-				if (!fleet[shipCount].GetPlaced()) {
-					if (mouseEvent.getPosition(window).x > 0 && (int)mouseEvent.getPosition(window).x / 64 * 64 < screenDimensions.x / 2 &&
-						mouseEvent.getPosition(window).y > 0 && (int)mouseEvent.getPosition(window).y / 64 * 64 < 640) {
-
-						if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Right) fleet[shipCount].SetRotation();
-
-						fleet[shipCount].SetPosition((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64);
-						fleet[shipCount].Update();
-
-						if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left) {
-							fleet[shipCount].SetPlaced(true);
-						}
-					}
-				}
-				else {
-					if (shipCount == 0) shipType++;
-					else if (shipCount == 2) shipType++;
-					Ship newShip(sf::Vector2i((int)mouseEvent.getPosition(window).x / 64 * 64, (int)mouseEvent.getPosition(window).y / 64 * 64), (ShipType)shipType, ISA, shipTexture);
-					fleet.push_back(newShip);
-					shipCount++;
-				}
-			}
-		}
+		alliedFleet.PlaceFleet(window, evento, mouseEvent);
 
 		//if (statusReceive == sf::Socket::NotReady) {
 		//}
@@ -119,11 +88,16 @@ int main()
 		//}
 		//else if (statusReceive == sf::Socket::Disconnected) {
 
-		//}
+		
+		for (int i = 0; i < MAX_CELLS; i++) {
+			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
+			std::cout << std::endl;
+		}
+		system("cls");
 
-		window.draw(grid1);
-		window.draw(grid2);
-		for (int i = 0; i < fleet.size(); i++) fleet[i].Render(window);
+		grid1.Render(window);
+		grid2.Render(window);
+		alliedFleet.Render(window);
 		window.display();
 		window.clear();
 	}

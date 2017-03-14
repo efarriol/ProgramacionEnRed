@@ -143,11 +143,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Fleet.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="PlayerInfo.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Fleet.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="PlayerInfo.cpp" />
     <ClCompile Include="Ship.cpp" />
   </ItemGroup>

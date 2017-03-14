@@ -3,11 +3,11 @@
 #include <SFML\Network.hpp>
 #include <Windows.h>
 #include "Vector4.h"
-#define MAX_SHIPS 5
+
 enum ShipType {
-	BIG, 
+	SMALL, 
 	MEDIUM, 
-	SMALL
+	BIG
  };
 enum Faction {
 	ISA,
@@ -22,15 +22,19 @@ private:
 	//Vector4i dimensions;
 	bool isRotated;
 	bool isPlaced;
+	ShipType shipType;
 
 public:
-	Ship(sf::Vector2i _position, ShipType shipType, Faction faction, sf::Texture &texture);
+	Ship(sf::Vector2i _position, ShipType _shipType, Faction faction, sf::Texture &texture);
 	Ship();
 	~Ship();
 	void Update();
 	void SetPosition(int _x, int _y);
 	void SetPlaced(bool _isPlaced);
+	sf::Vector2i GetPosition();
 	bool GetPlaced();
+	ShipType GetType();
+	bool GetRotation();
 	void SetRotation();
 	void Render(sf::RenderWindow &window);
 };

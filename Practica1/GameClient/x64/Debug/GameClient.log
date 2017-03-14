@@ -1,2 +1,2 @@
-﻿  GameClient.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.pdb (Full PDB)
+﻿ClientMain.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
+  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe

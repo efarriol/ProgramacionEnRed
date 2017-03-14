@@ -1,5 +1,2 @@
-﻿  Ship.cpp
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gamelib\ship.cpp(25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gamelib\ship.cpp(41): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pcasamiquela\desktop\repositories\programacionenred\programacionenred\practica1\gamelib\ship.cpp(45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  GameLib.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameLib.lib
+﻿  Fleet.cpp
+  GameLib.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameLib.lib

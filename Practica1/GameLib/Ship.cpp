@@ -2,11 +2,11 @@
 
 
 
-Ship::Ship(sf::Vector2i _position, ShipType shipType, Faction faction, sf::Texture &texture)
+Ship::Ship(sf::Vector2i _position, ShipType _shipType, Faction faction, sf::Texture &texture)
 {
 	position = _position;
 	isRotated = false;
-	texture.loadFromFile("./../Resources/Images/Spaceships.png");
+	shipType = _shipType;
 	sprite.setTexture(texture);
 	isPlaced = false;
 	switch (shipType)
@@ -58,9 +58,24 @@ void Ship::SetPlaced(bool _isPlaced)
 	isPlaced = _isPlaced;
 }
 
+sf::Vector2i Ship::GetPosition()
+{
+	return position;
+}
+
 bool Ship::GetPlaced()
 {
 	return isPlaced;
+}
+
+ShipType Ship::GetType()
+{
+	return shipType;
+}
+
+bool Ship::GetRotation()
+{
+	return isRotated;
 }
 
 void Ship::SetRotation()
