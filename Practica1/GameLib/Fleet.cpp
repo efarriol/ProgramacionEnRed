@@ -22,7 +22,6 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 														  int(mouseEvent.getPosition(window).y / CELL_SIZE) * CELL_SIZE);
 
 		if (shipCount < MAX_SHIPS) {
-			ships[shipCount].Update();
 
 			for (int i = 0; i < ships[shipCount].GetType() + 2; i++) {
 				if (ships[shipCount].GetRotation()) {
@@ -78,6 +77,8 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 		}
 		else isPlaced = true;
 	}
+	if (shipCount < MAX_SHIPS) ships[shipCount].Update();
+
 }
 
 void Fleet::Render(sf::RenderWindow & window)
