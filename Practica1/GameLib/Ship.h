@@ -23,6 +23,7 @@ private:
 	bool isRotated;
 	bool isPlaced;
 	ShipType shipType;
+	int damage;
 
 public:
 	Ship(sf::Vector2i _position, ShipType _shipType, Faction faction, sf::Texture &texture);
@@ -36,6 +37,8 @@ public:
 	ShipType GetType();
 	bool GetRotation();
 	void SetRotation();
+	int GetDamage();
+	void TakeDamage();
 	void Render(sf::RenderWindow &window);
 };
 

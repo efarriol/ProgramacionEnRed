@@ -49,7 +49,7 @@ int main()
 	
 	tcpSocket->connect(ip, 5000);
 	tcpSocket->send(sendPacket);
-	sf::Vector2i screenDimensions(1280, 740);
+	sf::Vector2i screenDimensions(1280, 840);
 
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Galactic Spaceship - Revenge of the mecha-Putin");
@@ -76,11 +76,17 @@ int main()
 	sf::Event evento;
 	sf::Mouse mouseEvent;
 
-	Fleet alliedFleet(ISA, shipTexture, grid1);
-
+	Fleet alliedFleet(ISA, "./../Resources/Images/Spaceships.png", grid1);
+	
 	while (true) {
 
-		alliedFleet.PlaceFleet(window, evento, mouseEvent);
+		if(!p1.isReady)alliedFleet.PlaceFleet(window, evento, mouseEvent, p1.isReady);
+		else {
+			//Enviar la grid al server
+			//
+
+
+		}
 
 		//if (statusReceive == sf::Socket::NotReady) {
 		//}
@@ -89,7 +95,7 @@ int main()
 		//else if (statusReceive == sf::Socket::Disconnected) {
 
 		
-		for (int i = 0; i < MAX_CELLS; i++) {
+		for (int i = 0; i < MAX_CELLS; i++){
 			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
 			std::cout << std::endl;
 		}

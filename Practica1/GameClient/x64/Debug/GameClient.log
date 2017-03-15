@@ -1,2 +1,5 @@
-﻿ClientMain.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
-  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
+﻿  ClientMain.cpp
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(20): warning C4101: 'sent': unreferenced local variable
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(30): warning C4101: 'statusReceive': unreferenced local variable
+  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
+  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameClient.pdb (Full PDB)

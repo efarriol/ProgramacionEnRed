@@ -14,12 +14,15 @@ Ship::Ship(sf::Vector2i _position, ShipType _shipType, Faction faction, sf::Text
 	default:
 	case BIG:
 		sprite.setTextureRect(sf::IntRect(0 + faction * 64,0,64 + faction * 64,256));
+		damage = 4;
 		break;
 	case MEDIUM:
 		sprite.setTextureRect(sf::IntRect(128 + faction * 64, 0, 64, 192));
+		damage = 3;
 		break;
 	case SMALL:
 		sprite.setTextureRect(sf::IntRect(256 + faction * 64, 0, 64, 128));
+		damage = 2;
 		break;
 	}
 	sprite.setPosition(position.x, position.y);
@@ -82,6 +85,16 @@ void Ship::SetRotation()
 {
 	if (isRotated) isRotated = false;
 	else isRotated = true;
+}
+
+int Ship::GetDamage()
+{
+	return damage;
+}
+
+void Ship::TakeDamage()
+{
+	damage--;
 }
 
 void Ship::Render(sf::RenderWindow &window)

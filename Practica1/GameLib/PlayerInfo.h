@@ -12,7 +12,7 @@ public:
 	std::vector<std::string> messages;
 	std::string input;
 	int score;
-
+	bool isReady;
 	PlayerInfo(std::string _name) : name(_name) {
 		score = 0;
 	};
