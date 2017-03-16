@@ -1,3 +1,4 @@
 ﻿  ClientMain.cpp
-d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\practica1\gameclient\clientmain.cpp(20): warning C4101: 'sent': unreferenced local variable
-  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
+c:\users\pcasamiquela\documents\repos\programacionenred\practica1\gameclient\clientmain.cpp(20): warning C4101: 'sent': unreferenced local variable
+  GameClient.vcxproj -> C:\Users\pcasamiquela\Documents\Repos\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
+  GameClient.vcxproj -> C:\Users\pcasamiquela\Documents\Repos\ProgramacionEnRed\Practica1\x64\Debug\GameClient.pdb (Full PDB)

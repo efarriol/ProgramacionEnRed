@@ -51,7 +51,9 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 			if (canBeRotated && evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Right &&
 				relativeMousePosition.x / CELL_SIZE + ships[shipCount].GetType() + 1 < 10 ) ships[shipCount].SetRotation();
 
-			if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left && isInsideGrid) {
+			if (evento.type == sf::Event::MouseButtonPressed && evento.mouseButton.button == sf::Mouse::Left && canBePlaced) {
+				ships[shipCount].SetPosition(relativeMousePosition.x, relativeMousePosition.y);
+				ships[shipCount].Update();
 				ships[shipCount].SetPlaced(true);
 				for (int i = 0; i <= ships[shipCount].GetType()+1; i++) {
 					if(ships[shipCount].GetRotation())

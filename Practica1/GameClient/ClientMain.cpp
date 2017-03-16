@@ -98,6 +98,7 @@ int main()
 				}
 
 				tcpSocket->send(packet);
+				tcpSocket->setBlocking(true);
 				packet.clear();
 				first = false;
 			}
@@ -110,11 +111,11 @@ int main()
 		//else if (statusReceive == sf::Socket::Disconnected) {
 
 		
-		for (int i = 0; i < MAX_CELLS; i++){
-			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
-			std::cout << std::endl;
-		}
-		system("cls");
+		//for (int i = 0; i < MAX_CELLS; i++){
+		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
+		//	std::cout << std::endl;
+		//}
+		//system("cls");
 
 		grid1.Render(window);
 		grid2.Render(window);
