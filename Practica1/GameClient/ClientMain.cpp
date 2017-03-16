@@ -49,6 +49,7 @@ int main()
 	std::cout << "Please, introduce your name: " << std::endl;
 	std::cin >> player1.name;
 
+	player1.hasTurn = true;  //debug only
 
 	int tempTime = 0;
 	int time = 0;
@@ -81,16 +82,15 @@ int main()
 
 	while (true) {
 		packet.clear();
-
+		statusReceive = tcpSocket->receive(packet);
 		if (!player1.isReady) {
-			statusReceive = tcpSocket->receive(packet);
 			if (statusReceive == sf::Socket::Done) {
 				packet >> player1.faction;
 				player1.fleet.ChangeFaction((Faction)player1.faction);
 			}
 			player1.fleet.PlaceFleet(window, evento, mouseEvent, player1.isReady);
 		}
-		else {
+		else if (first) {
 			if (first) {
 				packet.clear();
 				for (int i = 0; i < MAX_CELLS; i++) {
@@ -103,28 +103,60 @@ int main()
 				first = false;
 			}
 		}
+		else {
+			while (window.pollEvent(evento)) { //este while no se si deberia ser el global
+				statusReceive = tcpSocket->receive(packet);
+				sf::Vector2i relativeMousePosition = sf::Vector2i(int(mouseEvent.getPosition(window).x / CELL_SIZE) * CELL_SIZE,
+					int(mouseEvent.getPosition(window).y / CELL_SIZE) * CELL_SIZE);
+				if (player1.hasTurn) {
+					if (statusReceive == sf::Socket::NotReady) {
+						//aqui enviamos la posición que clicamos
+						if (mouseEvent.getPosition(window).x > 640 && relativeMousePosition.x < CELL_SIZE * 20 &&
+							mouseEvent.getPosition(window).y > 0 && relativeMousePosition.y < CELL_SIZE * 10 ||
+							mouseEvent.getPosition(window).x > 640 && relativeMousePosition.x < CELL_SIZE * 20 &&
+							mouseEvent.getPosition(window).y > 0 && relativeMousePosition.y < CELL_SIZE * 10) {
 
-		//if (statusReceive == sf::Socket::NotReady) {
-		//}
-		//else if (statusReceive == sf::Socket::Done) {
-		//}
-		//else if (statusReceive == sf::Socket::Disconnected) {
+							if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Right) {
+								player1.shotCoords.x = (int(mouseEvent.getPosition(window).x / CELL_SIZE));
+								player1.shotCoords.y = (int(mouseEvent.getPosition(window).y / CELL_SIZE));
 
-		
-		//for (int i = 0; i < MAX_CELLS; i++){
-		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
-		//	std::cout << std::endl;
-		//}
-		//system("cls");
+								std::cout << player1.shotCoords.x << " " << player1.shotCoords.y << std::endl;
 
+							}
+							else if (statusReceive == sf::Socket::Done) {
+								//aqui recibimos desde server el turno y la casilla con su resultado
+								packet >> player1.hasTurn >> player1.isImpact;
+							}
+						}
+						else {
+							if (statusReceive == sf::Socket::Done) {
+								//aqui recibimos lo que nos envía el server{
+								packet >> player1.hasTurn;
+							}
+						}
+					}
+					else if (statusReceive == sf::Socket::Disconnected) {
+						std::cout << "There is no conection available" << std::endl;
+					}
+					else if (statusReceive == sf::Socket::Done) {
+						std::cout << "Ueeep" << std::endl;
+					}
+					//for (int i = 0; i < MAX_CELLS; i++){
+					//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
+					//	std::cout << std::endl;
+					//}
+					//system("cls");
+					
+					
+				}
+				
+			}
+		}
 		grid1.Render(window);
 		grid2.Render(window);
 		player1.fleet.Render(window);
 		window.display();
 		window.clear();
 	}
-
 	return 0;
 }
-
-

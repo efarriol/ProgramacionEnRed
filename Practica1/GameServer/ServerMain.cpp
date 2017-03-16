@@ -57,6 +57,7 @@ int main()
 					playerSocket[i]->setBlocking(false);
 					playerSocket[i]->receive(packet);
 					packet >> players[i]->name;
+					players[i]->hasTurn = 1 * i; 
 					packet.clear();
 					packet << i;
 					playerSocket[i]->send(packet);
@@ -75,15 +76,19 @@ int main()
 								players[i]->grid.SetCell(sf::Vector2i(y, x), value);		//Copy the information to the player grid
 							}
 						}
-						playerSocket[i]->setBlocking(true);
 						players[i]->isReady = true;
-					}
-					if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
-
 					}
 				}
 				else if (statusReceive == sf::Socket::NotReady) {
+					if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
+						packet.clear();
+						if (players[i]->hasTurn) {
+							packet << players[i]->hasTurn; 
+						}
 
+						//aqui deberiamos enviar que el player[0] tiene el turno 
+
+					}
 				}
 
 			}
