@@ -10,6 +10,7 @@ private:
 	sf::Sprite sprite;
 	int gridArray[MAX_CELLS][MAX_CELLS]{0};
 public:
+	Grid();
 	Grid(sf::Vector2i _position, sf::Texture &texture);
 	void Render(sf::RenderWindow &window);
 	void SetCell(sf::Vector2i position, int id);

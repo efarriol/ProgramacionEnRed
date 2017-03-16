@@ -40,5 +40,6 @@ public:
 	int GetDamage();
 	void TakeDamage();
 	void Render(sf::RenderWindow &window);
+	void ChangeSprite(Faction faction);
 };
 

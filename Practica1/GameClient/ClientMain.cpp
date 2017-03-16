@@ -29,12 +29,26 @@ int main()
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
 	tcpSocket->setBlocking(false);
-	PlayerInfo p1;
-	PlayerInfo p2("");
-	p2.name = "";
 	bool first = true;
-	bool firstWait = false;
-	bool isAnswer = true;
+
+
+	//Init Textures
+	sf::Texture shipTexture;
+	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
+
+	sf::Texture blue_grid;
+	blue_grid.loadFromFile("./../Resources/Images/blue_grid.png");
+	Grid grid1(sf::Vector2i(0, 0), blue_grid);
+
+	sf::Texture red_grid;
+	red_grid.loadFromFile("./../Resources/Images/red_grid.png");
+	Grid grid2(sf::Vector2i(640, 0), red_grid);
+
+	PlayerInfo player1("", ISA, grid1);
+
+	std::cout << "Please, introduce your name: " << std::endl;
+	std::cin >> player1.name;
+
 
 	int tempTime = 0;
 	int time = 0;
@@ -43,12 +57,10 @@ int main()
 	std::string opponentInput;
 	std::string targetWord = "Waiting for the Opponent";
 	std::string previusTargetWord;
-	sf::Packet sendPacket;
-	sf::Packet receivePacket;
-	sendPacket << p1.name;
-	
-	tcpSocket->connect(ip, 5000);
-	tcpSocket->send(sendPacket);
+
+	sf::Packet packet;
+
+
 	sf::Vector2i screenDimensions(1280, 840);
 
 	sf::RenderWindow window;
@@ -59,33 +71,36 @@ int main()
 		std::cout << "Can't load the font file" << std::endl;
 	}
 
-	//Init Textures
-	sf::Texture shipTexture;
-	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
-
-	sf::Texture blue_grid;
-	blue_grid.loadFromFile("./../Resources/Images/blue_grid.png");
-	Grid grid1(sf::Vector2i(0,0), blue_grid);
-
-	sf::Texture red_grid;
-	red_grid.loadFromFile("./../Resources/Images/red_grid.png");
-	Grid grid2(sf::Vector2i(640, 0), red_grid);
-
-
 	sf::String mensaje;
 	sf::Event evento;
 	sf::Mouse mouseEvent;
 
-	Fleet alliedFleet(ISA, "./../Resources/Images/Spaceships.png", grid1);
-	
+	packet << player1.name;
+	tcpSocket->connect(ip, 5000);
+	tcpSocket->send(packet);
+
 	while (true) {
+		packet.clear();
 
-		if(!p1.isReady)alliedFleet.PlaceFleet(window, evento, mouseEvent, p1.isReady);
+		if (!player1.isReady) {
+			statusReceive = tcpSocket->receive(packet);
+			if (statusReceive == sf::Socket::Done) {
+				packet >> player1.faction;
+				player1.fleet.ChangeFaction((Faction)player1.faction);
+			}
+			player1.fleet.PlaceFleet(window, evento, mouseEvent, player1.isReady);
+		}
 		else {
-			//Enviar la grid al server
-			//
+			if (first) {
+				packet.clear();
+				for (int i = 0; i < MAX_CELLS; i++) {
+					for (int j = 0; j < MAX_CELLS; j++) packet << grid1.GetCell(sf::Vector2i(j, i));
+				}
 
-
+				tcpSocket->send(packet);
+				packet.clear();
+				first = false;
+			}
 		}
 
 		//if (statusReceive == sf::Socket::NotReady) {
@@ -103,7 +118,7 @@ int main()
 
 		grid1.Render(window);
 		grid2.Render(window);
-		alliedFleet.Render(window);
+		player1.fleet.Render(window);
 		window.display();
 		window.clear();
 	}

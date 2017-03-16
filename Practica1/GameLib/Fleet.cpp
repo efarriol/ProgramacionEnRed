@@ -2,14 +2,13 @@
 
 Fleet::Fleet(Faction _fleetFaction, std::string texturePath, Grid &_grid) : grid(_grid)
 {
-	fleetFaction = _fleetFaction;
 	shipTexture.loadFromFile(texturePath);
 	shipCount = 0;
 
 	for (int i = 0; i < MAX_SHIPS; i++) {
 		if (i == 1) shipType--;
 		else if (i == 3) shipType--;
-		Ship newShip(sf::Vector2i(0+100*i, 640), (ShipType)shipType, fleetFaction, shipTexture);
+		Ship newShip(sf::Vector2i(0+100*i, 640), (ShipType)shipType, _fleetFaction, shipTexture);
 		ships.push_back(newShip);
 	}
 }
@@ -25,30 +24,18 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 
 			for (int i = 0; i < ships[shipCount].GetType() + 2; i++) {
 				if (ships[shipCount].GetRotation()) {
-					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE + i, relativeMousePosition.y / CELL_SIZE)) != 0) {
+					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE + i, relativeMousePosition.y / CELL_SIZE)) != 0)
 						canBePlaced = false;
-						break;
-					}
-					else canBePlaced = true;
 
-					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE , relativeMousePosition.y / CELL_SIZE+i)) != 0) {
+					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE , relativeMousePosition.y / CELL_SIZE+i)) != 0)
 						canBeRotated = false;
-						break;
-					}		
-					else canBeRotated = true;
 				}
 				else {
-					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE, relativeMousePosition.y / CELL_SIZE + i)) != 0) {
+					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE, relativeMousePosition.y / CELL_SIZE + i)) != 0)
 						canBePlaced = false;
-						break;
-					}
-					else canBePlaced = true;
 
-					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE + i, relativeMousePosition.y / CELL_SIZE )) != 0) {
+					if (grid.GetCell(sf::Vector2i(relativeMousePosition.x / CELL_SIZE + i, relativeMousePosition.y / CELL_SIZE )) != 0)
 						canBeRotated = false;
-						break;
-					}
-					else canBeRotated = true;
 				}
 			}
 				
@@ -64,7 +51,7 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 			if (canBeRotated && evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Right &&
 				relativeMousePosition.x / CELL_SIZE + ships[shipCount].GetType() + 1 < 10 ) ships[shipCount].SetRotation();
 
-			if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left && canBePlaced && isInsideGrid) {
+			if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left && isInsideGrid) {
 				ships[shipCount].SetPlaced(true);
 				for (int i = 0; i <= ships[shipCount].GetType()+1; i++) {
 					if(ships[shipCount].GetRotation())
@@ -74,16 +61,22 @@ void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mo
 				}
 				shipCount++;
 			}
+			canBePlaced = true;
+			canBeRotated = true;
 		}
 		else isPlaced = true;
 	}
 	if (shipCount < MAX_SHIPS) ships[shipCount].Update();
-
 }
 
 void Fleet::Render(sf::RenderWindow & window)
 {
 	for (int i = 0; i < ships.size(); i++) ships[i].Render(window);
+}
+
+void Fleet::ChangeFaction(Faction faction)
+{
+	for (int i = 0; i < MAX_SHIPS; i++) ships[i].ChangeSprite(faction);
 }
 
 

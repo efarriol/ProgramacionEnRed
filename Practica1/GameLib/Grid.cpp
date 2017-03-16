@@ -1,6 +1,9 @@
 #include "Grid.h"
 
 
+Grid::Grid() {
+
+}
 
 Grid::Grid(sf::Vector2i _position, sf::Texture & texture)
 {
@@ -9,15 +12,13 @@ Grid::Grid(sf::Vector2i _position, sf::Texture & texture)
 	sprite.setScale(1, 1);
 }
 
-void Grid::Render(sf::RenderWindow & window)
-{
-	window.draw(sprite);
-}
+
 
 void Grid::SetCell(sf::Vector2i position, int id)
 {
 	gridArray[position.x][position.y] =id;
 }
+
 
 int Grid::GetCell(sf::Vector2i position)
 {
@@ -26,4 +27,9 @@ int Grid::GetCell(sf::Vector2i position)
 
 Grid::~Grid()
 {
+}
+
+void Grid::Render(sf::RenderWindow & window)
+{
+	window.draw(sprite);
 }
