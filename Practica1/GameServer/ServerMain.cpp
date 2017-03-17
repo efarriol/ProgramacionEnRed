@@ -57,9 +57,9 @@ int main()
 					playerSocket[i]->setBlocking(false);
 					playerSocket[i]->receive(packet);
 					packet >> players[i]->name;
-					players[i]->hasTurn = 1 * i; 
+					players[i]->hasTurn = 1 * i; //random method to init the turn
 					packet.clear();
-					packet << i;
+					packet << i;  // "i" refers to the faction (0 ISA, 1 RSF)
 					playerSocket[i]->send(packet);
 					packet.clear();
 					firstContact[i] = false;
@@ -78,12 +78,41 @@ int main()
 						}
 						players[i]->isReady = true;
 					}
+					else if (players[0]->isReady && players[1]->isReady) {
+						
+						//empezamos a recibir los disparos
+						packet >> players[i]->shotCoords.x >> players[i]->shotCoords.y;
+						
+						int opponentIt;
+						if (i == 0) opponentIt = 1;
+						else opponentIt = 0;
+
+						if (players[opponentIt]->grid.GetCell(players[i]->shotCoords) == 0) { //FAIL
+							packet.clear();
+							players[i]->hasTurn = false;
+							players[i]->isImpact = false;
+							players[opponentIt]->hasTurn = true;
+							players[opponentIt]->isImpact = false;
+						}
+						else {														//ATTEMPTION IMPACT! ALL PILOTS TO BATTLESTATION, REPEAT, ALL PILOTS TO BATTLESTAION
+							packet.clear();
+							players[i]->hasTurn = true;
+							players[i]->isImpact = true;
+							players[opponentIt]->hasTurn = false;
+							players[opponentIt]->isImpact = true;
+						}
+						packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+						playerSocket[i]->send(packet);
+
+						packet.clear();
+						packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+					}
 				}
 				else if (statusReceive == sf::Socket::NotReady) {
 					if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
 						packet.clear();
 						if (players[i]->hasTurn) {
-							packet << players[i]->hasTurn; 
+							packet << players[i]->hasTurn;
 						}
 
 						//aqui deberiamos enviar que el player[0] tiene el turno 
