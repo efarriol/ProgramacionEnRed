@@ -42,7 +42,7 @@ void SendFunction(sf::TcpSocket &socket, sf::RenderWindow &window, sf::Event& ev
 	}
 	if (isValid) {
 		player1.coordRegister.push_back(player1.shotCoords);
-		//player1.hasTurn = false;
+		player1.hasTurn = false;
 		packet << player1.shotCoords.x << player1.shotCoords.y;
 		socket.send(packet);
 		std::cout << player1.shotCoords.x << " " << player1.shotCoords.y << std::endl;
@@ -57,9 +57,11 @@ int main()
 	sf::Socket::Status statusReceive;
 	tcpSocket->setBlocking(false);
 	bool first = true;
-	
-
+	bool gameReady = false;
 	//Init Textures
+	std::vector<sf::CircleShape> impactsDot;
+	
+	
 	sf::Texture shipTexture;
 	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
 
@@ -71,12 +73,23 @@ int main()
 	red_grid.loadFromFile("./../Resources/Images/red_grid.png");
 	Grid grid2(sf::Vector2i(640, 0), red_grid);
 
+	sf::Font font;
+	if (!font.loadFromFile("courbd.ttf"))
+	{
+		std::cout << "Can't load the font file" << std::endl;
+	}
+
+	sf::Text messageText("", font, 64);
+	messageText.setStyle(sf::Text::Bold);
+	messageText.setPosition(300, 700);
+
+
 	PlayerInfo player1("", ISA, grid1);
 
 	std::cout << "Please, introduce your name: " << std::endl;
 	std::cin >> player1.name;
 
-	player1.hasTurn = true;  //debug only
+	//player1.hasTurn = true;  //debug only
 	player1.coordRegister.push_back(sf::Vector2i(-5, -5)); // debug only
 
 	int tempTime = 0;
@@ -91,11 +104,6 @@ int main()
 
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Galactic Spaceship - Revenge of the mecha-Putin");
-	sf::Font font;
-	if (!font.loadFromFile("courbd.ttf"))
-	{
-		std::cout << "Can't load the font file" << std::endl;
-	}
 
 	sf::String mensaje;
 	sf::Event evento;
@@ -110,7 +118,7 @@ int main()
 		statusReceive = tcpSocket->receive(packet);
 		if (!player1.isReady) {
 			if (statusReceive == sf::Socket::Done) {
-				packet >> player1.faction;
+				packet >> player1.faction >> player1.hasTurn;
 				player1.fleet.ChangeFaction((Faction)player1.faction);
 			}
 			player1.fleet.PlaceFleet(window, evento, mouseEvent, player1.isReady);
@@ -128,16 +136,59 @@ int main()
 			}
 		}
 		else {
-			if (player1.hasTurn) {
-				if (statusReceive == sf::Socket::NotReady) {
+
+			 if (statusReceive == sf::Socket::Done) {
+				 if (!gameReady) {
+					 packet >> gameReady;
+				 }
+				 else {
+					 packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y;
+					 if (player1.isImpact) {
+						 if (player1.hasTurn) {
+							 sf::CircleShape dot(16, 60);
+							 dot.setFillColor(sf::Color(159, 93, 100));
+							 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+							 impactsDot.push_back(dot);
+							 messageText.setString("GOOD SHOT SOLDIER !");
+							 messageText.setFillColor(sf::Color(0, 150, 200));
+						 }
+						 else {
+							 sf::CircleShape dot(16, 60);
+							 dot.setFillColor(sf::Color(159, 93, 100));
+							 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+							 impactsDot.push_back(dot);
+							 messageText.setString("ATTENTION, IMPACT !");
+							 messageText.setFillColor(sf::Color(159, 93, 100));
+						 }
+					 }
+					 else {
+						 if (player1.hasTurn) {
+							 sf::CircleShape dot(16, 60);
+							 dot.setFillColor(sf::Color(3, 142, 165));
+							 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+							 impactsDot.push_back(dot);
+							 messageText.setString("ENEMY MISSED THE SHOT !");
+							 messageText.setFillColor(sf::Color(159, 93, 100));
+
+						 }
+						 else {
+							 sf::CircleShape dot(16, 60);
+							 dot.setFillColor(sf::Color(3, 142, 165));
+							 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+							 impactsDot.push_back(dot);
+							 messageText.setString("YOU MISSED THE SHOT !");
+							 messageText.setFillColor(sf::Color(0, 150, 200));
+						 }
+					 }
+				 }
+			}
+			else if (statusReceive == sf::Socket::NotReady) {
+				window.pollEvent(evento);
+				if (player1.hasTurn && gameReady) {
 					SendFunction(*tcpSocket, window, evento, mouseEvent, statusReceive, player1);
 				}
 			}
-
-			else if (statusReceive == sf::Socket::Done) {
-				packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y;
-			}
-
+	
 			else if (statusReceive == sf::Socket::Disconnected) {
 				std::cout << "There is no conection available" << std::endl;
 			}
@@ -153,6 +204,8 @@ int main()
 		grid1.Render(window);
 		grid2.Render(window);
 		player1.fleet.Render(window);
+		for (int i = 0; i < impactsDot.size(); i++) window.draw(impactsDot[i]);
+		window.draw(messageText);
 		window.display();
 		window.clear();
 		}

@@ -19,6 +19,7 @@ int main()
 	Grid grid(sf::Vector2i(0, 0), blue_grid);
 	Grid grid2(sf::Vector2i(0, 0), blue_grid);
 	bool firstContact[2]{ true };
+	bool gameReady = false;
 	firstContact[1] = true;
 	std::vector<PlayerInfo*> players;
 	players.push_back(new PlayerInfo("", ISA, grid));
@@ -59,7 +60,7 @@ int main()
 					packet >> players[i]->name;
 					players[i]->hasTurn = 1 * i; //random method to init the turn
 					packet.clear();
-					packet << i;  // "i" refers to the faction (0 ISA, 1 RSF)
+					packet << i << players[i]->hasTurn;  // "i" refers to the faction (0 ISA, 1 RSF)
 					playerSocket[i]->send(packet);
 					packet.clear();
 					firstContact[i] = false;
@@ -77,62 +78,76 @@ int main()
 							}
 						}
 						players[i]->isReady = true;
+
 					}
-					else if (players[0]->isReady && players[1]->isReady) {
-						
-						//empezamos a recibir los disparos
-						packet >> players[i]->shotCoords.x >> players[i]->shotCoords.y;
-						
-						int opponentIt;
-						if (i == 0) opponentIt = 1;
-						else opponentIt = 0;
-
-						if (players[opponentIt]->grid.GetCell(players[i]->shotCoords) == 0) { //FAIL
+					if (players[0]->isReady && players[1]->isReady) {
+						if (!gameReady) {
+							gameReady = true;
 							packet.clear();
-							players[i]->hasTurn = false;
-							players[i]->isImpact = false;
-							players[opponentIt]->hasTurn = true;
-							players[opponentIt]->isImpact = false;
-						}
-						else {														//ATTEMPTION IMPACT! ALL PILOTS TO BATTLESTATION, REPEAT, ALL PILOTS TO BATTLESTAION
+							packet << gameReady;
+							playerSocket[0]->send(packet);
+							playerSocket[1]->send(packet);
 							packet.clear();
-							players[i]->hasTurn = true;
-							players[i]->isImpact = true;
-							players[opponentIt]->hasTurn = false;
-							players[opponentIt]->isImpact = true;
 						}
-						packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
-						playerSocket[i]->send(packet);
+						else {
 
-						packet.clear();
-						packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+							//empezamos a recibir los disparos
+							packet >> players[i]->shotCoords.x >> players[i]->shotCoords.y;
+
+							int opponentIt;
+							if (i == 0) opponentIt = 1;
+							else opponentIt = 0;
+
+							if (players[opponentIt]->grid.GetCell(players[i]->shotCoords) == 0) { //FAIL
+								packet.clear();
+								players[i]->hasTurn = false;
+								players[i]->isImpact = false;
+								players[opponentIt]->hasTurn = true;
+								players[opponentIt]->isImpact = false;
+								std::cout << "Space" << std::endl;
+							}
+							else {														//ATTEMPTION IMPACT! ALL PILOTS TO BATTLESTATION, REPEAT, ALL PILOTS TO BATTLESTATION
+								packet.clear();
+								players[i]->hasTurn = true;
+								players[i]->isImpact = true;
+								players[opponentIt]->hasTurn = false;
+								players[opponentIt]->isImpact = true;
+								std::cout << "Impact" << std::endl;
+							}
+							packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+							playerSocket[i]->send(packet);
+
+							packet.clear();
+							packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+							playerSocket[opponentIt]->send(packet);
+						}
 					}
 				}
-				else if (statusReceive == sf::Socket::NotReady) {
-					if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
-						packet.clear();
-						if (players[i]->hasTurn) {
-							packet << players[i]->hasTurn;
-						}
+				//else if (statusReceive == sf::Socket::NotReady) {
+				//	if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
+				//		packet.clear();
+				//		if (players[i]->hasTurn) {
+				//			packet << players[i]->hasTurn;
+				//		}
 
-						//aqui deberiamos enviar que el player[0] tiene el turno 
+				//		//aqui deberiamos enviar que el player[0] tiene el turno 
 
-					}
-				}
+				//	}
+				//}
 
 			}
 		}
 
-		//for (int i = 0; i < MAX_CELLS; i++) {
-		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[0]->grid.GetCell(sf::Vector2i(j, i));
-		//	std::cout << std::endl;
-		//}
-		//std::cout << std::endl << std::endl;
-		//for (int i = 0; i < MAX_CELLS; i++) {
-		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[1]->grid.GetCell(sf::Vector2i(j, i));
-		//	std::cout << std::endl;
-		//}
-		//system("cls");
+		for (int i = 0; i < MAX_CELLS; i++) {
+			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[0]->grid.GetCell(sf::Vector2i(j, i));
+			std::cout << std::endl;
+		}
+		std::cout << std::endl << std::endl;
+		for (int i = 0; i < MAX_CELLS; i++) {
+			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[1]->grid.GetCell(sf::Vector2i(j, i));
+			std::cout << std::endl;
+		}
+		system("cls");
 	}
 }
 
