@@ -20,12 +20,11 @@ int main()
 	Grid grid2(sf::Vector2i(0, 0), blue_grid);
 	bool firstContact[2]{ true };
 	bool gameReady = false;
-	bool gameOver = false;
 	firstContact[1] = true;
 	std::vector<PlayerInfo*> players;
 	players.push_back(new PlayerInfo("", ISA, grid));
 	players.push_back(new PlayerInfo("", RSF, grid2));
-
+	sf::String message;
 
 	sf::TcpListener listener;
 	sf::Socket::Status statusAccept;
@@ -94,7 +93,7 @@ int main()
 
 							//empezamos a recibir los disparos
 							packet >> players[i]->shotCoords.x >> players[i]->shotCoords.y;
-							sf::String message;
+							
 
 							int opponentIt;
 							if (i == 0) opponentIt = 1;
@@ -127,7 +126,6 @@ int main()
 							}
 							if (players[opponentIt]->currentShips <= 0) {
 								message = "GameOver";
-								gameOver = true;
 							}
 							packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y << message;
 							playerSocket[i]->send(packet);
@@ -138,6 +136,19 @@ int main()
 						}
 					}
 				}
+				else if (statusReceive == sf::Socket::Disconnected) {
+					message = "Disconnection";
+					packet << players[i]->hasTurn << players[i]->isImpact << -15 << -15 << message; // send a message but the only important variable is "message"
+					if (i == 0) playerSocket[1]->send(packet);
+					else playerSocket[0]->send(packet);
+					//Disconnect and delete sockets
+					playerSocket[0]->disconnect();
+					playerSocket[1]->disconnect();
+					delete playerSocket[0];
+					delete playerSocket[1];
+					return 0;
+				}
+
 
 			}
 			//if (gameOver)playerSocket[i]->disconnect();

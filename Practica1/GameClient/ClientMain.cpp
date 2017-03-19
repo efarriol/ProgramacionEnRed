@@ -58,7 +58,6 @@ int main()
 	tcpSocket->setBlocking(false);
 	bool first = true;
 	bool gameReady = false;
-	bool gameOver = false;
 	//Init Textures
 	std::vector<sf::CircleShape> impactsDot;
 	sf::String message;
@@ -145,86 +144,93 @@ int main()
 				 else {
 					 messageText.setPosition(350, 700);
 					 packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y >> message;
-					 if (player1.isImpact) {
-						 if (player1.hasTurn) {
-							 sf::CircleShape dot(16, 60);
-							 dot.setFillColor(sf::Color(159, 93, 100));
-							 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
-							 impactsDot.push_back(dot);
-							 if (message.getSize() > 0) {
-								 if (message == "GameOver") {
-									 message = "CONGRATULATIONS COMMANDER, YOU WIN!";
-									 gameOver = true;
-								 }
-							    messageText.setPosition(150, 700);
-								messageText.setString(message);
-							 }
-							 else {
-								 messageText.setString("GOOD SHOT SOLDIER !");
-							 }
-							 messageText.setFillColor(sf::Color(0, 150, 200));
+					 if (message.getSize() > 0) {
+						 if (message == "Disconnection") {
+							 statusReceive = sf::Socket::Disconnected;
+							 message = "The enemy left the game, disconnecting";
+							 messageText.setString(message);
+							 messageText.setPosition(150, 700);
 						 }
-						 else {
-							 sf::CircleShape dot(16, 60);
-							 dot.setFillColor(sf::Color(159, 93, 100));
-							 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
-							 impactsDot.push_back(dot);
-							 if (message.getSize() > 0) {
-								 if (message == "GameOver") {
-									 message = "WITHDRAW COMMANDER, YOU LOSE!";
-									 gameOver = true;
-								 }
-								 messageText.setPosition(150, 700);
-								 messageText.setString(message);
-							 }
-							 else {
-								 messageText.setString("ATTENTION, IMPACT !");
-								 
-							 }
-							 messageText.setFillColor(sf::Color(159, 93, 100));
-						 }
-						
 					 }
-					 else {
-						 if (player1.hasTurn) {
-							 sf::CircleShape dot(16, 60);
-							 dot.setFillColor(sf::Color(3, 142, 165));
-							 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
-							 impactsDot.push_back(dot);
-							 messageText.setString("ENEMY MISSED THE SHOT !");
-							 messageText.setFillColor(sf::Color(159, 93, 100));
+					 if (statusReceive != sf::Socket::Disconnected) {
+						 if (player1.isImpact) {
+							 if (player1.hasTurn) {
+								 sf::CircleShape dot(16, 60);
+								 dot.setFillColor(sf::Color(159, 93, 100));
+								 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+								 impactsDot.push_back(dot);
+								 if (message.getSize() > 0) {
+									 if (message == "GameOver") {
+										 message = "CONGRATULATIONS COMMANDER, YOU WIN!";
+										 statusReceive = sf::Socket::Disconnected;
+									 }
+									 messageText.setPosition(150, 700);
+									 messageText.setString(message);
+								 }
+								 else {
+									 messageText.setString("GOOD SHOT SOLDIER !");
+								 }
+								 messageText.setFillColor(sf::Color(0, 150, 200));
+							 }
+							 else {
+								 sf::CircleShape dot(16, 60);
+								 dot.setFillColor(sf::Color(159, 93, 100));
+								 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+								 impactsDot.push_back(dot);
+								 if (message.getSize() > 0) {
+									 if (message == "GameOver") {
+										 message = "WITHDRAW COMMANDER, YOU LOSE!";
+										 statusReceive = sf::Socket::Disconnected;
+									 }
+									 messageText.setPosition(150, 700);
+									 messageText.setString(message);
+								 }
+								 else {
+									 messageText.setString("ATTENTION, IMPACT !");
+
+								 }
+								 messageText.setFillColor(sf::Color(159, 93, 100));
+							 }
 
 						 }
 						 else {
-							 sf::CircleShape dot(16, 60);
-							 dot.setFillColor(sf::Color(3, 142, 165));
-							 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
-							 impactsDot.push_back(dot);
-							 messageText.setString("YOU MISSED THE SHOT !");
-							 messageText.setFillColor(sf::Color(0, 150, 200));
+							 if (player1.hasTurn) {
+								 sf::CircleShape dot(16, 60);
+								 dot.setFillColor(sf::Color(3, 142, 165));
+								 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+								 impactsDot.push_back(dot);
+								 messageText.setString("ENEMY MISSED THE SHOT !");
+								 messageText.setFillColor(sf::Color(159, 93, 100));
+
+							 }
+							 else {
+								 sf::CircleShape dot(16, 60);
+								 dot.setFillColor(sf::Color(3, 142, 165));
+								 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
+								 impactsDot.push_back(dot);
+								 messageText.setString("YOU MISSED THE SHOT !");
+								 messageText.setFillColor(sf::Color(0, 150, 200));
+							 }
 						 }
 					 }
 				 }
 			}
 			else if (statusReceive == sf::Socket::NotReady) {
 				window.pollEvent(evento);
-				if (player1.hasTurn && gameReady && !gameOver) {
+				if (player1.hasTurn && gameReady) { //CUANDO EL USUARIO RIVAL SE DESCONECTA TRAS FALLAR EL TIRO, NO LO RECIBIMOS HASTA CLICKAR
 					SendFunction(*tcpSocket, window, evento, mouseEvent, statusReceive, player1);
 				}
 			}
 	
-			else if (statusReceive == sf::Socket::Disconnected) {
-				std::cout << "There is no conection available" << std::endl;
-			}
+		
 			//for (int i = 0; i < MAX_CELLS; i++){
 			//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
 			//	std::cout << std::endl;
 			//}
 			//system("cls");
-					
-					
-				
+						
 			}
+
 		grid1.Render(window);
 		grid2.Render(window);
 		player1.fleet.Render(window);
@@ -232,6 +238,14 @@ int main()
 		window.draw(messageText);
 		window.display();
 		window.clear();
+
+		if (statusReceive == sf::Socket::Disconnected) {
+				std::cout << "Disconnection" << std::endl;
+				sf::sleep(sf::milliseconds(5000));
+				break;
+			}
 		}
+	tcpSocket->disconnect();
+	delete tcpSocket;
 	return 0;
 }
