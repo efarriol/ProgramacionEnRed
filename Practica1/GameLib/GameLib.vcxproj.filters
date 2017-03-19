@@ -24,9 +24,6 @@
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Fleet.h">
       <Filter>Header Files</Filter>
     </ClInclude>

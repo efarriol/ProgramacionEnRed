@@ -22,9 +22,7 @@ public:
 	sf::Vector2i shotCoords;
 	std::vector<sf::Vector2i> coordRegister;
 	int currentShips = MAX_SHIPS;
-
-
-
+	//Constructor
 	PlayerInfo(std::string _name, Faction _faction, Grid &_grid) : grid(_grid), fleet(_faction, "./../Resources/Images/Spaceships.png", _grid) {
 		name = _name;
 		faction = _faction;

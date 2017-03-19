@@ -5,30 +5,31 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
-#include <Vector4.h>
 #include <Windows.h>
 #include <PlayerInfo.h>
 #include <Ship.h>
 #include <Fleet.h>
 #include <Grid.h>
 
-
+//Send and manage shot information
 void SendFunction(sf::TcpSocket &socket, sf::RenderWindow &window, sf::Event& evento, sf::Mouse& mouseEvent, sf::Socket::Status &statusReceive, PlayerInfo &player1) {
 	sf::Packet packet;
+	
 	bool isValid = false;
 	while (!isValid) {
 		while (window.pollEvent(evento)) {
 			sf::Vector2i relativeMousePosition = sf::Vector2i(int(mouseEvent.getPosition(window).x / CELL_SIZE) * CELL_SIZE,
-				int(mouseEvent.getPosition(window).y / CELL_SIZE) * CELL_SIZE);
-			//aqui enviamos la posición que clicamos
+															  int(mouseEvent.getPosition(window).y / CELL_SIZE) * CELL_SIZE);
+			//Check if mouse is inside the grid
 			if (mouseEvent.getPosition(window).x > 640 && relativeMousePosition.x < CELL_SIZE * 20 &&
 				mouseEvent.getPosition(window).y > 0 && relativeMousePosition.y < CELL_SIZE * 10 ||
 				mouseEvent.getPosition(window).x > 640 && relativeMousePosition.x < CELL_SIZE * 20 &&
 				mouseEvent.getPosition(window).y > 0 && relativeMousePosition.y < CELL_SIZE * 10) {
-
+				//When the player clicks, save the coords
 				if (evento.type == sf::Event::MouseButtonReleased && evento.mouseButton.button == sf::Mouse::Left) {
 					player1.shotCoords.x = (int(mouseEvent.getPosition(window).x / CELL_SIZE) - 10);
 					player1.shotCoords.y = (int(mouseEvent.getPosition(window).y / CELL_SIZE));
+					//Verify if cell is valid
 					for (int i = 0; i < player1.coordRegister.size(); i++) {
 						if (player1.coordRegister[i] == player1.shotCoords) {
 							isValid = false;
@@ -40,28 +41,34 @@ void SendFunction(sf::TcpSocket &socket, sf::RenderWindow &window, sf::Event& ev
 			}
 		}
 	}
+	//When cell click is valid, send the position to server
 	if (isValid) {
 		player1.coordRegister.push_back(player1.shotCoords);
 		player1.hasTurn = false;
 		packet << player1.shotCoords.x << player1.shotCoords.y;
 		socket.send(packet);
-		std::cout << player1.shotCoords.x << " " << player1.shotCoords.y << std::endl;
 	}
 }
 
 
 int main()
 {
+	//Init tcp variables
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::TcpSocket* tcpSocket = new sf::TcpSocket;
 	sf::Socket::Status statusReceive;
 	tcpSocket->setBlocking(false);
+	sf::Packet packet;
+
+	//Bool to control flow of the game
 	bool first = true;
 	bool gameReady = false;
-	//Init Textures
+
+	//Init impact dots vector
 	std::vector<sf::CircleShape> impactsDot;
 	sf::String message;
 	
+	//Init Textures
 	sf::Texture shipTexture;
 	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
 
@@ -73,49 +80,45 @@ int main()
 	red_grid.loadFromFile("./../Resources/Images/red_grid.png");
 	Grid grid2(sf::Vector2i(640, 0), red_grid);
 
+	//Init font and text...
 	sf::Font font;
 	if (!font.loadFromFile("courbd.ttf"))
 	{
 		std::cout << "Can't load the font file" << std::endl;
 	}
-
 	sf::Text messageText("", font, 45);
 	messageText.setStyle(sf::Text::Bold);
 	messageText.setPosition(300, 700);
 
-
+	//Init player
 	PlayerInfo player1("", ISA, grid1);
-
 	std::cout << "Please, introduce your name: " << std::endl;
 	std::cin >> player1.name;
 
-	//player1.hasTurn = true;  //debug only
-	player1.coordRegister.push_back(sf::Vector2i(-5, -5)); // debug only
+	//Fake coordinate
+	player1.coordRegister.push_back(sf::Vector2i(-5, -5));
 
-	int tempTime = 0;
-	int time = 0;
-	sf::Clock deltaClock;
-	sf::Time deltaTime;
-
-	sf::Packet packet;
-
-
+	//Init Windows
 	sf::Vector2i screenDimensions(1280, 840);
-
 	sf::RenderWindow window;
-	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Galactic Spaceship - Revenge of the mecha-Putin");
+	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Ultimate Galactic BattleSpaceShip II - Revenge of the Mecha-Putin");
 
-	sf::String mensaje;
+	//Init events
 	sf::Event evento;
 	sf::Mouse mouseEvent;
 
+	//Connect with the server
 	packet << player1.name;
 	tcpSocket->connect(ip, 5000);
 	tcpSocket->send(packet);
 
+	//Start GameLoop
 	while (true) {
+
 		packet.clear();
 		statusReceive = tcpSocket->receive(packet);
+
+		//When the player is not ready, receive attributes and init spaceship fleet...
 		if (!player1.isReady) {
 			if (statusReceive == sf::Socket::Done) {
 				packet >> player1.faction >> player1.hasTurn;
@@ -123,42 +126,47 @@ int main()
 			}
 			player1.fleet.PlaceFleet(window, evento, mouseEvent, player1.isReady);
 		}
+		//When is ready, send the all the grid information to the server
 		else if (first) {
-			if (first) {
-				packet.clear();
-				for (int i = 0; i < MAX_CELLS; i++) {
-					for (int j = 0; j < MAX_CELLS; j++) packet << grid1.GetCell(sf::Vector2i(j, i));
-				}
-
-				tcpSocket->send(packet);
-				packet.clear();
-				first = false;
+			packet.clear();
+			for (int i = 0; i < MAX_CELLS; i++) {
+				for (int j = 0; j < MAX_CELLS; j++) packet << grid1.GetCell(sf::Vector2i(j, i));
 			}
+			tcpSocket->send(packet);
+			packet.clear();
+			first = false;
 		}
+		//When the grid has been sent...
 		else {
-
+			//When we receive something from the server...
 			 if (statusReceive == sf::Socket::Done) {
 				 if (!gameReady) {
-					 packet >> gameReady;
+					 packet >> gameReady; //When the two players are ready
 				 }
 				 else {
-					 messageText.setPosition(350, 700);
-					 packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y >> message;
-					 if (message.getSize() > 0) {
-						 if (message == "Disconnection") {
-							 statusReceive = sf::Socket::Disconnected;
-							 message = "The enemy left the game, disconnecting";
-							 messageText.setString(message);
-							 messageText.setPosition(150, 700);
-						 }
-					 }
-					 if (statusReceive != sf::Socket::Disconnected) {
-						 if (player1.isImpact) {
+					messageText.setPosition(350, 700);
+					message = "";
+					//Copy the packet to variables
+					packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y >> message;
+
+					//When the other player left the game
+					if (message.getSize() > 0 && message == "Disconnection") {
+						statusReceive = sf::Socket::Disconnected;
+						message = "The enemy left the game, disconnecting";
+						messageText.setString(message);
+						messageText.setPosition(150, 700);
+					}
+					else if (statusReceive != sf::Socket::Disconnected) {
+						//When the shot is an impact
+						if (player1.isImpact) {
+							//If player have turn, means that you have hit
 							 if (player1.hasTurn) {
+								 //Add a red dot to the grid position
 								 sf::CircleShape dot(16, 60);
 								 dot.setFillColor(sf::Color(159, 93, 100));
 								 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 								 impactsDot.push_back(dot);
+								 //Check and set message
 								 if (message.getSize() > 0) {
 									 if (message == "GameOver") {
 										 message = "CONGRATULATIONS COMMANDER, YOU WIN!";
@@ -171,12 +179,15 @@ int main()
 									 messageText.setString("GOOD SHOT SOLDIER !");
 								 }
 								 messageText.setFillColor(sf::Color(0, 150, 200));
-							 }
+							}
+							 //If you don't have turn, means that you have been hit
 							 else {
+								 //Add a red dot to the grid position
 								 sf::CircleShape dot(16, 60);
 								 dot.setFillColor(sf::Color(159, 93, 100));
 								 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 								 impactsDot.push_back(dot);
+								 //Check and set message
 								 if (message.getSize() > 0) {
 									 if (message == "GameOver") {
 										 message = "WITHDRAW COMMANDER, YOU LOSE!";
@@ -193,21 +204,28 @@ int main()
 							 }
 
 						 }
+						//When the shot is not an impact
 						 else {
+							 //If you have turn, means that the opponent have missed the shot
 							 if (player1.hasTurn) {
+								 //Add a blue dot to the grid position
 								 sf::CircleShape dot(16, 60);
 								 dot.setFillColor(sf::Color(3, 142, 165));
 								 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 								 impactsDot.push_back(dot);
+								 //Change message to draw
 								 messageText.setString("ENEMY MISSED THE SHOT !");
 								 messageText.setFillColor(sf::Color(159, 93, 100));
 
 							 }
+							 //If not, you have missed the shot
 							 else {
+								 //Add a blue dot to the grid position
 								 sf::CircleShape dot(16, 60);
 								 dot.setFillColor(sf::Color(3, 142, 165));
 								 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 								 impactsDot.push_back(dot);
+								 //Change message to draw
 								 messageText.setString("YOU MISSED THE SHOT !");
 								 messageText.setFillColor(sf::Color(0, 150, 200));
 							 }
@@ -215,36 +233,33 @@ int main()
 					 }
 				 }
 			}
+			//When we receive nothing from the server...
 			else if (statusReceive == sf::Socket::NotReady) {
 				window.pollEvent(evento);
-				if (player1.hasTurn && gameReady) { //CUANDO EL USUARIO RIVAL SE DESCONECTA TRAS FALLAR EL TIRO, NO LO RECIBIMOS HASTA CLICKAR
+				//If player have turn, send shot information...
+				if (player1.hasTurn && gameReady) { 
 					SendFunction(*tcpSocket, window, evento, mouseEvent, statusReceive, player1);
 				}
-			}
-	
-		
-			//for (int i = 0; i < MAX_CELLS; i++){
-			//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << grid1.GetCell(sf::Vector2i(j,i));
-			//	std::cout << std::endl;
-			//}
-			//system("cls");
-						
-			}
+			}			
+		}
 
+		//Draw window sprites and text
 		grid1.Render(window);
 		grid2.Render(window);
 		player1.fleet.Render(window);
-		for (int i = 0; i < impactsDot.size(); i++) window.draw(impactsDot[i]);
+		for (int i = 0; i < impactsDot.size(); i++) window.draw(impactsDot[i]); //Impact dots
 		window.draw(messageText);
 		window.display();
 		window.clear();
 
+		//When disconnection, exit game loop
 		if (statusReceive == sf::Socket::Disconnected) {
 				std::cout << "Disconnection" << std::endl;
 				sf::sleep(sf::milliseconds(5000));
 				break;
-			}
 		}
+	}
+	//Disconnect and delete the socket
 	tcpSocket->disconnect();
 	delete tcpSocket;
 	return 0;

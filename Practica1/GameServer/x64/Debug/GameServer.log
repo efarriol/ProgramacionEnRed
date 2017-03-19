@@ -1,4 +1,1 @@
-﻿  ServerMain.cpp
-d:\enti\6º semestre\programacionenred\practica1\gameserver\servermain.cpp(61): warning C4800: 'int': forcing value to bool 'true' or 'false' (performance warning)
-  GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameServer.exe
-  GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameServer.pdb (Full PDB)
+﻿  GameServer.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameServer.exe

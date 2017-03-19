@@ -12,11 +12,10 @@ Grid::Grid(sf::Vector2i _position, sf::Texture & texture)
 	sprite.setScale(1, 1);
 }
 
-
-
+ 
 void Grid::SetCell(sf::Vector2i position, int id)
 {
-	gridArray[position.x][position.y] =id;
+	gridArray[position.x][position.y] = id;
 }
 
 
@@ -25,11 +24,11 @@ int Grid::GetCell(sf::Vector2i position)
 	return gridArray[position.x][position.y];
 }
 
-Grid::~Grid()
-{
-}
-
 void Grid::Render(sf::RenderWindow & window)
 {
 	window.draw(sprite);
+}
+
+Grid::~Grid()
+{
 }
