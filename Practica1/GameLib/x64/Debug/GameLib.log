@@ -2,9 +2,5 @@
 d:\enti\6º semestre\programacionenred\practica1\gamelib\ship.cpp(28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 d:\enti\6º semestre\programacionenred\practica1\gamelib\ship.cpp(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 d:\enti\6º semestre\programacionenred\practica1\gamelib\ship.cpp(48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  PlayerInfo.cpp
-  Grid.cpp
-d:\enti\6º semestre\programacionenred\practica1\gamelib\grid.cpp(11): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Fleet.cpp
-  Generating Code...
+d:\enti\6º semestre\programacionenred\practica1\gamelib\ship.cpp(91): warning C4715: 'Ship::GetBoatName': not all control paths return a value
   GameLib.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameLib.lib

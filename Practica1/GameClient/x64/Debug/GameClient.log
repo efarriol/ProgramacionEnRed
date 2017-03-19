@@ -1,7 +1,7 @@
 ﻿  ClientMain.cpp
-d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(150): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(158): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(168): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(177): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(152): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(170): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(192): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\practica1\gameclient\clientmain.cpp(201): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameClient.exe
   GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Practica1\x64\Debug\GameClient.pdb (Full PDB)

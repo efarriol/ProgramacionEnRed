@@ -6,12 +6,13 @@ Fleet::Fleet(Faction _fleetFaction, std::string texturePath, Grid &_grid) : grid
 	shipCount = 0;
 
 	for (int i = 0; i < MAX_SHIPS; i++) {
-		if (i == 1) shipType--;
-		else if (i == 3) shipType--;
+		if (i == 1) shipType--;						 //in this case the boat becomes the medium
+		else if (i == 3) shipType--;				 //and in this case the boat becomes the small
 		Ship newShip(sf::Vector2i(0+100*i, 640), (ShipType)shipType, _fleetFaction, shipTexture);
 		ships.push_back(newShip);
 	}
 }
+
 
 void Fleet::PlaceFleet(sf::RenderWindow &window, sf::Event &evento,sf::Mouse &mouseEvent, bool &isPlaced)
 {
@@ -79,6 +80,11 @@ void Fleet::Render(sf::RenderWindow & window)
 void Fleet::ChangeFaction(Faction faction)
 {
 	for (int i = 0; i < MAX_SHIPS; i++) ships[i].ChangeSprite(faction);
+}
+
+Ship& Fleet::GetShip(int id)
+{
+	return ships[id-1];
 }
 
 

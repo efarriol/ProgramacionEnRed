@@ -58,9 +58,10 @@ int main()
 	tcpSocket->setBlocking(false);
 	bool first = true;
 	bool gameReady = false;
+	bool gameOver = false;
 	//Init Textures
 	std::vector<sf::CircleShape> impactsDot;
-	
+	sf::String message;
 	
 	sf::Texture shipTexture;
 	shipTexture.loadFromFile("./../Resources/Images/Spaceships.png");
@@ -79,7 +80,7 @@ int main()
 		std::cout << "Can't load the font file" << std::endl;
 	}
 
-	sf::Text messageText("", font, 64);
+	sf::Text messageText("", font, 45);
 	messageText.setStyle(sf::Text::Bold);
 	messageText.setPosition(300, 700);
 
@@ -142,14 +143,25 @@ int main()
 					 packet >> gameReady;
 				 }
 				 else {
-					 packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y;
+					 messageText.setPosition(350, 700);
+					 packet >> player1.hasTurn >> player1.isImpact >> player1.shotCoords.x >> player1.shotCoords.y >> message;
 					 if (player1.isImpact) {
 						 if (player1.hasTurn) {
 							 sf::CircleShape dot(16, 60);
 							 dot.setFillColor(sf::Color(159, 93, 100));
 							 dot.setPosition(sf::Vector2f((player1.shotCoords.x + 10)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 							 impactsDot.push_back(dot);
-							 messageText.setString("GOOD SHOT SOLDIER !");
+							 if (message.getSize() > 0) {
+								 if (message == "GameOver") {
+									 message = "CONGRATULATIONS COMMANDER, YOU WIN!";
+									 gameOver = true;
+								 }
+							    messageText.setPosition(150, 700);
+								messageText.setString(message);
+							 }
+							 else {
+								 messageText.setString("GOOD SHOT SOLDIER !");
+							 }
 							 messageText.setFillColor(sf::Color(0, 150, 200));
 						 }
 						 else {
@@ -157,9 +169,21 @@ int main()
 							 dot.setFillColor(sf::Color(159, 93, 100));
 							 dot.setPosition(sf::Vector2f((player1.shotCoords.x)*CELL_SIZE + 16, player1.shotCoords.y*CELL_SIZE + 16));
 							 impactsDot.push_back(dot);
-							 messageText.setString("ATTENTION, IMPACT !");
+							 if (message.getSize() > 0) {
+								 if (message == "GameOver") {
+									 message = "WITHDRAW COMMANDER, YOU LOSE!";
+									 gameOver = true;
+								 }
+								 messageText.setPosition(150, 700);
+								 messageText.setString(message);
+							 }
+							 else {
+								 messageText.setString("ATTENTION, IMPACT !");
+								 
+							 }
 							 messageText.setFillColor(sf::Color(159, 93, 100));
 						 }
+						
 					 }
 					 else {
 						 if (player1.hasTurn) {
@@ -184,7 +208,7 @@ int main()
 			}
 			else if (statusReceive == sf::Socket::NotReady) {
 				window.pollEvent(evento);
-				if (player1.hasTurn && gameReady) {
+				if (player1.hasTurn && gameReady && !gameOver) {
 					SendFunction(*tcpSocket, window, evento, mouseEvent, statusReceive, player1);
 				}
 			}

@@ -20,6 +20,7 @@ int main()
 	Grid grid2(sf::Vector2i(0, 0), blue_grid);
 	bool firstContact[2]{ true };
 	bool gameReady = false;
+	bool gameOver = false;
 	firstContact[1] = true;
 	std::vector<PlayerInfo*> players;
 	players.push_back(new PlayerInfo("", ISA, grid));
@@ -93,6 +94,7 @@ int main()
 
 							//empezamos a recibir los disparos
 							packet >> players[i]->shotCoords.x >> players[i]->shotCoords.y;
+							sf::String message;
 
 							int opponentIt;
 							if (i == 0) opponentIt = 1;
@@ -112,42 +114,44 @@ int main()
 								players[i]->isImpact = true;
 								players[opponentIt]->hasTurn = false;
 								players[opponentIt]->isImpact = true;
-								std::cout << "Impact" << std::endl;
+								int boatId = players[opponentIt]->grid.GetCell(players[i]->shotCoords);
+								
+								players[opponentIt]->fleet.GetShip(boatId).TakeDamage();
+								std::cout << players[opponentIt]->fleet.GetShip(boatId).GetDamage() << std::endl;
+								if (players[opponentIt]->fleet.GetShip(boatId).GetDamage() <= 0) {
+									//SHIP DESTROYED
+									players[opponentIt]->currentShips--;
+									message = players[opponentIt]->fleet.GetShip(boatId).GetBoatName(players[opponentIt]->fleet.GetShip(boatId).GetType()) 
+												+ " SHIP HAS BEEN DESTROYED !";
+								}
 							}
-							packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+							if (players[opponentIt]->currentShips <= 0) {
+								message = "GameOver";
+								gameOver = true;
+							}
+							packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y << message;
 							playerSocket[i]->send(packet);
 
 							packet.clear();
-							packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y;
+							packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y << message;
 							playerSocket[opponentIt]->send(packet);
 						}
 					}
 				}
-				//else if (statusReceive == sf::Socket::NotReady) {
-				//	if (players[0]->isReady && players[1]->isReady) {						//When the two players are ready...
-				//		packet.clear();
-				//		if (players[i]->hasTurn) {
-				//			packet << players[i]->hasTurn;
-				//		}
-
-				//		//aqui deberiamos enviar que el player[0] tiene el turno 
-
-				//	}
-				//}
 
 			}
+			//if (gameOver)playerSocket[i]->disconnect();
 		}
-
-		for (int i = 0; i < MAX_CELLS; i++) {
-			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[0]->grid.GetCell(sf::Vector2i(j, i));
-			std::cout << std::endl;
-		}
-		std::cout << std::endl << std::endl;
-		for (int i = 0; i < MAX_CELLS; i++) {
-			for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[1]->grid.GetCell(sf::Vector2i(j, i));
-			std::cout << std::endl;
-		}
-		system("cls");
+		//for (int i = 0; i < MAX_CELLS; i++) {
+		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[0]->grid.GetCell(sf::Vector2i(j, i));
+		//	std::cout << std::endl;
+		//}
+		//std::cout << std::endl << std::endl;
+		//for (int i = 0; i < MAX_CELLS; i++) {
+		//	for (int j = 0; j < MAX_CELLS; j++) std::cout << " " << players[1]->grid.GetCell(sf::Vector2i(j, i));
+		//	std::cout << std::endl;
+		//}
+		//system("cls");
 	}
 }
 

@@ -76,6 +76,20 @@ ShipType Ship::GetType()
 	return shipType;
 }
 
+sf::String Ship::GetBoatName(ShipType _shipType) {
+	switch (_shipType) {
+	case BIG:
+		return sf::String("A DEMOLISHER");
+		break;
+	case MEDIUM:
+		return sf::String("A CRUISER");
+		break;
+	case SMALL:
+		return sf::String("AN INTERCEPTOR");
+		break;
+	}
+}
+
 bool Ship::GetRotation()
 {
 	return isRotated;
@@ -94,7 +108,7 @@ int Ship::GetDamage()
 
 void Ship::TakeDamage()
 {
-	damage--;
+	damage -= 1;
 }
 
 void Ship::Render(sf::RenderWindow &window)

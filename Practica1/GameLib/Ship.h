@@ -35,6 +35,7 @@ public:
 	sf::Vector2i GetPosition();
 	bool GetPlaced();
 	ShipType GetType();
+	sf::String GetBoatName(ShipType _shipType);
 	bool GetRotation();
 	void SetRotation();
 	int GetDamage();
