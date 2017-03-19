@@ -1,1 +1,1 @@
-﻿  GameServer.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Practica1\x64\Debug\GameServer.exe
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'd:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\practica1\x64\debug\gameserver.pdb' because it is being used by another process.

@@ -65,6 +65,10 @@ int main(){
 					packet.clear();
 					packet << i << players[i]->hasTurn;  // "i" refers to the faction (0 ISA, 1 RSF)
 					playerSocket[i]->send(packet);
+					while (statusAccept == sf::Socket::Partial) { //Handle partial send
+						playerSocket[i]->send(packet);	
+						statusAccept = listener.accept(*playerSocket[i]);
+					}
 					packet.clear();
 					firstContact[i] = false;
 				}
@@ -92,7 +96,15 @@ int main(){
 							packet.clear();
 							packet << gameReady;
 							playerSocket[0]->send(packet);
+							while (statusReceive == sf::Socket::Partial) {	//Handle partial send
+								playerSocket[0]->send(packet);	
+								statusReceive = playerSocket[i]->receive(packet);
+							}
 							playerSocket[1]->send(packet);
+							while (statusReceive == sf::Socket::Partial) {	//Handle partial send
+								playerSocket[1]->send(packet);	
+								statusReceive = playerSocket[i]->receive(packet);
+							}
 							packet.clear();
 						}
 						else {
@@ -137,10 +149,18 @@ int main(){
 							//Put all the information to the packet and send to the player
 							packet << players[i]->hasTurn << players[i]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y << message;
 							playerSocket[i]->send(packet);
+							while (statusReceive == sf::Socket::Partial) {	//Handle partial send
+								playerSocket[i]->send(packet);
+								statusReceive = playerSocket[i]->receive(packet);
+							}
 							packet.clear();
 							//Put all the information to the packet and send to the other player
 							packet << players[opponentIt]->hasTurn << players[opponentIt]->isImpact << players[i]->shotCoords.x << players[i]->shotCoords.y << message;
 							playerSocket[opponentIt]->send(packet);
+							while (statusReceive == sf::Socket::Partial) {	//Handle partial send
+								playerSocket[i]->send(packet);	
+								statusReceive = playerSocket[i]->receive(packet);
+							}
 						}
 					}
 				}
@@ -148,8 +168,20 @@ int main(){
 				else if (statusReceive == sf::Socket::Disconnected) {
 					message = "Disconnection";
 					packet << players[i]->hasTurn << players[i]->isImpact << -15 << -15 << message; //the only important variable is "message"
-					if (i == 0) playerSocket[1]->send(packet);
-					else playerSocket[0]->send(packet);
+					if (i == 0) {
+						playerSocket[1]->send(packet);
+						while (statusReceive == sf::Socket::Partial) {		//Handle partial send
+							playerSocket[1]->send(packet);
+							statusReceive = playerSocket[1]->receive(packet);
+						}
+					}
+					else {
+						playerSocket[0]->send(packet);
+						while (statusReceive == sf::Socket::Partial) {	//Handle partial send
+							playerSocket[0]->send(packet);	
+							statusReceive = playerSocket[0]->receive(packet);
+						}
+					}
 					//Disconnect and delete sockets  and palyers
 					playerSocket[0]->disconnect();
 					playerSocket[1]->disconnect();

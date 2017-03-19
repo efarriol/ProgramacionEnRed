@@ -47,6 +47,10 @@ void SendFunction(sf::TcpSocket &socket, sf::RenderWindow &window, sf::Event& ev
 		player1.hasTurn = false;
 		packet << player1.shotCoords.x << player1.shotCoords.y;
 		socket.send(packet);
+		while (statusReceive == sf::Socket::Partial) { //Handle partial send
+			socket.send(packet);	
+			statusReceive = socket.receive(packet);
+		}
 	}
 }
 
@@ -133,6 +137,10 @@ int main()
 				for (int j = 0; j < MAX_CELLS; j++) packet << grid1.GetCell(sf::Vector2i(j, i));
 			}
 			tcpSocket->send(packet);
+			while (statusReceive == sf::Socket::Partial) { //Handle partial send
+				tcpSocket->send(packet);
+				statusReceive = tcpSocket->receive(packet);
+			}
 			packet.clear();
 			first = false;
 		}
