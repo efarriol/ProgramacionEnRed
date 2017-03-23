@@ -5,6 +5,7 @@
 
 #define TIME 5
 #define MAX_WORDS 10
+
 class PlayerInfo
 {
 public:
@@ -16,7 +17,12 @@ public:
 	std::string input;
 	int score;
 	bool isReady;
-
+	bool hasTurn;
+	bool isImpact;
+	sf::Vector2i shotCoords;
+	std::vector<sf::Vector2i> coordRegister;
+	int currentShips = MAX_SHIPS;
+	//Constructor
 	PlayerInfo(std::string _name, Faction _faction, Grid &_grid) : grid(_grid), fleet(_faction, "./../Resources/Images/Spaceships.png", _grid) {
 		name = _name;
 		faction = _faction;

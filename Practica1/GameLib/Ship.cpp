@@ -9,21 +9,22 @@ Ship::Ship(sf::Vector2i _position, ShipType _shipType, Faction faction, sf::Text
 	shipType = _shipType;
 	sprite.setTexture(texture);
 	isPlaced = false;
+	//Init sprite and damage in relation to ship type
 	switch (shipType)
 	{
-	default:
-	case BIG:
-		sprite.setTextureRect(sf::IntRect(0 + faction * 64,0,64,256));
-		damage = 4;
-		break;
-	case MEDIUM:
-		sprite.setTextureRect(sf::IntRect(128 + faction * 64, 0, 64, 192));
-		damage = 3;
-		break;
-	case SMALL:
-		sprite.setTextureRect(sf::IntRect(256 + faction * 64, 0, 64, 128));
-		damage = 2;
-		break;
+		default:
+		case BIG:
+			sprite.setTextureRect(sf::IntRect(0 + faction * 64,0,64,256));
+			damage = 4;
+			break;
+		case MEDIUM:
+			sprite.setTextureRect(sf::IntRect(128 + faction * 64, 0, 64, 192));
+			damage = 3;
+			break;
+		case SMALL:
+			sprite.setTextureRect(sf::IntRect(256 + faction * 64, 0, 64, 128));
+			damage = 2;
+			break;
 	}
 	sprite.setPosition(position.x, position.y);
 	sprite.setScale(1, 1);
@@ -76,6 +77,20 @@ ShipType Ship::GetType()
 	return shipType;
 }
 
+sf::String Ship::GetBoatName(ShipType _shipType) {
+	switch (_shipType) {
+		case BIG:
+			return sf::String("A DEMOLISHER");
+			break;
+		case MEDIUM:
+			return sf::String("A CRUISER");
+			break;
+		case SMALL:
+			return sf::String("AN INTERCEPTOR");
+			break;
+	}
+}
+
 bool Ship::GetRotation()
 {
 	return isRotated;
@@ -94,7 +109,7 @@ int Ship::GetDamage()
 
 void Ship::TakeDamage()
 {
-	damage--;
+	damage -= 1;
 }
 
 void Ship::Render(sf::RenderWindow &window)
@@ -106,18 +121,18 @@ void Ship::ChangeSprite(Faction faction)
 {
 	switch (shipType)
 	{
-	default:
-	case BIG:
-		sprite.setTextureRect(sf::IntRect(0 + faction * 64, 0, 64, 256));
-		damage = 4;
-		break;
-	case MEDIUM:
-		sprite.setTextureRect(sf::IntRect(128 + faction * 64, 0, 64, 192));
-		damage = 3;
-		break;
-	case SMALL:
-		sprite.setTextureRect(sf::IntRect(256 + faction * 64, 0, 64, 128));
-		damage = 2;
-		break;
+		default:
+		case BIG:
+			sprite.setTextureRect(sf::IntRect(0 + faction * 64, 0, 64, 256));
+			damage = 4;
+			break;
+		case MEDIUM:
+			sprite.setTextureRect(sf::IntRect(128 + faction * 64, 0, 64, 192));
+			damage = 3;
+			break;
+		case SMALL:
+			sprite.setTextureRect(sf::IntRect(256 + faction * 64, 0, 64, 128));
+			damage = 2;
+			break;
 	}
 }

@@ -147,7 +147,6 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="PlayerInfo.h" />
     <ClInclude Include="Ship.h" />
-    <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Fleet.cpp" />
