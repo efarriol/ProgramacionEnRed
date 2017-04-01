@@ -19,15 +19,17 @@ int main()
 	sf::Packet sendPacket;
 	sf::Packet receivePacket;
 	socket.setBlocking(false);
-	sf::Socket::Status status = socket.bind(5000);
-	if (status != sf::Socket::Done) {
-		std::cout << "Can't bind to port 5000" << std::endl;
-	}
 
 	//Init impact dots vector
+	sf::Vector2i dotPosition;
 	std::vector<sf::CircleShape> playersDot;
+	sf::CircleShape dot(32);
+	dot.setFillColor(sf::Color(0,255,0,150));
+	dot.setPosition(5000, 5000);
+	playersDot.push_back(dot);
 	sf::String message;
 	
+	int playersOnline = 0;
 	//Init Textures
 
 	sf::Texture blue_grid;
@@ -46,6 +48,11 @@ int main()
 	messageText.setStyle(sf::Text::Bold);
 	messageText.setPosition(300, 700);
 
+	//Request name
+	std::cout << "Introduce your name:" << std::endl;
+	//std::cin >> player1.name;
+	std::string sendMessage = "Hello";
+	sendPacket << sendMessage << player1.name;
 
 	//Init Windows
 	sf::Vector2i screenDimensions(640, 640);
@@ -57,30 +64,43 @@ int main()
 	sf::Mouse mouseEvent;
 	std::string receiveMessage;
 
-	//Request name
-	std::cin >> player1.name;
-
-	sendPacket << "Hello" << player1.name;
-
 	//Start GameLoop
 	while (true) {
-		receivePacket.clear();
 		sf::sleep(sf::milliseconds(50));
+		receivePacket.clear();
 		window.pollEvent(evento);
-
-		socket.send(sendPacket, serverIP, 5001);
 
 		socket.receive(receivePacket, senderIP, senderPort);
 		receivePacket >> receiveMessage;
-		std::cout << receiveMessage << std::endl;
-		if (receiveMessage == "fuck") {
-			sendPacket.clear();
-			sendPacket << "ok";
-		}
-		
 
+		if (sendMessage != "Done") {
+			socket.send(sendPacket, serverIP, 5001);
+			if (receiveMessage == "Welcome") {
+				receivePacket >> player1.position.x >> player1.position.y >> playersOnline;
+				playersDot[0].setPosition(player1.position.x, player1.position.y);
+				for (int i = 0; i < playersOnline; i++) {
+					receivePacket >> dotPosition.x >> dotPosition.y;
+					sf::CircleShape newDot(32);
+					newDot.setFillColor(sf::Color(255, 0, 0, 150));
+					newDot.setPosition(dotPosition.x, dotPosition.y);
+					playersDot.push_back(newDot);
+				}
+				sendPacket.clear();
+				sendMessage = "Done";
+				sendPacket << sendMessage;
+				socket.send(sendPacket, serverIP, 5001);
+			}
+		}
+		else if (receiveMessage == "NewPlayer") {
+			receivePacket >> dotPosition.x >> dotPosition.y;
+			sf::CircleShape newDot(32);
+			newDot.setFillColor(sf::Color(255, 0, 0, 150));
+			newDot.setPosition(dotPosition.x, dotPosition.y);
+			playersDot.push_back(newDot);
+		}
 		//Draw window sprites and text
 		window.draw(grid);
+		for (int i = 0; i < playersDot.size(); i++) window.draw(playersDot[i]);
 		window.display();
 		window.clear();
 	}

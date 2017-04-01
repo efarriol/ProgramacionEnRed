@@ -1,0 +1,6 @@
+﻿  ClientMain.cpp
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller5\gameclient\clientmain.cpp(80): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller5\gameclient\clientmain.cpp(85): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller5\gameclient\clientmain.cpp(98): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller5\gameclient\clientmain.cpp(64): warning C4101: 'mouseEvent': unreferenced local variable
+  GameClient.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Taller5\x64\Debug\GameClient.exe
