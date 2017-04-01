@@ -70,21 +70,24 @@ int main(){
 			}
 			if (!exists) {
 				//Create new player
-				playersList.push_back(new PlayerInfo(playerName, randomPos, senderIP, senderPort));
+				playersList.push_back(new PlayerInfo(playersCount, playerName, randomPos, senderIP, senderPort));
 				//Send all players position to user
-				packet << "Welcome" << playersList[playersCount]->position.x << playersList[playersCount]->position.y << playersCount;
+				packet << "Welcome" << playersList[playersCount]->position.x << playersList[playersCount]->position.y << playersList[playersCount]->id;
 				for (int i = 0; i < playersCount; i++) {
-					packet << playersList[i]->position.x << playersList[i]->position.y;
+					packet << playersList[i]->position.x << playersList[i]->position.y << playersList[i]->id;
 				}
 				socket.send(packet, playersList[playersCount]->ipAdress, playersList[playersCount]->port);
 				packet.clear();
 				//Send new player position to other users
-				packet << "NewPlayer" << playersList[playersCount]->position.x << playersList[playersCount]->position.y;
+				packet << "NewPlayer" << playersList[playersCount]->position.x << playersList[playersCount]->position.y << playersList[playersCount]->id;
 				for (int i = 0; i < playersList.size(); i++) {
 					if (i != playersCount) socket.send(packet, playersList[i]->ipAdress, playersList[i]->port);
 				}
 				playersCount++;
 			}
+		}
+		else if (message == "Disconnection") {
+
 		}
 	}
 }

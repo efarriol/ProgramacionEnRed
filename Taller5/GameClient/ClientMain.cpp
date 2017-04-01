@@ -12,6 +12,7 @@ int main()
 {
 	//Init udp variables
 	PlayerInfo player1;
+	std::vector <PlayerInfo *> enemyList;
 	sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
@@ -22,14 +23,10 @@ int main()
 
 	//Init impact dots vector
 	sf::Vector2i dotPosition;
-	std::vector<sf::CircleShape> playersDot;
-	sf::CircleShape dot(32);
-	dot.setFillColor(sf::Color(0,255,0,150));
-	dot.setPosition(5000, 5000);
-	playersDot.push_back(dot);
 	sf::String message;
 	
 	int playersOnline = 0;
+	int playerId = 0;
 	//Init Textures
 
 	sf::Texture blue_grid;
@@ -66,44 +63,41 @@ int main()
 
 	//Start GameLoop
 	while (true) {
-		sf::sleep(sf::milliseconds(50));
 		receivePacket.clear();
 		window.pollEvent(evento);
 
 		socket.receive(receivePacket, senderIP, senderPort);
 		receivePacket >> receiveMessage;
+		sf::sleep(sf::milliseconds(50));
 
 		if (sendMessage != "Done") {
 			socket.send(sendPacket, serverIP, 5001);
 			if (receiveMessage == "Welcome") {
-				receivePacket >> player1.position.x >> player1.position.y >> playersOnline;
-				playersDot[0].setPosition(player1.position.x, player1.position.y);
-				for (int i = 0; i < playersOnline; i++) {
-					receivePacket >> dotPosition.x >> dotPosition.y;
-					sf::CircleShape newDot(32);
-					newDot.setFillColor(sf::Color(255, 0, 0, 150));
-					newDot.setPosition(dotPosition.x, dotPosition.y);
-					playersDot.push_back(newDot);
+				receivePacket >> player1.position.x >> player1.position.y >> player1.id;
+				player1.dot.setPosition(player1.position.x, player1.position.y);
+				for (int i = 0; i < player1.id; i++) {
+					receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
+					enemyList.push_back(new PlayerInfo(playerId, dotPosition));
 				}
 				sendPacket.clear();
 				sendMessage = "Done";
-				sendPacket << sendMessage;
+				sendPacket << sendMessage << player1.id;
 				socket.send(sendPacket, serverIP, 5001);
 			}
 		}
 		else if (receiveMessage == "NewPlayer") {
-			receivePacket >> dotPosition.x >> dotPosition.y;
-			sf::CircleShape newDot(32);
-			newDot.setFillColor(sf::Color(255, 0, 0, 150));
-			newDot.setPosition(dotPosition.x, dotPosition.y);
-			playersDot.push_back(newDot);
+			receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
+			enemyList.push_back(new PlayerInfo(playerId, dotPosition));
 		}
 		//Draw window sprites and text
 		window.draw(grid);
-		for (int i = 0; i < playersDot.size(); i++) window.draw(playersDot[i]);
+		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->Render(window);
+		player1.Render(window);
 		window.display();
 		window.clear();
 	}
-
+	sendPacket.clear();
+	sendMessage = "Disconnection";
+	sendPacket  << sendMessage << player1.id;
 	return 0;
 }
