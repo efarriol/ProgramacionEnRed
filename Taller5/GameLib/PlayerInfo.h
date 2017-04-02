@@ -15,6 +15,11 @@ public:
 	unsigned short port;
 	int id;
 	sf::CircleShape dot;
+	sf::Time pingTime;
+	sf::Clock pingClock;
+	sf::Clock timeoutClock;
+	sf::Time timeoutTime;
+	bool setupDone = false;
 
 	//Constructor
 	PlayerInfo() {

@@ -1,1 +1,7 @@
-﻿
+﻿  ServerMain.cpp
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gameserver\servermain.cpp(36): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller5\x64\Debug\GameServer.exe
+  GameServer.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller5\x64\Debug\GameServer.pdb (Full PDB)

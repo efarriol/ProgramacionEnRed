@@ -9,6 +9,8 @@
 #include <Windows.h>
 #include <PlayerInfo.h>
 #define MAX_PLAYERS 4
+#define PING_TIME 5
+#define PING_TIMEOUT 20
 
 sf::Vector2i CreateRandomPosition(std::vector<PlayerInfo*> &playersList) {
 	sf::Vector2i randomPos;
@@ -40,6 +42,7 @@ int main(){
 	socket.setBlocking(false);
 	std::vector<PlayerInfo*> playersList;
 	int playersCount = 0;
+	int playerID = 0;
 
 	sf::Socket::Status status = socket.bind(5001);
 	if (status != sf::Socket::Done) {
@@ -54,7 +57,8 @@ int main(){
 		sf::sleep(sf::milliseconds(50));
 		packet.clear();
 		socket.receive(packet, senderIP, senderPort);
-		packet >> message;
+		packet >> message >> playerID;
+		
 		if (message == "Hello") {
 			//packet >> playerName;
 			sf::Vector2i randomPos = CreateRandomPosition(playersList);
@@ -86,9 +90,13 @@ int main(){
 				playersCount++;
 			}
 		}
-		else if (message == "Disconnection") {
-			int playerID = 0;
-			packet >> playerID;
+		else if (message == "Done") {
+			playersList[playerID]->setupDone = true;
+		}
+		else if (message == "PONG") {
+			playersList[playerID]->timeoutClock.restart();
+		}
+		else if (message == "Disconnection"){
 			delete playersList[playerID];
 			playersList.erase(playersList.begin()+playerID);
 
@@ -101,6 +109,31 @@ int main(){
 			playersCount--;
 			std::cout << "Player " << playerID << " disconnected" << std::endl;
 		}
+		//MANAGE PING
+		for (int i = 0; i < playersList.size(); i++) {
+			playersList[i]->pingTime = playersList[i]->pingClock.getElapsedTime();
+			playersList[i]->timeoutTime = playersList[i]->timeoutClock.getElapsedTime();
+			if (playersList[i]->pingTime.asSeconds() > PING_TIME) {
+				playersList[i]->pingClock.restart();
+				packet.clear();
+				packet << "PING" << playersList[i]->id;
+				socket.send(packet, playersList[i]->ipAdress, playersList[i]->port);
+			}
+			if (playersList[i]->timeoutTime.asSeconds() > PING_TIMEOUT) {
+				delete playersList[i];
+				playersList.erase(playersList.begin() + i);
+
+				packet.clear();
+				packet << "PlayerDisconnected" << i;
+				for (int j = 0; j < playersList.size(); j++) {
+					if (j >= i) playersList[j]->id--;
+					socket.send(packet, playersList[j]->ipAdress, playersList[j]->port);
+				}
+				playersCount--;
+				std::cout << "Player " << i << " disconnected" << std::endl;
+			}
+		}
+
 	}
 }
 

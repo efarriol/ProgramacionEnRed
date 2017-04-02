@@ -50,7 +50,7 @@ int main()
 	std::cout << "Introduce your name:" << std::endl;
 	//std::cin >> player1.name;
 	std::string sendMessage = "Hello";
-	sendPacket << sendMessage;
+	sendPacket << sendMessage << NULL;
 
 	//Init Windows
 	sf::Vector2i screenDimensions(640, 640);
@@ -77,7 +77,6 @@ int main()
 			if (receiveMessage == "Welcome") {
 				int playersCount = 0;
 				receivePacket >> playersCount;
-				//player1.dot.setPosition(player1.position.x, player1.position.y);
 				for (int i = 0; i < playersCount; i++) {
 					receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
 					playersList.push_back(new PlayerInfo(playerId, dotPosition, sf::Color(255,0,0,150)));
@@ -94,6 +93,11 @@ int main()
 		else if (receiveMessage == "NewPlayer") {
 			receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
 			playersList.push_back(new PlayerInfo(playerId, dotPosition, sf::Color(255,0,0,150)));
+		}
+		else if (receiveMessage == "PING") {
+			sendPacket.clear();
+			sendPacket << "PONG" << clientId;
+			socket.send(sendPacket, serverIP, 5001);
 		}
 		else if (receiveMessage == "PlayerDisconnected") {
 			int enemyID = 0;

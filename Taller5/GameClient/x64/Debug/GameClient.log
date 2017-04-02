@@ -1,1 +1,7 @@
-﻿
+﻿  ClientMain.cpp
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gamelib\playerinfo.h(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\taller5\gameclient\clientmain.cpp(62): warning C4101: 'mouseEvent': unreferenced local variable
+  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller5\x64\Debug\GameClient.exe
+  GameClient.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\Taller5\x64\Debug\GameClient.pdb (Full PDB)
