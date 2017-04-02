@@ -11,8 +11,8 @@
 int main()
 {
 	//Init udp variables
-	PlayerInfo player1;
-	std::vector <PlayerInfo *> enemyList;
+	//PlayerInfo player1;
+	std::vector <PlayerInfo *> playersList;
 	sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
@@ -27,6 +27,7 @@ int main()
 	
 	int playersOnline = 0;
 	int playerId = 0;
+	int clientId = 0;
 	//Init Textures
 
 	sf::Texture blue_grid;
@@ -49,7 +50,7 @@ int main()
 	std::cout << "Introduce your name:" << std::endl;
 	//std::cin >> player1.name;
 	std::string sendMessage = "Hello";
-	sendPacket << sendMessage << player1.name;
+	sendPacket << sendMessage;
 
 	//Init Windows
 	sf::Vector2i screenDimensions(640, 640);
@@ -69,35 +70,53 @@ int main()
 		socket.receive(receivePacket, senderIP, senderPort);
 		receivePacket >> receiveMessage;
 		sf::sleep(sf::milliseconds(50));
-
+		if (evento.key.code == sf::Keyboard::Escape) break;
+		
 		if (sendMessage != "Done") {
 			socket.send(sendPacket, serverIP, 5001);
 			if (receiveMessage == "Welcome") {
-				receivePacket >> player1.position.x >> player1.position.y >> player1.id;
-				player1.dot.setPosition(player1.position.x, player1.position.y);
-				for (int i = 0; i < player1.id; i++) {
+				int playersCount = 0;
+				receivePacket >> playersCount;
+				//player1.dot.setPosition(player1.position.x, player1.position.y);
+				for (int i = 0; i < playersCount; i++) {
 					receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
-					enemyList.push_back(new PlayerInfo(playerId, dotPosition));
+					playersList.push_back(new PlayerInfo(playerId, dotPosition, sf::Color(255,0,0,150)));
 				}
+				receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
+				playersList.push_back(new PlayerInfo(playerId, dotPosition, sf::Color(0,255,0,150)));
+				clientId = playerId;
 				sendPacket.clear();
 				sendMessage = "Done";
-				sendPacket << sendMessage << player1.id;
+				sendPacket << sendMessage << clientId;
 				socket.send(sendPacket, serverIP, 5001);
 			}
 		}
 		else if (receiveMessage == "NewPlayer") {
 			receivePacket >> dotPosition.x >> dotPosition.y >> playerId;
-			enemyList.push_back(new PlayerInfo(playerId, dotPosition));
+			playersList.push_back(new PlayerInfo(playerId, dotPosition, sf::Color(255,0,0,150)));
+		}
+		else if (receiveMessage == "PlayerDisconnected") {
+			int enemyID = 0;
+			receivePacket >> enemyID;
+			delete playersList[enemyID];
+			playersList.erase(playersList.begin() + enemyID);
+			for (int i = 0; i < playersList.size(); i++) {
+				 playersList[i]->id--;
+			}
+			if (clientId > enemyID) clientId--;
+			std::cout << "Player " << enemyID << " disconnected" << std::endl;
 		}
 		//Draw window sprites and text
 		window.draw(grid);
-		for (int i = 0; i < enemyList.size(); i++) enemyList[i]->Render(window);
-		player1.Render(window);
+		for (int i = 0; i < playersList.size(); i++) playersList[i]->Render(window);
 		window.display();
 		window.clear();
 	}
 	sendPacket.clear();
+	for (int i = 0; i < playersList.size(); i++) delete playersList[i];
 	sendMessage = "Disconnection";
-	sendPacket  << sendMessage << player1.id;
+	sendPacket  << sendMessage << clientId;
+	socket.send(sendPacket, serverIP, 5001);
+	socket.unbind();
 	return 0;
 }

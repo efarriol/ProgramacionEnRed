@@ -55,9 +55,8 @@ int main(){
 		packet.clear();
 		socket.receive(packet, senderIP, senderPort);
 		packet >> message;
-		std::cout << playersCount << std::endl;
 		if (message == "Hello") {
-			packet >> playerName;
+			//packet >> playerName;
 			sf::Vector2i randomPos = CreateRandomPosition(playersList);
 			packet.clear();
 
@@ -72,10 +71,11 @@ int main(){
 				//Create new player
 				playersList.push_back(new PlayerInfo(playersCount, playerName, randomPos, senderIP, senderPort));
 				//Send all players position to user
-				packet << "Welcome" << playersList[playersCount]->position.x << playersList[playersCount]->position.y << playersList[playersCount]->id;
+				packet << "Welcome" << playersCount;
 				for (int i = 0; i < playersCount; i++) {
 					packet << playersList[i]->position.x << playersList[i]->position.y << playersList[i]->id;
 				}
+				packet << playersList[playersCount]->position.x << playersList[playersCount]->position.y << playersList[playersCount]->id;
 				socket.send(packet, playersList[playersCount]->ipAdress, playersList[playersCount]->port);
 				packet.clear();
 				//Send new player position to other users
@@ -87,7 +87,19 @@ int main(){
 			}
 		}
 		else if (message == "Disconnection") {
+			int playerID = 0;
+			packet >> playerID;
+			delete playersList[playerID];
+			playersList.erase(playersList.begin()+playerID);
 
+			packet.clear();
+			packet << "PlayerDisconnected" << playerID;
+			for (int i = 0; i < playersList.size(); i++) {
+				if (i >= playerID) playersList[i]->id--;
+				socket.send(packet, playersList[i]->ipAdress, playersList[i]->port);
+			} 
+			playersCount--;
+			std::cout << "Player " << playerID << " disconnected" << std::endl;
 		}
 	}
 }

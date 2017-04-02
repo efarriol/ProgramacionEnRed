@@ -33,8 +33,8 @@ public:
 		dot.setRadius(32);
 	};
 
-	PlayerInfo(int _id, sf::Vector2i _position ) {
-		dot.setFillColor(sf::Color(255, 0, 0, 150));
+	PlayerInfo(int _id, sf::Vector2i _position, sf::Color color) {
+		dot.setFillColor(color);
 		position = _position;
 		dot.setPosition(position.x, position.y);	
 		dot.setRadius(32);
