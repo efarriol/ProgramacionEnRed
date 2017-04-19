@@ -1,0 +1,96 @@
+﻿  Asteroid.cpp
+Asteroid.cpp(18): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Asteroid.cpp(21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Asteroid.cpp(24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Asteroid.cpp(27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Asteroid.cpp(61): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Asteroid.cpp(85): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+Asteroid.cpp(86): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+Asteroid.cpp(88): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+Asteroid.cpp(89): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+  AsteroidsManager.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+  Bullets.cpp
+Bullets.cpp(28): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+Bullets.cpp(29): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+  Button.cpp
+  Entities.cpp
+Entities.cpp(24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Entities.cpp(33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  GameScene.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+GameScene.cpp(12): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+GameScene.cpp(19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+GameScene.cpp(54): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+GameScene.cpp(59): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+GameScene.cpp(64): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+GameScene.cpp(74): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+GameScene.cpp(78): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+GameScene.cpp(107): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+GameScene.cpp(109): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+GameScene.cpp(112): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Main.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+Main.cpp(8): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  MenuScene.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+MenuScene.cpp(8): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+MenuScene.cpp(24): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+MenuScene.cpp(25): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+MenuScene.cpp(26): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+  Ovni.cpp
+Ovni.cpp(20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Ovni.cpp(23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Ovni.cpp(26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Ovni.cpp(29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Ovni.cpp(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Ovni.cpp(55): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Ovni.cpp(64): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+Ovni.cpp(65): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+  OvniManager.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+  Player.cpp
+d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\descargas\chrome\gameproject_asteroids\gameproject_asteroids\Bullets.h(5): note: see previous definition of 'MAX_SPEED'
+Player.cpp(23): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Player.cpp(27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Player.cpp(28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Player.cpp(53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Player.cpp(57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Player.cpp(58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Player.cpp(68): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+Player.cpp(69): warning C4244: '=': conversion from 'float' to 'Sint32', possible loss of data
+Player.cpp(76): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+Player.cpp(77): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  RankingScene.cpp
+RankingScene.cpp(4): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+RankingScene.cpp(27): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+  Generating code
+  All 2054 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  GameProject_Asteroids.vcxproj -> D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\bin\x64Release\GameProject_Asteroids.exe
+  GameProject_Asteroids.vcxproj -> D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\bin\x64Release\GameProject_Asteroids.pdb (Full PDB)
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libFLAC-8.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libfreetype-6.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libjpeg-9.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libmikmod-2.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libmodplug-1.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libogg-0.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libpng16-16.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libtiff-5.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libvorbis-0.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libvorbisfile-3.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\libwebp-4.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\SDL2.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\SDL2_image.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\SDL2_mixer.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\SDL2_net.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\SDL2_ttf.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\smpeg2.dll
+  D:\pol_b\Descargas\Chrome\GameProject_Asteroids\\dep\dll\x64\zlib1.dll
+  18 archivo(s) copiado(s)

@@ -1,0 +1,20 @@
+<?xml version = "1.0" encoding="UTF-8"?>
+<levelAttributes>
+	<attribute category = "levle">
+		<targetLevelAsteroid>5</targetLevelAsteroid>
+		<incrementalSpeed>5</incrementalSpeed>
+	</attribute>
+	<attribute category = "asteroids">
+		<velocity>0.0025f</velocity>
+		<numAsteroids>5</numAsteroids>
+	</attribute>
+
+	<attribute category = "player">
+		<lifes>1</lifes>
+	</attribute>
+	<attribute category = "ovni" >
+		<ovniSpeed>0.005f</ovniSpeed>
+		<ovniSpawnTime>5</ovniSpawnTime>
+
+	</attribute>
+</levelAttributes>

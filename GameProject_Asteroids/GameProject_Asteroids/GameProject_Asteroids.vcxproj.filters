@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Controller">
+      <UniqueIdentifier>{ab0ee835-dc87-4ad6-9b9a-baf489ed5729}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{05b1e80a-108f-47b5-89bc-37fe550db52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="View">
+      <UniqueIdentifier>{4e8859ad-6a09-4ad8-a0fb-69525a6b734b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{0952e3b5-41d6-48af-b372-9180d19584bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Entities">
+      <UniqueIdentifier>{dc572e28-8473-48ea-9bd5-1cea5c9c9cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Entities\Player">
+      <UniqueIdentifier>{5bf176d7-44fc-41b2-b683-49c9c21edb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Entities\Asteroids">
+      <UniqueIdentifier>{b4bb2423-111b-4b3f-afa7-3015e94e814b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Scenes">
+      <UniqueIdentifier>{f7be73a7-59d5-43b8-9434-6a68669bc0ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Entities\Ovni">
+      <UniqueIdentifier>{f69edcde-801e-4393-aa90-a8262b686910}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Scenes\GameScene">
+      <UniqueIdentifier>{febdff47-bd8d-4f65-afa0-5e8717b99d85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Scenes\MenuScene">
+      <UniqueIdentifier>{275d76ee-c6f5-433c-b82e-b360e071e292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Scenes\RankingScene">
+      <UniqueIdentifier>{184db1ba-4a8c-45a3-a20f-898cdd76e462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Network">
+      <UniqueIdentifier>{8baf98c5-d978-4f7c-b1eb-6cc1d6fa3de4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Model\Entities\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets.cpp">
+      <Filter>Model\Entities\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Model\Entities\Asteroids</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="AsteroidsManager.cpp">
+      <Filter>Model\Entities\Asteroids</Filter>
+    </ClCompile>
+    <ClCompile Include="Ovni.cpp">
+      <Filter>Model\Entities\Ovni</Filter>
+    </ClCompile>
+    <ClCompile Include="OvniManager.cpp">
+      <Filter>Model\Entities\Ovni</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>Model\Scenes\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScene.cpp">
+      <Filter>Model\Scenes\MenuScene</Filter>
+    </ClCompile>
+    <ClCompile Include="RankingScene.cpp">
+      <Filter>Model\Scenes\RankingScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities.cpp" />
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Model\Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameEngine.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Assert.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ID.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2D.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Model\Entities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullets.h">
+      <Filter>Model\Entities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
+      <Filter>Model\Entities\Asteroids</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="AsteroidsManager.h">
+      <Filter>Model\Entities\Asteroids</Filter>
+    </ClInclude>
+    <ClInclude Include="Ovni.h">
+      <Filter>Model\Entities\Ovni</Filter>
+    </ClInclude>
+    <ClInclude Include="OvniManager.h">
+      <Filter>Model\Entities\Ovni</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Model\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>Model\Scenes\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScene.h">
+      <Filter>Model\Scenes\MenuScene</Filter>
+    </ClInclude>
+    <ClInclude Include="RankingScene.h">
+      <Filter>Model\Scenes\RankingScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities.h">
+      <Filter>Model\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Model\Network</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
