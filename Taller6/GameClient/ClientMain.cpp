@@ -15,19 +15,22 @@
 int main()
 {
 	//Init udp variables
-	//PlayerInfo player1;
 	std::vector <PlayerInfo *> playersList;
 	sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
 	sf::UdpSocket socket;
-	sf::Packet sendPacket;
-	sf::Packet receivePacket;
-	socket.setBlocking(false);
 
+	char messageBuffer[2000];
+	size_t messageSize = 0;
+	
+	OutputMemoryBitStream ombs;
+
+	socket.setBlocking(false);
+	std::string playerNick;
 	//Init impact dots vector
 	sf::Vector2i dotPosition;
-	sf::String message;
+	bool setUpDone = false;
 	
 	int playersOnline = 0;
 	int receivedId = 0;
@@ -46,16 +49,15 @@ int main()
 	{
 		std::cout << "Can't load the font file" << std::endl;
 	}
-	sf::Text messageText("", font, 45);
-	messageText.setStyle(sf::Text::Bold);
-	messageText.setPosition(300, 700);
 
 	//Request name
 	//std::cout << "Introduce your name:" << std::endl;
-	//std::cin >> player1.name;
-	std::string sendMessage = "Hello";
-	sendPacket << sendMessage << NULL;
-
+	//std::cin >> playerNick;
+	ombs.Write(PlayerInfo::PacketType::PT_HELLO, 3);
+	ombs.Write(NULL, 7);
+	ombs.WriteString(sf::IpAddress::getLocalAddress().toString());
+	ombs.Write(socket.getLocalPort(), 16);
+	//ombs.WriteString(playerNick);
 	//Init Windows
 	sf::Vector2i screenDimensions(640, 640);
 	sf::RenderWindow window;
@@ -68,44 +70,64 @@ int main()
 
 	//Start GameLoop
 	while (true) {
-		receivePacket.clear();
 		window.pollEvent(evento);
 
-		socket.receive(receivePacket, senderIP, senderPort);
-		receivePacket >> receiveMessage;
-		sf::sleep(sf::milliseconds(50));
-		if (evento.key.code == sf::Keyboard::Escape) break;
+		socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
+
+		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
+		PlayerInfo::PacketType packetType;
+		packetType = PlayerInfo::PacketType::PT_EMPTY;
+		OutputMemoryBitStream ombs;
 		
-		if (sendMessage != "Done") {
-			socket.send(sendPacket, serverIP, 5001);
-			if (receiveMessage == "Welcome") {
+		imbs.Read(&packetType,3);
+
+		sf::sleep(sf::milliseconds(100));
+		if (evento.key.code == sf::Keyboard::Escape) break;
+
+		if (packetType != PlayerInfo::PacketType::PT_WELCOME && !setUpDone) {
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+		}
+		else if (packetType == PlayerInfo::PacketType::PT_WELCOME) {
+			if (!setUpDone) {
 				int playersCount = 0;
-				receivePacket >> playersCount;
+				imbs.Read(&playersCount, 7);
 				for (int i = 0; i < playersCount; i++) {
-					receivePacket >> dotPosition.x >> dotPosition.y >> receivedId;
-					playersList.push_back(new PlayerInfo(receivedId, dotPosition, sf::Color(255,0,0,150)));
+					imbs.Read(&dotPosition.x, 4);
+					imbs.Read(&dotPosition.y, 4);
+					imbs.Read(&receivedId, 7);
+					playersList.push_back(new PlayerInfo(receivedId, sf::Vector2i(dotPosition.x * 64, dotPosition.y * 64), sf::Color(255, 0, 0, 150)));
 				}
-				receivePacket >> dotPosition.x >> dotPosition.y >> receivedId;
-				playersList.push_back(new PlayerInfo(receivedId, dotPosition, sf::Color(0,255,0,150)));
+				imbs.Read(&dotPosition.x, 4);
+				imbs.Read(&dotPosition.y, 4);
+				imbs.Read(&receivedId, 7);
+				playersList.push_back(new PlayerInfo(receivedId, dotPosition, sf::Color(0, 255, 0, 150)));
 				clientId = receivedId;
-				sendPacket.clear();
-				sendMessage = "Done";
-				sendPacket << sendMessage << clientId;
-				socket.send(sendPacket, serverIP, 5001);
 			}
+			//SEND
+			//ombs.~OutputMemoryBitStream();
+			ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+			ombs.Write(clientId);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+			setUpDone = true;
 		}
-		else if (receiveMessage == "NewPlayer") {
-			receivePacket >> dotPosition.x >> dotPosition.y >> receivedId;
-			playersList.push_back(new PlayerInfo(receivedId, dotPosition, sf::Color(255,0,0,150)));
+		else if (PlayerInfo::PacketType::PT_NEWPLAYER) {
+			imbs.Read(&dotPosition.x, 4);
+			imbs.Read(&dotPosition.y, 4);
+			imbs.Read(&receivedId);
+			playersList.push_back(new PlayerInfo(receivedId, sf::Vector2i(dotPosition.x * 64, dotPosition.y * 64), sf::Color(255,0,0,150)));
+
+			ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+			ombs.Write(clientId);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		}
-		else if (receiveMessage == "PING") {
-			sendPacket.clear();
-			sendPacket << "PONG" << clientId;
-			socket.send(sendPacket, serverIP, 5001);
+		else if (PlayerInfo::PacketType::PT_PING) {
+			ombs.Write(PlayerInfo::PacketType::PT_PING, 3);
+			ombs.Write(clientId);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		}
-		else if (receiveMessage == "PlayerDisconnected") {
+		else if (PlayerInfo::PacketType::PT_DISCONNECT) {
 			int enemyID = 0;
-			receivePacket >> enemyID;
+			imbs.Read(&enemyID);
 			delete playersList[enemyID];
 			playersList.erase(playersList.begin() + enemyID);
 			for (int i = 0; i < playersList.size(); i++) {
@@ -113,6 +135,9 @@ int main()
 			}
 			if (clientId > enemyID) clientId--;
 			std::cout << "Player " << enemyID << " disconnected" << std::endl;
+			ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+			ombs.Write(clientId);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		}
 		//Draw window sprites and text
 		window.draw(grid);
@@ -120,11 +145,9 @@ int main()
 		window.display();
 		window.clear();
 	}
-	sendPacket.clear();
 	for (int i = 0; i < playersList.size(); i++) delete playersList[i];
-	sendMessage = "Disconnection";
-	sendPacket  << sendMessage << clientId;
-	socket.send(sendPacket, serverIP, 5001);
+	ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 3);;
+	socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 	socket.unbind();
 	return 0;
 }

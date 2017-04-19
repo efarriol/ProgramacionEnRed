@@ -1,5 +1,1 @@
-﻿  PlayerInfo.cpp
-d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller6\gamelib\playerinfo.h(27): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller6\gamelib\playerinfo.h(37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\taller6\gamelib\playerinfo.h(44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  GameLib.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\Taller6\x64\Debug\GameLib.lib
+﻿

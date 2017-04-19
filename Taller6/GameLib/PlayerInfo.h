@@ -8,6 +8,19 @@ class PlayerInfo
 {
 public:
 
+	enum PacketType
+	{
+		PT_ACK,
+		PT_PING,
+		PT_EMPTY,
+		PT_HELLO,		
+		PT_WELCOME,
+		PT_POSITION,
+		PT_NEWPLAYER,
+		PT_DISCONNECT
+	};
+
+
 	std::string name;
 	int score;
 	sf::IpAddress ipAdress;
