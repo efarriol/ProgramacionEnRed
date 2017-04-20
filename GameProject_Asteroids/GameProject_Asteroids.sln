@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameProject_Asteroids", "GameProject_Asteroids\GameProject_Asteroids.vcxproj", "{72F42F1F-1291-4056-B962-D1CBB9C1B054}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServer_Asteroids", "GameServer_Asteroids\GameServer_Asteroids.vcxproj", "{4B8DE78D-853B-444B-B142-0A513E0C21F6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameLib", "GameLib\GameLib.vcxproj", "{E747DD8A-A84F-489A-AE3C-B249C6E52B74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{4B8DE78D-853B-444B-B142-0A513E0C21F6}.Release|x64.Build.0 = Release|x64
 		{4B8DE78D-853B-444B-B142-0A513E0C21F6}.Release|x86.ActiveCfg = Release|Win32
 		{4B8DE78D-853B-444B-B142-0A513E0C21F6}.Release|x86.Build.0 = Release|Win32
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Debug|x64.ActiveCfg = Debug|x64
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Debug|x64.Build.0 = Debug|x64
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Debug|x86.ActiveCfg = Debug|Win32
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Debug|x86.Build.0 = Debug|Win32
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Release|x64.ActiveCfg = Release|x64
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Release|x64.Build.0 = Release|x64
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Release|x86.ActiveCfg = Release|Win32
+		{E747DD8A-A84F-489A-AE3C-B249C6E52B74}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

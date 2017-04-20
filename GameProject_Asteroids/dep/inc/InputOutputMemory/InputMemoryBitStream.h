@@ -105,12 +105,12 @@ public:
 
 	void ReadString(std::string* _inString)
 	{
-		uint32_t elementCount;
-		Read(&elementCount);
-		(*_inString).resize(elementCount);
-		for (auto& element : (*_inString))
-		{
-			Read(&element);
-		}
+			uint32_t elementCount;
+			Read(&elementCount);
+			(*_inString).resize(elementCount);
+			for (auto& element : (*_inString))
+			{
+				Read(&element);
+			}
 	}
 };

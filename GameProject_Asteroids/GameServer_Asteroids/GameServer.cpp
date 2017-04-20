@@ -11,7 +11,7 @@
 #include <fstream>
 #include <vector>
 #include <Windows.h>
-
+#include <PlayersInfo.h>
 int main() {
 	srand(time(NULL));
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
@@ -31,18 +31,21 @@ int main() {
 		std::cout << "Can't bind to port 5000" << std::endl;
 	}
 	while (true) {
+		PlayerInfo::PacketType packetType;
+		packetType = PlayerInfo::PacketType::PT_EMPTY;
+
 		sf::sleep(sf::milliseconds(50));
 		char messageBuffer[2000];
 		size_t messageSize = 0;
 		socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
-		int message;
 		std::string stringMessage;
 		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
-		imbs.Read(&message);
-		imbs.ReadString(&stringMessage, messageSize);
-		std::cout << stringMessage << std::endl;
-
-		if (message == 3 && senderPort != player1Port && senderPort != player2Port) {
+		if (messageSize > 0) {
+			imbs.Read(&packetType);
+			imbs.ReadString(&stringMessage);
+			std::cout << stringMessage << std::endl;
+		}
+		if (packetType == PlayerInfo::PacketType::PT_HELLO  && senderPort != player1Port && senderPort != player2Port) {
 			//creasPlayer
 			if (playersCount == 0) player1Port = senderPort;
 			else if (playersCount == 1) player2Port = senderPort;
