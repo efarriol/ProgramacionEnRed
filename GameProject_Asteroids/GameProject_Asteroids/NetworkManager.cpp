@@ -32,6 +32,7 @@ bool NetworkManager::ConnectionEstablishment()
 	if (message != 1) {
 		OutputMemoryBitStream ombs;
 		ombs.Write(3);
+		ombs.WriteString("EloiTonto");
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 	}
 	return false;

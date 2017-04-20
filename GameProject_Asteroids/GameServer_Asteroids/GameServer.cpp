@@ -36,9 +36,11 @@ int main() {
 		size_t messageSize = 0;
 		socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
 		int message;
+		std::string stringMessage;
 		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
 		imbs.Read(&message);
-		std::cout << senderPort << std::endl;
+		imbs.ReadString(&stringMessage, messageSize);
+		std::cout << stringMessage << std::endl;
 
 		if (message == 3 && senderPort != player1Port && senderPort != player2Port) {
 			//creasPlayer
