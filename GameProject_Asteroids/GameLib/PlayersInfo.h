@@ -3,6 +3,12 @@
 #include <SFML\Network.hpp>
 #include <iostream>
 
+struct MovementInfo {
+	int ID;
+	sf::Vector2i delta;
+	sf::Vector2i absolutePos;
+};
+
 
 class PlayerInfo
 {
@@ -15,8 +21,8 @@ public:
 		PT_EMPTY,
 		PT_HELLO,
 		PT_WELCOME,
-		PT_POSITION,
-		PT_NEWPLAYER,
+		PT_MOVEMENT,
+		PT_GAMESTART,
 		PT_DISCONNECT
 	};
 
@@ -32,13 +38,15 @@ public:
 	sf::Clock pingClock;
 	sf::Clock timeoutClock;
 	sf::Time timeoutTime;
-	bool setupDone = false;
+	bool setupDone = false; 
+	MovementInfo movementInfo;
 
 	//Constructor
 	PlayerInfo() {
 		dot.setFillColor(sf::Color(0, 255, 0, 150));
 		dot.setPosition(position.x, position.y);
 		dot.setRadius(32);
+		
 	};
 	PlayerInfo(int _id, std::string _name, sf::Vector2i _position, sf::IpAddress _ipAdress, unsigned short _port) {
 		id = _id;

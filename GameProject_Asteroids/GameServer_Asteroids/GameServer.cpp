@@ -12,14 +12,14 @@
 #include <vector>
 #include <Windows.h>
 #include <PlayersInfo.h>
+
+
 int main() {
 	srand(time(NULL));
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	//PlayerInfo
-	unsigned short player1Port = NULL;
-	unsigned short player2Port = NULL;
-
+	PlayerInfo player[2];
 
 	int playersCount = 0;
 	unsigned short senderPort;
@@ -36,23 +36,38 @@ int main() {
 
 		sf::sleep(sf::milliseconds(50));
 		char messageBuffer[2000];
+		int playerID = 0;
 		size_t messageSize = 0;
 		socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
 		std::string stringMessage;
 		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
 		if (messageSize > 0) {
-			imbs.Read(&packetType);
-			imbs.ReadString(&stringMessage);
-			std::cout << stringMessage << std::endl;
+			imbs.Read(&packetType, 3);
+			imbs.Read(&playerID, 1);
+			
 		}
-		if (packetType == PlayerInfo::PacketType::PT_HELLO  && senderPort != player1Port && senderPort != player2Port) {
-			//creasPlayer
-			if (playersCount == 0) player1Port = senderPort;
-			else if (playersCount == 1) player2Port = senderPort;
+		if (packetType == PlayerInfo::PacketType::PT_HELLO) {
+			if (playersCount < 2 && senderPort != player[0].port && senderPort != player[1].port) {
+				player[playersCount].id = playersCount;
+				player[playersCount].port = senderPort;			
+				playersCount++;
+			}
 			OutputMemoryBitStream ombs;
-			ombs.Write(1);
-			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
-			playersCount++;
+			if (senderPort == player[0].port) {
+				ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
+				ombs.Write(player[0].id, 1);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
+			}
+			else if (senderPort == player[1].port) {
+				ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
+				ombs.Write(player[1].id, 1);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
+			}
+		}
+
+		else if (packetType == PlayerInfo::PacketType::PT_MOVEMENT) {
+
+
 		}
 		if (playersCount == 2) {
 			OutputMemoryBitStream ombs;
