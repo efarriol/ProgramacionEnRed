@@ -48,12 +48,13 @@ int main() {
 			imbs.Read(&playerID, 1);
 			imbs.Read(&packetType, 3);
 		}
-		
+		int messageId = 0;
 		OutputMemoryBitStream ombs;
 		switch (packetType)
 		{
 		case PlayerInfo::PT_ACK:
-
+			imbs.Read(&messageId, 5);
+			if(criticalMessages.size() > 0)	criticalMessages.erase(criticalMessages.begin() + messageId);
 			break;
 		case PlayerInfo::PT_PING:
 			break;
@@ -62,19 +63,19 @@ int main() {
 				player[playersCount].id = playersCount;
 				player[playersCount].ipAdress = senderIP;
 				player[playersCount].port = senderPort;
+				if (senderPort == player[0].port) {
+					ombs.Write(player[0].id, 1);
+					ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
+					socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
+				}
+				else if (senderPort == player[1].port && !setupDone) {
+					criticalMessages.push_back(new CriticalMessage(player[0].id, PlayerInfo::PacketType::PT_GAMESTART));
+					criticalCount++;
+					criticalMessages.push_back(new CriticalMessage(player[1].id, PlayerInfo::PacketType::PT_GAMESTART));
+					criticalCount++;
+					setupDone = true;
+				}
 				playersCount++;
-			}
-			if (senderPort == player[0].port) {
-				ombs.Write(player[0].id, 1);
-				ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
-				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
-			}
-			else if (senderPort == player[1].port && !setupDone) {
-				criticalMessages.push_back(new CriticalMessage(player[0].id, PlayerInfo::PacketType::PT_GAMESTART));
-				criticalCount++;
-				criticalMessages.push_back(new CriticalMessage(player[1].id, PlayerInfo::PacketType::PT_GAMESTART));
-				criticalCount++;
-				setupDone = true;
 			}
 			break;
 		case PlayerInfo::PT_MOVEMENT:
@@ -84,17 +85,19 @@ int main() {
 		default:
 			break;
 		}
+		std::cout << criticalMessages.size() << std::endl;
 
 		//Send criticalMessages
 		for (int i = 0; i < criticalMessages.size(); i++) {
-			OutputMemoryBitStream ombs;
-			ombs.Write(criticalMessages[i]->id, 1);
-			ombs.Write(criticalMessages[i]->packetType, 3);
+			OutputMemoryBitStream ombs2;
+			ombs2.Write(criticalMessages[i]->id, 1);
+			ombs2.Write(criticalMessages[i]->packetType, 3);
 			switch (criticalMessages[i]->packetType) {
 			case PlayerInfo::PacketType::PT_MOVEMENT:
 					break;
 			}
-			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[criticalMessages[i]->id].ipAdress, player[criticalMessages[i]->id].port);
+			ombs2.Write(i, 5);
+			socket.send(ombs2.GetBufferPtr(), ombs2.GetByteLength(), player[criticalMessages[i]->id].ipAdress, player[criticalMessages[i]->id].port);
 		}
 	}
 }

@@ -49,7 +49,7 @@ void GameScene::Update(void) {
 		{
 
 		case LOBBY:
-			ReadFromFile("./../res/lvl/medium.xml");
+			ReadFromFile("./../res/lvl/easy.xml");
 			Setup();
 			if (NM.ConnectionEstablishment()) {
 				currentState = PLAY;
@@ -60,6 +60,7 @@ void GameScene::Update(void) {
 			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
 			//ovniManager->Update(asteroidsManager->GetLevel());
 			asteroidsManager->Update();
+			NM.IngameConnection();
 			player->Update(TM.GetDeltaTime() / 100000);
 			break;
 		};

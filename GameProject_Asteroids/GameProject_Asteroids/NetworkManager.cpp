@@ -24,7 +24,7 @@ bool NetworkManager::ConnectionEstablishment()
 	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
 	InputMemoryBitStream imbs(messageBuffer, messageSize*8);
 	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
-	int id;
+	int id = 0;
 	if (messageSize > 0) {
 		imbs.Read(&id, 1);
 		imbs.Read(&packetType, 3);
@@ -49,13 +49,15 @@ void NetworkManager::IngameConnection()
 	size_t messageSize = 0;
 	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
 	InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
-	OutputMemoryBitStream ombs;
 	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
-	int id;
+	int id = 0;
+	int messageId = 0;
 	if (messageSize > 0) {
 		imbs.Read(&id, 1);
 		imbs.Read(&packetType, 3);
+		imbs.Read(&messageId, 5);
 	}
+	OutputMemoryBitStream ombs;
 
 	switch (packetType)
 	{
@@ -66,6 +68,7 @@ void NetworkManager::IngameConnection()
 	case PlayerInfo::PT_GAMESTART:
 		ombs.Write(id , 1);
 		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+		ombs.Write(messageId, 5);
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		break;
 	case PlayerInfo::PT_DISCONNECT:

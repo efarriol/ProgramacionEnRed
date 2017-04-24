@@ -1,5 +1,6 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(368,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'c:\users\pcasamiquela\desktop\repositories\programacionred\programacionenred\gameproject_asteroids\gamelib\x64\debug\gamelib.idb' because it is being used by another process.
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(368,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
   PlayersInfo.cpp
   CriticalMessage.cpp
   Generating Code...
-  GameLib.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\GameProject_Asteroids\\dep\lib\x64\GameLib.lib
+  GameLib.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionRed\ProgramacionEnRed\GameProject_Asteroids\\dep\lib\x64\GameLib.lib
