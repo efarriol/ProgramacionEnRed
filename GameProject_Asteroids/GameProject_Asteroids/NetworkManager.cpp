@@ -25,17 +25,57 @@ bool NetworkManager::ConnectionEstablishment()
 	InputMemoryBitStream imbs(messageBuffer, messageSize*8);
 	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
 	int id;
-	imbs.Read(&id);
-	imbs.Read(&packetType);
-	if (packetType != PlayerInfo::PacketType::PT_WELCOME) {
-		OutputMemoryBitStream ombs;
-		ombs.Write(id);
-		ombs.Write(PlayerInfo::PacketType::PT_HELLO);
-		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+	if (messageSize > 0) {
+		imbs.Read(&id, 1);
+		imbs.Read(&packetType, 3);
 	}
-	else if(PlayerInfo::PacketType::PT_GAMESTART){
+
+	if (packetType == PlayerInfo::PacketType::PT_GAMESTART) {
 		return true;
 	}
 
+	OutputMemoryBitStream ombs;
+	ombs.Write(id, 1);
+	ombs.Write(PlayerInfo::PacketType::PT_HELLO, 3);
+	socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+
 	return false;
+}
+
+void NetworkManager::IngameConnection()
+{
+	//Receive
+	char messageBuffer[2000];
+	size_t messageSize = 0;
+	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
+	InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
+	OutputMemoryBitStream ombs;
+	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
+	int id;
+	if (messageSize > 0) {
+		imbs.Read(&id, 1);
+		imbs.Read(&packetType, 3);
+	}
+
+	switch (packetType)
+	{
+	case PlayerInfo::PT_PING:
+		break;
+	case PlayerInfo::PT_MOVEMENT:
+		break;
+	case PlayerInfo::PT_GAMESTART:
+		ombs.Write(id , 1);
+		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+		break;
+	case PlayerInfo::PT_DISCONNECT:
+		break;
+	default:
+		break;
+	}
+}
+
+void NetworkManager::Disconnect()
+{
+	exit(0);
 }

@@ -26,7 +26,7 @@ public:
 	NetworkManager();
 	~NetworkManager();
 	bool ConnectionEstablishment();
-	void Receive();
-	void Send();
+	void IngameConnection();
+	void Disconnect();
 };
 

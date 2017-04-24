@@ -26,6 +26,7 @@ private:
 	Button backButton;
 	Button continueButton;
 	Button exitButton;
+	Button exitButton2;
 
 	//Level Attributes
 	int numAsteroids;

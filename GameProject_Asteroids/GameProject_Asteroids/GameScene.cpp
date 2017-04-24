@@ -12,7 +12,8 @@ using namespace Logger;
 
 GameScene::GameScene(void) :	backButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 1.4f + 50, SCREEN_WIDTH*0.27f, SCREEN_HEIGHT*0.12f, string("BACK")),
 								continueButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2.5f + 50, SCREEN_WIDTH*0.27f, SCREEN_HEIGHT*0.12f, string("CONTINUE")),
-								exitButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 1.97f + 50, SCREEN_WIDTH*0.27f, SCREEN_HEIGHT*0.12f, string("EXIT")){
+								exitButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 1.97f + 50, SCREEN_WIDTH*0.27f, SCREEN_HEIGHT*0.12f, string("EXIT")),
+								exitButton2(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 50, SCREEN_WIDTH*0.27f, SCREEN_HEIGHT*0.12f, string("EXIT")) {
 	currentState = LOBBY;
 }
 
@@ -43,7 +44,7 @@ void GameScene::Update(void) {
 	}
 	else mouseCoords.x = 0;
 
-	if (!inGameMenu) {
+	
 		switch (currentState)
 		{
 
@@ -53,6 +54,8 @@ void GameScene::Update(void) {
 			if (NM.ConnectionEstablishment()) {
 				currentState = PLAY;
 			}
+			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();
+			break;
 		case PLAY:
 			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
 			//ovniManager->Update(asteroidsManager->GetLevel());
@@ -60,15 +63,13 @@ void GameScene::Update(void) {
 			player->Update(TM.GetDeltaTime() / 100000);
 			break;
 		};
-	}
-	else {
-		if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = false;
+	
+	if(inGameMenu) {
 		if (continueButton.ClickButton(mouseCoords.x, mouseCoords.y)) {
 			inGameMenu = false; 
 			mouseCoords.x = 0;
 		}
-		if (exitButton.ClickButton(mouseCoords.x, mouseCoords.y)) exit(0);
-		
+		if (exitButton.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();		
 	}
 }
 
@@ -84,12 +85,12 @@ void GameScene::ReadFromFile(std::string path)
 		std::string content(buffer.str());
 		doc.parse<0>(&content[0]);
 
-		std::cout << "Reading:" << doc.first_node()->name() << "\n";
+		//std::cout << "Reading:" << doc.first_node()->name() << "\n";
 		rapidxml::xml_node<> *pRoot = doc.first_node();
 
 		for (rapidxml::xml_node<> *pNode = pRoot->first_node("attribute"); pNode; pNode = pNode->next_sibling()) {
 
-			std::cout << pNode->name() << ':' << '\n';
+			//std::cout << pNode->name() << ':' << '\n';
 			for (rapidxml::xml_node<> *pNodeI = pNode->first_node(); pNodeI; pNodeI = pNodeI->next_sibling()) {
 
 				std::string attribute = pNodeI->name();
@@ -102,7 +103,7 @@ void GameScene::ReadFromFile(std::string path)
 				else if (attribute == "ovniSpeed") ovniSpeed = stof(value, NULL);
 				else if (attribute == "ovniSpawnTime") ovniSpawnTime = stof(value, NULL);
 				else if (attribute == "lifes") playerLifes = stof(value, NULL);
-				std::cout << pNodeI->name() << ':' << pNodeI->value() << '\n';
+				//std::cout << pNodeI->name() << ':' << pNodeI->value() << '\n';
 			}
 		}
 	}
@@ -121,7 +122,7 @@ void GameScene::Draw(void)
 		}
 
 		asteroidsManager->Draw();
-		ovniManager->Draw();
+		//ovniManager->Draw();
 		player->Draw();
 		if (inGameMenu) {
 			GUI::DrawTextBlended<FontID::HYPERSPACE>("PAUSE",
@@ -140,6 +141,7 @@ void GameScene::Draw(void)
 		GUI::DrawTextBlended<FontID::HYPERSPACE>("WAITING FOR THE OTHER PLAYER...",
 		{ SCREEN_WIDTH / 2 + 20, 400, 1, 1},
 		{ 255, 255, 255 });
+		exitButton2.Draw();
 		break;
 	}
 }

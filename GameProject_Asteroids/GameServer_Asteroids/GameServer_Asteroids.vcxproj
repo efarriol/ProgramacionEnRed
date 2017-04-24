@@ -71,7 +71,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\$(PlatformName)$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\tmp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
-    <IncludePath>$(Solutiondir)\..\GameLib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(Solutiondir)GameLib;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(PlatformName)$(Configuration)\</OutDir>

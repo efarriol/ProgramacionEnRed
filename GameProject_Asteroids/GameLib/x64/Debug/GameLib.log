@@ -1,12 +1,5 @@
-﻿  CriticalMessage.cpp
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-  Compiling...
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(368,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
   PlayersInfo.cpp
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  CriticalMessage.cpp
   Generating Code...
-  GameLib.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\GameProject_Asteroids\x64\Debug\GameLib.lib
+  GameLib.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\GameProject_Asteroids\\dep\lib\x64\GameLib.lib
