@@ -46,20 +46,20 @@ void GameScene::Update(void) {
 	if (!inGameMenu) {
 		switch (currentState)
 		{
-		case PLAY:
-			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
-			//ovniManager->Update(asteroidsManager->GetLevel());
-			asteroidsManager->Update();
-			player->Update(TM.GetDeltaTime() / 100000);
-			break;
 
 		case LOBBY:
 			ReadFromFile("./../res/lvl/medium.xml");
 			Setup();
 			if (NM.ConnectionEstablishment()) {
 				currentState = PLAY;
-			};
-		}
+			}
+		case PLAY:
+			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
+			//ovniManager->Update(asteroidsManager->GetLevel());
+			asteroidsManager->Update();
+			player->Update(TM.GetDeltaTime() / 100000);
+			break;
+		};
 	}
 	else {
 		if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = false;

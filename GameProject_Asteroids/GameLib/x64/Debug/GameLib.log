@@ -1,5 +1,12 @@
-﻿  PlayersInfo.cpp
-c:\users\efarriol\desktop\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\efarriol\desktop\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\efarriol\desktop\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(57): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  GameLib.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\GameProject_Asteroids\x64\Debug\GameLib.lib
+﻿  CriticalMessage.cpp
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  Compiling...
+  PlayersInfo.cpp
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+d:\enti\6º semestre\programacionenred\gameproject_asteroids\gamelib\playersinfo.h(65): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  GameLib.vcxproj -> D:\ENTI\6º Semestre\ProgramacionEnRed\GameProject_Asteroids\x64\Debug\GameLib.lib

@@ -5,6 +5,7 @@
 #include <InputOutputMemory\InputMemoryStream.h>
 #include <InputOutputMemory\OutputMemoryBitStream.h>
 #include <InputOutputMemory\OutputMemoryStream.h>
+#include <PlayersInfo.h>
 
 #define NM NetworkManager::Instance()
 

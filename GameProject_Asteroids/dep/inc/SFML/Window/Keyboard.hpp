@@ -65,12 +65,12 @@ public:
         O,            ///< The O key
         P,            ///< The P key
         Q,            ///< The Q key
-        R,            ///< The R key
+       // R,            ///< The R key
         S,            ///< The S key
         T,            ///< The T key
         U,            ///< The U key
         V,            ///< The V key
-        W,            ///< The W key
+     //   W,            ///< The W key
         X,            ///< The X key
         Y,            ///< The Y key
         Z,            ///< The Z key

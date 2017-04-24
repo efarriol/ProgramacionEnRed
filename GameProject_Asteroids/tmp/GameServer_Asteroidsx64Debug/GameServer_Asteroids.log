@@ -1,5 +1,1 @@
-﻿  GameServer.cpp
-c:\users\efarriol\desktop\programacionenred\gameproject_asteroids\gameserver_asteroids\gameserver.cpp(16): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\efarriol\desktop\programacionenred\gameproject_asteroids\gameserver_asteroids\gameserver.cpp(40): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-  GameServer_Asteroids.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameServer_Asteroids.exe
-  GameServer_Asteroids.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameServer_Asteroids.pdb (Partial PDB)
+﻿LINK : fatal error LNK1104: cannot open file 'GameLib.lib'

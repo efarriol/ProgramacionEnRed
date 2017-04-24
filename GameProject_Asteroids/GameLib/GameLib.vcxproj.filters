@@ -21,9 +21,15 @@
     <ClInclude Include="PlayersInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CriticalMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PlayersInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CriticalMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

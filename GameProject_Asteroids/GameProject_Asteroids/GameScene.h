@@ -43,6 +43,7 @@ private:
 	bool inGameMenu;
 
 	Player* player;
+	Player* player2;
 
 	AsteroidsManager* asteroidsManager;
 	OvniManager* ovniManager;
