@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "Constants.h"
 #include "Player.h"
+#include "OnlinePlayer.h"
 #include "AsteroidsManager.h"
 #include "OvniManager.h"
 #include <XML\rapidxml.hpp>
@@ -44,7 +45,7 @@ private:
 	bool inGameMenu;
 
 	Player* player;
-	Player* player2;
+	OnlinePlayer* onlinePlayer;
 
 	AsteroidsManager* asteroidsManager;
 	OvniManager* ovniManager;

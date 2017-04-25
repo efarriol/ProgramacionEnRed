@@ -26,7 +26,8 @@ public:
 		PT_DISCONNECT
 	};
 
-
+	sf::Vector2f accumuluedMovement;
+	float angle;
 	std::string name;
 	int score;
 	sf::IpAddress ipAdress;

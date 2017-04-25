@@ -27,22 +27,29 @@ public:
 		lifes = _lifes;
 	};
 	~Player();
+	Vector2D GetAccumuledMovement();
+	void RestartAccumuledMovement();
+	float GetAngle();
 	void Update(float deltaTime);
 	virtual void Draw();
 	void Reset();
 	Bullets& GetCurrentBullet(int i);
-	int lifes;
-	int score;
+	int id = 0;
+	int lifes = 0;
+	int score = 0;
 	bool inmortal;
 	enum ControlState {
 		KEYBOARD,
 		MOUSE
 	};
 	ControlState controlState;
+	void UpdatePosition(Vector2D confirmatedVelocity);
+	void UpdateAngle(float _angle);
 
 private:
 	Vector2D desiredVelocity;
 	Vector2D previousVelocity;
+	Vector2D accumuledMovement;
 	float speedCounter;
 	float angle;
 	bool canShoot;
@@ -55,7 +62,6 @@ private:
 
 	void UpdateSpeed(float deltaTime);
 	void UpdateAngle();
-	void UpdatePosition();
 	void FireWeapon(int bullet);
 	int bulletCounter;
 	void WriteRanking();

@@ -1,6 +1,12 @@
 ﻿  NetworkManager.cpp
-c:\users\pcasamiquela\desktop\repositories\programacionred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(25): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-c:\users\pcasamiquela\desktop\repositories\programacionred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(51): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-  GameProject_Asteroids.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionRed\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.exe
-  GameProject_Asteroids.vcxproj -> C:\Users\pcasamiquela\Desktop\Repositories\ProgramacionRed\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.pdb (Partial PDB)
-  0 File(s) copied
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\player.h(9): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\bullets.h(5): note: see previous definition of 'MAX_SPEED'
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(25): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(48): warning C4552: '!': operator has no effect; expected operator with side-effect
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(68): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\dep\inc\inputoutputmemory\outputmemorybitstream.h(151): error C2338: Este Write solo soporta tipos basicos.
+  d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(86): note: see reference to function template instantiation 'void OutputMemoryBitStream::Write<float*>(T,uint32_t)' being compiled
+          with
+          [
+              T=float *
+          ]

@@ -20,6 +20,7 @@ GameScene::GameScene(void) :	backButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 1.4f +
 
 void GameScene::Setup() {
 	player = new Player(Vector2D(SCREEN_WIDTH/2, SCREEN_HEIGHT/2), 30, 39, playerLifes);
+	onlinePlayer = new OnlinePlayer(Vector2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 30, 39, playerLifes);
 	asteroidsManager = new AsteroidsManager(numAsteroids, *player, asteroidsVelocity, incrementalSpeed, targetLevelAsteroid);
 	ovniManager = new OvniManager(*player, ovniSpeed, ovniSpawnTime);
 	inGameMenu = false;
@@ -27,6 +28,7 @@ void GameScene::Setup() {
 
 GameScene::~GameScene(void) {
 	delete player;
+	delete onlinePlayer;
 	delete asteroidsManager;
 }
 
@@ -51,7 +53,7 @@ void GameScene::Update(void) {
 		case LOBBY:
 			ReadFromFile("./../res/lvl/easy.xml");
 			Setup();
-			if (NM.ConnectionEstablishment()) {
+			if (NM.ConnectionEstablishment(player)) {
 				currentState = PLAY;
 			}
 			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();
@@ -60,7 +62,7 @@ void GameScene::Update(void) {
 			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
 			//ovniManager->Update(asteroidsManager->GetLevel());
 			asteroidsManager->Update();
-			NM.IngameConnection();
+			NM.IngameConnection(player);
 			player->Update(TM.GetDeltaTime() / 100000);
 			break;
 		};
@@ -124,6 +126,7 @@ void GameScene::Draw(void)
 
 		asteroidsManager->Draw();
 		//ovniManager->Draw();
+		onlinePlayer->Draw();
 		player->Draw();
 		if (inGameMenu) {
 			GUI::DrawTextBlended<FontID::HYPERSPACE>("PAUSE",

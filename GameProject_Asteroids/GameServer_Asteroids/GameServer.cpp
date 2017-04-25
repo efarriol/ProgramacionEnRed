@@ -79,6 +79,17 @@ int main() {
 			}
 			break;
 		case PlayerInfo::PT_MOVEMENT:
+			imbs.Read(&player[playerID].accumuluedMovement.x, 64);
+			imbs.Read(&player[playerID].accumuluedMovement.y, 64);
+			imbs.Read(&player[playerID].angle, 64);
+			ombs.Write(playerID, 1); 
+			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
+			ombs.Write(player[playerID].accumuluedMovement.x, 64);
+			ombs.Write(player[playerID].accumuluedMovement.y, 64);
+			ombs.Write(player[playerID].angle, 64);
+			//CRITICAL?
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
 			break;
 		case PlayerInfo::PT_DISCONNECT:
 			break;

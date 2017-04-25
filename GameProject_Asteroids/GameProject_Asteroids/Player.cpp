@@ -6,12 +6,28 @@ Player::~Player()
 	delete[] bulletPool;
 }
 
+Vector2D Player::GetAccumuledMovement()
+{
+	return accumuledMovement;
+}
+
+void Player::RestartAccumuledMovement()
+{
+	accumuledMovement = 0;
+}
+
+float Player::GetAngle()
+{
+	return angle;
+}
+
+
 void Player::Update(float deltaTime)
 {
 	UpdateSpeed(deltaTime);
 	UpdateAngle();
 	DoWrap(position);
-	UpdatePosition();
+	//UpdatePosition();
 	if (canShoot) {
 		if (IM.IsKeyDown<KEY_BUTTON_SPACE>()) {
 			FireWeapon(bulletCounter);
@@ -50,23 +66,29 @@ void Player::UpdateSpeed(float deltaTime) {
 
 	if (IM.IsKeyDown<KEY_BUTTON_UP>() || IM.IsKeyDown<'w'>()) {
 		previousVelocity = desiredVelocity;
-		angle = entitieSprite.angle;;
+		angle = entitieSprite.angle;
 		speedCounter=speedCounter/3;
 	}
 
 	desiredVelocity.x = speedCounter*(sin(angle*DEG2RAD));
 	desiredVelocity.y = speedCounter*(cos(angle*DEG2RAD));
+	accumuledMovement += desiredVelocity;
 }
 
 
-void Player::UpdatePosition(){
+void Player::UpdatePosition(Vector2D confirmatedVelocity){
 	
-	position.x += desiredVelocity.x;
-	position.y -= desiredVelocity.y;
-
+	position.x += confirmatedVelocity.x;
+	position.y -= confirmatedVelocity.y;
 
 	entitieSprite.transform.x = position.x;
 	entitieSprite.transform.y = position.y;
+}
+
+void Player::UpdateAngle(float _angle)
+{
+	angle = _angle;
+	entitieSprite.angle = angle;
 }
 
 void Player::FireWeapon(int bullet)

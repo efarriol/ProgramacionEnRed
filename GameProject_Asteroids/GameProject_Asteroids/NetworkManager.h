@@ -6,6 +6,7 @@
 #include <InputOutputMemory\OutputMemoryBitStream.h>
 #include <InputOutputMemory\OutputMemoryStream.h>
 #include <PlayersInfo.h>
+#include "Player.h"
 
 #define NM NetworkManager::Instance()
 
@@ -16,6 +17,10 @@ private:
 	sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
+	Player *player;
+	sf::Clock deltaClock;
+	sf::Time deltaTime;
+	bool firstClock = true;
 
 public:
 	inline static NetworkManager &Instance(void) {
@@ -25,8 +30,8 @@ public:
 
 	NetworkManager();
 	~NetworkManager();
-	bool ConnectionEstablishment();
-	void IngameConnection();
+	bool ConnectionEstablishment(Player* &player);
+	void IngameConnection(Player* &player);
 	void Disconnect();
 };
 
