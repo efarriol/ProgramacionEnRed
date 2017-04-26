@@ -3,6 +3,9 @@
 #include <math.h>
 #include "Constants.h"
 #include "Entities.h"
+#include <SFML\Graphics.hpp>
+#include <SFML\Network.hpp>
+#define FLOATtoINT 100000000
 
 class OnlinePlayer : public Entities
 {
@@ -16,7 +19,9 @@ public:
 		lifes = _lifes;
 	};
 	~OnlinePlayer();
-	void Update(Vector2D _position, float angle);
+	void Update(sf::Vector2i _accumulatedMovement, float angle);
+	void DoWrap(Vector2D & position);
+	int id=0;
 	int lifes;
 	int score;
 };

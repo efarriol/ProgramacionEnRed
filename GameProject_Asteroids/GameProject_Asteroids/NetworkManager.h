@@ -7,8 +7,11 @@
 #include <InputOutputMemory\OutputMemoryStream.h>
 #include <PlayersInfo.h>
 #include "Player.h"
+#include "OnlinePlayer.h"
 
 #define NM NetworkManager::Instance()
+#define POSITIVE 1
+#define NEGATIVE 0
 
 class NetworkManager
 {
@@ -30,8 +33,8 @@ public:
 
 	NetworkManager();
 	~NetworkManager();
-	bool ConnectionEstablishment(Player* &player);
-	void IngameConnection(Player* &player);
+	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer);
+	void IngameConnection(Player* &player, OnlinePlayer* &onlinePlayer);
 	void Disconnect();
 };
 

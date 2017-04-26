@@ -6,14 +6,19 @@ Player::~Player()
 	delete[] bulletPool;
 }
 
-Vector2D Player::GetAccumuledMovement()
+sf::Vector2i Player::GetAccumuledMovement()
 {
-	return accumuledMovement;
+	sf::Vector2i _accumulatedMovement;
+	_accumulatedMovement.x = (int)accumuledMovement.x*FLOATtoINT;
+	_accumulatedMovement.y = (int)accumuledMovement.y*FLOATtoINT;
+
+	return _accumulatedMovement;
 }
 
 void Player::RestartAccumuledMovement()
 {
-	accumuledMovement = 0;
+	accumuledMovement.x = 0;
+	accumuledMovement.y = 0;
 }
 
 float Player::GetAngle()
@@ -59,7 +64,6 @@ void Player::UpdateSpeed(float deltaTime) {
 	if (IM.IsKeyHold<KEY_BUTTON_UP>() || IM.IsKeyHold<'w'>()){
 		if(speedCounter <= MAX_SPEED) speedCounter += (0.7f * deltaTime); 
 	}
-
 	else {
 		if (speedCounter >= 0.0f)speedCounter -= 0.2f*deltaTime;
 	}
@@ -72,14 +76,18 @@ void Player::UpdateSpeed(float deltaTime) {
 
 	desiredVelocity.x = speedCounter*(sin(angle*DEG2RAD));
 	desiredVelocity.y = speedCounter*(cos(angle*DEG2RAD));
-	accumuledMovement += desiredVelocity;
+	accumuledMovement.x += desiredVelocity.x;
+	accumuledMovement.y += desiredVelocity.y;
 }
 
 
-void Player::UpdatePosition(Vector2D confirmatedVelocity){
-	
-	position.x += confirmatedVelocity.x;
-	position.y -= confirmatedVelocity.y;
+void Player::UpdatePosition(sf::Vector2i _confirmatedMovement){ 
+	sf::Vector2f confirmatedMovement;
+	confirmatedMovement.x = _confirmatedMovement.x / FLOATtoINT;
+	confirmatedMovement.y = _confirmatedMovement.y / FLOATtoINT;
+
+	position.x += confirmatedMovement.x;
+	position.y -= confirmatedMovement.y;
 
 	entitieSprite.transform.x = position.x;
 	entitieSprite.transform.y = position.y;
@@ -87,16 +95,15 @@ void Player::UpdatePosition(Vector2D confirmatedVelocity){
 
 void Player::UpdateAngle(float _angle)
 {
-	angle = _angle;
-	entitieSprite.angle = angle;
+	entitieSprite.angle = _angle;
 }
 
 void Player::FireWeapon(int bullet)
 {
 	bulletPool[bullet].firstShoot = true;
 	Vector2D circlePosition; //To know the direction of bullet, we make a circle and pick a point 
-	circlePosition.x = position.x+width/2 + RADIUS*cos((entitieSprite.angle-90)*DEG2RAD);
-	circlePosition.y = position.y+height / 2 + RADIUS*sin((entitieSprite.angle-90)*DEG2RAD);
+	circlePosition.x = position.x+width/2 + RADIUS*cos((angle-90)*DEG2RAD);
+	circlePosition.y = position.y+height / 2 + RADIUS*sin((angle-90)*DEG2RAD);
 
 	bulletPool[bullet].setPosition(circlePosition);
 	bulletPool[bullet].SetActive(true);
@@ -146,11 +153,12 @@ void Player::UpdateAngle()
 {
 	mouseCoords = IM.GetMouseCoords();
 
-	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) entitieSprite.angle -= 0.008f;
-	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) entitieSprite.angle += 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) angle -= 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) angle += 0.008f;
 	
-	if (entitieSprite.angle <= 0) entitieSprite.angle = 360;
-	else if (entitieSprite.angle >= 360) entitieSprite.angle = 0;
+	if (angle <= 0) angle = 360;
+	else if (angle >= 360) angle = 0;
+	UpdateAngle(angle);
 }
 
 

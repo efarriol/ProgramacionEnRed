@@ -53,7 +53,7 @@ void GameScene::Update(void) {
 		case LOBBY:
 			ReadFromFile("./../res/lvl/easy.xml");
 			Setup();
-			if (NM.ConnectionEstablishment(player)) {
+			if (NM.ConnectionEstablishment(player, onlinePlayer)) {
 				currentState = PLAY;
 			}
 			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();
@@ -62,7 +62,7 @@ void GameScene::Update(void) {
 			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
 			//ovniManager->Update(asteroidsManager->GetLevel());
 			asteroidsManager->Update();
-			NM.IngameConnection(player);
+			NM.IngameConnection(player, onlinePlayer);
 			player->Update(TM.GetDeltaTime() / 100000);
 			break;
 		};

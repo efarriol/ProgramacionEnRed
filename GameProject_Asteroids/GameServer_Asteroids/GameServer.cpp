@@ -13,14 +13,14 @@
 #include <Windows.h>
 #include <PlayersInfo.h>
 #include "CriticalMessage.h"
-
+#define POSITIVE 1
+#define NEGATIVE 0
 
 int main() {
 	srand(time(NULL));
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	std::vector<CriticalMessage*> criticalMessages;	
-	int criticalCount = 0;
 	//PlayerInfo
 	PlayerInfo player[2];
 	bool setupDone = false;
@@ -49,12 +49,13 @@ int main() {
 			imbs.Read(&packetType, 3);
 		}
 		int messageId = 0;
+		int sign = 0;
 		OutputMemoryBitStream ombs;
 		switch (packetType)
 		{
 		case PlayerInfo::PT_ACK:
 			imbs.Read(&messageId, 5);
-			if(criticalMessages.size() > 0)	criticalMessages.erase(criticalMessages.begin() + messageId);
+			for (int i = 0; i < criticalMessages.size(); i++) if (messageId == criticalMessages[i]->id) criticalMessages.erase(criticalMessages.begin() + i);
 			break;
 		case PlayerInfo::PT_PING:
 			break;
@@ -63,30 +64,37 @@ int main() {
 				player[playersCount].id = playersCount;
 				player[playersCount].ipAdress = senderIP;
 				player[playersCount].port = senderPort;
-				if (senderPort == player[0].port) {
-					ombs.Write(player[0].id, 1);
-					ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
-					socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
-				}
-				else if (senderPort == player[1].port && !setupDone) {
-					criticalMessages.push_back(new CriticalMessage(player[0].id, PlayerInfo::PacketType::PT_GAMESTART));
-					criticalCount++;
-					criticalMessages.push_back(new CriticalMessage(player[1].id, PlayerInfo::PacketType::PT_GAMESTART));
-					criticalCount++;
-					setupDone = true;
-				}
 				playersCount++;
+			}
+			if (senderPort == player[0].port) {
+				ombs.Write(player[0].id, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_WELCOME, 3);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
+			}
+			else if (senderPort == player[1].port && !setupDone) {
+				criticalMessages.push_back(new CriticalMessage(player[0].id, PlayerInfo::PacketType::PT_GAMESTART, player[1].id));
+				criticalMessages.push_back(new CriticalMessage(player[1].id, PlayerInfo::PacketType::PT_GAMESTART, player[0].id));
+				setupDone = true;
 			}
 			break;
 		case PlayerInfo::PT_MOVEMENT:
-			imbs.Read(&player[playerID].accumuluedMovement.x, 64);
-			imbs.Read(&player[playerID].accumuluedMovement.y, 64);
-			imbs.Read(&player[playerID].angle, 64);
+			imbs.Read(&player[playerID].accumulatedMovement.x, 30);
+			imbs.Read(&sign, 1);
+			if (sign == NEGATIVE) player[playerID].accumulatedMovement.x *= -1;
+			imbs.Read(&player[playerID].accumulatedMovement.y, 30);
+			imbs.Read(&sign, 1);
+			if (sign == NEGATIVE) player[playerID].accumulatedMovement.y *= -1;
+			std::cout << player[playerID].accumulatedMovement.y << std::endl;
+			//imbs.Read(&player[playerID].angle, 64);
 			ombs.Write(playerID, 1); 
 			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
-			ombs.Write(player[playerID].accumuluedMovement.x, 64);
-			ombs.Write(player[playerID].accumuluedMovement.y, 64);
-			ombs.Write(player[playerID].angle, 64);
+			ombs.Write(player[playerID].accumulatedMovement.x, 30);
+			if (player[playerID].accumulatedMovement.x >= 0) ombs.Write(POSITIVE, 1);
+			else ombs.Write(NEGATIVE, 1);
+			ombs.Write(player[playerID].accumulatedMovement.y, 30);
+			if (player[playerID].accumulatedMovement.y >= 0) ombs.Write(POSITIVE, 1);
+			else ombs.Write(NEGATIVE, 1);
+			//ombs.Write(player[playerID].angle, 64);
 			//CRITICAL?
 			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
 			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
@@ -96,7 +104,6 @@ int main() {
 		default:
 			break;
 		}
-		std::cout << criticalMessages.size() << std::endl;
 
 		//Send criticalMessages
 		for (int i = 0; i < criticalMessages.size(); i++) {
@@ -104,6 +111,9 @@ int main() {
 			ombs2.Write(criticalMessages[i]->id, 1);
 			ombs2.Write(criticalMessages[i]->packetType, 3);
 			switch (criticalMessages[i]->packetType) {
+			case PlayerInfo::PacketType::PT_GAMESTART:
+				ombs2.Write(criticalMessages[i]->opponentId, 1);
+				break;
 			case PlayerInfo::PacketType::PT_MOVEMENT:
 					break;
 			}

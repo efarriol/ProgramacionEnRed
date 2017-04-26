@@ -5,9 +5,13 @@
 #include "Bullets.h"
 #include "RankingScene.h"
 #include "Entities.h"
+#include <SFML\Graphics.hpp>
+#include <SFML\Network.hpp>
 
 #define MAX_SPEED 0.005f
 #define RADIUS 25.0f
+#define FLOATtoINT 100000000
+
 class Player : public Entities
 {
 
@@ -27,14 +31,14 @@ public:
 		lifes = _lifes;
 	};
 	~Player();
-	Vector2D GetAccumuledMovement();
+	sf::Vector2i GetAccumuledMovement();
 	void RestartAccumuledMovement();
 	float GetAngle();
 	void Update(float deltaTime);
 	virtual void Draw();
 	void Reset();
 	Bullets& GetCurrentBullet(int i);
-	int id = 0;
+	int id = NULL;
 	int lifes = 0;
 	int score = 0;
 	bool inmortal;
@@ -43,15 +47,15 @@ public:
 		MOUSE
 	};
 	ControlState controlState;
-	void UpdatePosition(Vector2D confirmatedVelocity);
+	void UpdatePosition(sf::Vector2i _confirmatedVelocity);
 	void UpdateAngle(float _angle);
 
 private:
-	Vector2D desiredVelocity;
-	Vector2D previousVelocity;
-	Vector2D accumuledMovement;
-	float speedCounter;
-	float angle;
+	Vector2D desiredVelocity = 0;
+	Vector2D previousVelocity = 0;
+	sf::Vector2f accumuledMovement = sf::Vector2f(0.0f, 0.0f);
+	float speedCounter = 0;
+	float angle = 0;
 	bool canShoot;
 	float inmortalTime;
 	float blinkTime; //parpadeo
