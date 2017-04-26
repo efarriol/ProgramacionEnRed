@@ -8,17 +8,13 @@ Player::~Player()
 
 sf::Vector2i Player::GetAccumuledMovement()
 {
-	sf::Vector2i _accumulatedMovement;
-	_accumulatedMovement.x = (int)accumuledMovement.x*FLOATtoINT;
-	_accumulatedMovement.y = (int)accumuledMovement.y*FLOATtoINT;
-
-	return _accumulatedMovement;
+	return accumuledMovement;
 }
 
 void Player::RestartAccumuledMovement()
 {
-	accumuledMovement.x = 0;
-	accumuledMovement.y = 0;
+	accumuledMovement.x = 0.0f;
+	accumuledMovement.y = 0.0f;
 }
 
 float Player::GetAngle()
@@ -76,8 +72,9 @@ void Player::UpdateSpeed(float deltaTime) {
 
 	desiredVelocity.x = speedCounter*(sin(angle*DEG2RAD));
 	desiredVelocity.y = speedCounter*(cos(angle*DEG2RAD));
-	accumuledMovement.x += desiredVelocity.x;
-	accumuledMovement.y += desiredVelocity.y;
+
+	accumuledMovement.x += desiredVelocity.x*FLOATtoINT;
+	accumuledMovement.y += desiredVelocity.y*FLOATtoINT;
 }
 
 

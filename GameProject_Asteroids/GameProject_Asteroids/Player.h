@@ -10,7 +10,7 @@
 
 #define MAX_SPEED 0.005f
 #define RADIUS 25.0f
-#define FLOATtoINT 100000000
+#define FLOATtoINT 100000000.0f
 
 class Player : public Entities
 {
@@ -53,7 +53,7 @@ public:
 private:
 	Vector2D desiredVelocity = 0;
 	Vector2D previousVelocity = 0;
-	sf::Vector2f accumuledMovement = sf::Vector2f(0.0f, 0.0f);
+	sf::Vector2i accumuledMovement = sf::Vector2i(0, 0);
 	float speedCounter = 0;
 	float angle = 0;
 	bool canShoot;

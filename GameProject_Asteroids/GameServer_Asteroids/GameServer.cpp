@@ -35,9 +35,9 @@ int main() {
 		std::cout << "Can't bind to port 5000" << std::endl;
 	}
 	while (true) {
+
 		PlayerInfo::PacketType packetType;
 		packetType = PlayerInfo::PacketType::PT_EMPTY;
-		sf::sleep(sf::milliseconds(50));
 		char messageBuffer[2000];
 		int playerID = 0;
 		size_t messageSize = 0;
@@ -84,7 +84,8 @@ int main() {
 			imbs.Read(&player[playerID].accumulatedMovement.y, 30);
 			imbs.Read(&sign, 1);
 			if (sign == NEGATIVE) player[playerID].accumulatedMovement.y *= -1;
-			std::cout << player[playerID].accumulatedMovement.y << std::endl;
+			std::cout << "x: " << player[playerID].accumulatedMovement.x << std::endl;
+			std::cout << "y: " << player[playerID].accumulatedMovement.y << std::endl;
 			//imbs.Read(&player[playerID].angle, 64);
 			ombs.Write(playerID, 1); 
 			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
@@ -117,7 +118,7 @@ int main() {
 			case PlayerInfo::PacketType::PT_MOVEMENT:
 					break;
 			}
-			ombs2.Write(i, 5);
+			ombs2.Write(i, 5); 
 			socket.send(ombs2.GetBufferPtr(), ombs2.GetByteLength(), player[criticalMessages[i]->id].ipAdress, player[criticalMessages[i]->id].port);
 		}
 	}

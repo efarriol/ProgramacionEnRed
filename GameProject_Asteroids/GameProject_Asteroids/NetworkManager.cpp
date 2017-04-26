@@ -51,6 +51,7 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		firstClock = false;
 	}
 	deltaTime = deltaClock.getElapsedTime();
+
 	if (deltaTime.asMilliseconds() > 100) {
 		//acumulation and send...
 		std::cout << "x:" << player->GetAccumuledMovement().x << std::endl;
@@ -70,6 +71,7 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		player->RestartAccumuledMovement();
 		deltaClock.restart();
 	}
+
 
 	//Receive
 	char messageBuffer[2000];
