@@ -5,12 +5,12 @@ OnlinePlayer::~OnlinePlayer()
 {
 }
 
-void OnlinePlayer::Update(sf::Vector2i _accumulatedMovement, float angle)
+void OnlinePlayer::UpdatePosition(sf::Vector2i _accumulatedMovement, int angle)
 {
 
 	sf::Vector2f accumulatedMovement;
-	accumulatedMovement.x = _accumulatedMovement.x / FLOATtoINT;
-	accumulatedMovement.y = _accumulatedMovement.y / FLOATtoINT;
+	accumulatedMovement.x = _accumulatedMovement.x / (int)FLOATtoINT;
+	accumulatedMovement.y = _accumulatedMovement.y / (int)FLOATtoINT;
 	
 	position.x += accumulatedMovement.x;
 	position.y -= accumulatedMovement.y;

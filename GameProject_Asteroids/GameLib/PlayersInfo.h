@@ -27,7 +27,7 @@ public:
 	};
 
 	sf::Vector2i accumulatedMovement = sf::Vector2i(0, 0);
-	float angle;
+	int angle;
 	std::string name;
 	int score;
 	sf::IpAddress ipAdress;

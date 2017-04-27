@@ -33,7 +33,7 @@ public:
 	~Player();
 	sf::Vector2i GetAccumuledMovement();
 	void RestartAccumuledMovement();
-	float GetAngle();
+	int GetAngle();
 	void Update(float deltaTime);
 	virtual void Draw();
 	void Reset();

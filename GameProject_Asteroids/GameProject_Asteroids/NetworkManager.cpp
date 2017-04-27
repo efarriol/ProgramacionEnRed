@@ -54,9 +54,9 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 
 	if (deltaTime.asMilliseconds() > 100) {
 		//acumulation and send...
-		std::cout << "x:" << player->GetAccumuledMovement().x << std::endl;
+		/*std::cout << "x:" << player->GetAccumuledMovement().x << std::endl;
 		std::cout << "y: " << player->GetAccumuledMovement().y << std::endl;
-
+*/
 		OutputMemoryBitStream movementOmbs;
 		movementOmbs.Write(player->id, 1);
 		movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
@@ -89,6 +89,8 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	sf::Vector2i receivedAccumulationMovement = sf::Vector2i(0, 0);
 	float receivedAngle = 0;
 	int sign = 0;
+	int opponentid = 0;
+
 	OutputMemoryBitStream ombs;
 	switch (packetType)
 	{
@@ -103,10 +105,11 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
 		//imbs.Read(&receivedAngle, 64);
 		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement);
-		else if(id == onlinePlayer->id) onlinePlayer->Update(receivedAccumulationMovement, 0);
+		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, 0);
 		//player->UpdateAngle(receivedAngle);
 		break;
 	case PlayerInfo::PT_GAMESTART:
+		imbs.Read(&opponentid, 1);
 		imbs.Read(&messageId, 5);
 		ombs.Write(id , 1);
 		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);

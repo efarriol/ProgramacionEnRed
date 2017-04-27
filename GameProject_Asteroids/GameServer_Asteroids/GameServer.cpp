@@ -84,8 +84,6 @@ int main() {
 			imbs.Read(&player[playerID].accumulatedMovement.y, 30);
 			imbs.Read(&sign, 1);
 			if (sign == NEGATIVE) player[playerID].accumulatedMovement.y *= -1;
-			std::cout << "x: " << player[playerID].accumulatedMovement.x << std::endl;
-			std::cout << "y: " << player[playerID].accumulatedMovement.y << std::endl;
 			//imbs.Read(&player[playerID].angle, 64);
 			ombs.Write(playerID, 1); 
 			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);

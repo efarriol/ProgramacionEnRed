@@ -17,8 +17,9 @@ void Player::RestartAccumuledMovement()
 	accumuledMovement.y = 0.0f;
 }
 
-float Player::GetAngle()
+int Player::GetAngle()
 {
+	int _angle = angle*FLOATtoINT;
 	return angle;
 }
 
@@ -80,11 +81,18 @@ void Player::UpdateSpeed(float deltaTime) {
 
 void Player::UpdatePosition(sf::Vector2i _confirmatedMovement){ 
 	sf::Vector2f confirmatedMovement;
-	confirmatedMovement.x = _confirmatedMovement.x / FLOATtoINT;
-	confirmatedMovement.y = _confirmatedMovement.y / FLOATtoINT;
+	confirmatedMovement.x = _confirmatedMovement.x / (int)FLOATtoINT;
+	confirmatedMovement.y = _confirmatedMovement.y / (int)FLOATtoINT;
 
-	position.x += confirmatedMovement.x;
-	position.y -= confirmatedMovement.y;
+	if (angle >= 0 && angle < 90 ||
+		angle >= 270 && angle < 360) {
+		position.x += confirmatedMovement.x;
+		position.y -= confirmatedMovement.y;
+	}
+	else if (angle >= 90 && angle < 270) {
+		position.x -= confirmatedMovement.x;
+		position.y += confirmatedMovement.y;
+	}
 
 	entitieSprite.transform.x = position.x;
 	entitieSprite.transform.y = position.y;
@@ -99,8 +107,8 @@ void Player::FireWeapon(int bullet)
 {
 	bulletPool[bullet].firstShoot = true;
 	Vector2D circlePosition; //To know the direction of bullet, we make a circle and pick a point 
-	circlePosition.x = position.x+width/2 + RADIUS*cos((angle-90)*DEG2RAD);
-	circlePosition.y = position.y+height / 2 + RADIUS*sin((angle-90)*DEG2RAD);
+	circlePosition.x = position.x+width/2 + RADIUS*cos((entitieSprite.angle-90)*DEG2RAD);
+	circlePosition.y = position.y+height / 2 + RADIUS*sin((entitieSprite.angle-90)*DEG2RAD);
 
 	bulletPool[bullet].setPosition(circlePosition);
 	bulletPool[bullet].SetActive(true);
@@ -150,12 +158,12 @@ void Player::UpdateAngle()
 {
 	mouseCoords = IM.GetMouseCoords();
 
-	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) angle -= 0.008f;
-	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) angle += 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) entitieSprite.angle -= 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) entitieSprite.angle += 0.008f;
 	
-	if (angle <= 0) angle = 360;
-	else if (angle >= 360) angle = 0;
-	UpdateAngle(angle);
+	if (entitieSprite.angle <= 0) entitieSprite.angle = 360;
+	else if (entitieSprite.angle >= 360) entitieSprite.angle = 0;
+	//UpdateAngle(angle);
 }
 
 

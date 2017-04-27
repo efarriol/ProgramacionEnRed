@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="InputManager" Collapsed="true">
+    <Position X="13.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAAAAAAFEAAIAIgAICAAICAQAAAFQAAgYAAgAAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="12" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAACAAAQAAQAAAASAAgAIAAAAQ=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeManager" Collapsed="true">
+    <Position X="15.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAQAQAAAAAAQgAAAEAAAAAAQAAgAAAAAAA=</HashCode>
+      <FileName>TimeManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Button" Collapsed="true">
+    <Position X="22" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEIAAAAAAAAAAgAAAAAAIAAAAAAAAAAIEACAAAEAAAA=</HashCode>
+      <FileName>Button.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GUI" Collapsed="true">
+    <Position X="20.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAECIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Entities" Collapsed="true">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAACAAAkQAQAAAIAAAAAAAAAAABAEAAAAAAAA=</HashCode>
+      <FileName>Entities.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bullets" Collapsed="true">
+    <Position X="3" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQAgAAAAAAAZiAAIgAAABACAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Bullets.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="3" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQCBAAACgAAJiQAkAAJAAgIAAIFCAIAQEEgAQBgAhA=</HashCode>
+      <FileName>Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Asteroid" Collapsed="true">
+    <Position X="1.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAQAAQAACAAAACCBAAAAAAAAAAIAAQABAAQAAAAAggA=</HashCode>
+      <FileName>Asteroid.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsteroidsManager" Collapsed="true">
+    <Position X="8.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBQgAAIEAAAAAgAIQIADQCABAAEAAQAFCAAAAAAAAAg=</HashCode>
+      <FileName>AsteroidsManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OvniManager" Collapsed="true">
+    <Position X="20.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAIAgAAEAAAkAgAAAABCABAAAAAQAA=</HashCode>
+      <FileName>OvniManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OnlinePlayer" Collapsed="true">
+    <Position X="3" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAIEAEAAAIAAAAAAIAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>OnlinePlayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="7.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQABEAAAAAAAgAAoAAAAAAAQAAQAAAAAAMAAAAAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScene" Collapsed="true">
+    <Position X="9.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQAAAAACAgAA4AAIoiABCEAgYAQEAABACEAAAAAABQ=</HashCode>
+      <FileName>GameScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuScene" Collapsed="true">
+    <Position X="6.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYgAAAAAAAAAwAAIAAAAAAAAAAQAIIAAAEAAAAAAAA=</HashCode>
+      <FileName>MenuScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RankingScene" Collapsed="true">
+    <Position X="7.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAAICAAAAAAgBIQAAAAgEEAAAAAAAA=</HashCode>
+      <FileName>RankingScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NetworkManager" Collapsed="true">
+    <Position X="10.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAUAAAAAAAECAAAAAAAAIAABUAFAAAAABAI=</HashCode>
+      <FileName>NetworkManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Renderer" Collapsed="true">
+    <Position X="20.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkAAAAAAAAACAAACAAAAAAAAgAAAEAQBCkAABACAg=</HashCode>
+      <FileName>Render.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Window" Collapsed="true">
+    <Position X="19" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAEAAAAABAQQIAAAAAQAAgCEAAJAA=</HashCode>
+      <FileName>Window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="MouseCoords" Collapsed="true">
+    <Position X="13.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABiAAAAAAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Color" Collapsed="true">
+    <Position X="12" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEEAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Color.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Sprite" Collapsed="true">
+    <Position X="15.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Sprite.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Transform" Collapsed="true">
+    <Position X="17.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transform.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vector2D" Collapsed="true">
+    <Position X="12" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAEAAAAQBAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Vector2D.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="MouseButton" Collapsed="true">
+    <Position X="17.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAIAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KeyButton" Collapsed="true">
+    <Position X="15.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAABEAAAAAIAAAQAAAAAAAJAAACAAACgAAAAQAAIAA=</HashCode>
+      <FileName>InputManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ObjectID" Collapsed="true">
+    <Position X="12" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEABAAAAEEAAAAAAAAAAAOAAAAAAAAAAAQAAAAEAA=</HashCode>
+      <FileName>ID.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FontID" Collapsed="true">
+    <Position X="12" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAARAAAAAAEAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ID.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SceneState" Collapsed="true">
+    <Position X="13.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAQAACAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FontStyle" Collapsed="true">
+    <Position X="13.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAEAAAAAAAAAAAAQAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Render.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
