@@ -12,8 +12,15 @@ void OnlinePlayer::UpdatePosition(sf::Vector2i _accumulatedMovement, int angle)
 	accumulatedMovement.x = _accumulatedMovement.x / (int)FLOATtoINT;
 	accumulatedMovement.y = _accumulatedMovement.y / (int)FLOATtoINT;
 	
-	position.x += accumulatedMovement.x;
-	position.y -= accumulatedMovement.y;
+	if (angle >= 0 && angle < 90 ||
+		angle >= 270 && angle < 360) {
+		position.x += accumulatedMovement.x;
+		position.y -= accumulatedMovement.y;
+	}
+	else if (angle >= 90 && angle < 270) {
+		position.x -= accumulatedMovement.x;
+		position.y += accumulatedMovement.y;
+	}
 	entitieSprite.transform.x = position.x;
 	entitieSprite.transform.y = position.y;
 	entitieSprite.angle = angle;

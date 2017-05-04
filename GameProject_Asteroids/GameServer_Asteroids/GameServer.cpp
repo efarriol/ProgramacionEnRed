@@ -84,7 +84,7 @@ int main() {
 			imbs.Read(&player[playerID].accumulatedMovement.y, 30);
 			imbs.Read(&sign, 1);
 			if (sign == NEGATIVE) player[playerID].accumulatedMovement.y *= -1;
-			//imbs.Read(&player[playerID].angle, 64);
+			imbs.Read(&player[playerID].angle, 9);
 			ombs.Write(playerID, 1); 
 			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
 			ombs.Write(player[playerID].accumulatedMovement.x, 30);
@@ -93,7 +93,7 @@ int main() {
 			ombs.Write(player[playerID].accumulatedMovement.y, 30);
 			if (player[playerID].accumulatedMovement.y >= 0) ombs.Write(POSITIVE, 1);
 			else ombs.Write(NEGATIVE, 1);
-			//ombs.Write(player[playerID].angle, 64);
+			ombs.Write(player[playerID].angle, 9);
 			//CRITICAL?
 			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
 			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);

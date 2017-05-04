@@ -66,7 +66,8 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		movementOmbs.Write(player->GetAccumuledMovement().y, 30);
 		if (player->GetAccumuledMovement().y >= 0) movementOmbs.Write(POSITIVE, 1);
 		else movementOmbs.Write(NEGATIVE, 1);
-		//movementOmbs.Write(player->GetAngle(), 5);
+		movementOmbs.Write(player->GetAngle(), 9);
+		std::cout << player->GetAngle() << std::endl;
 		socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
 		player->RestartAccumuledMovement();
 		deltaClock.restart();
@@ -87,7 +88,7 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	}
 
 	sf::Vector2i receivedAccumulationMovement = sf::Vector2i(0, 0);
-	float receivedAngle = 0;
+	int receivedAngle = 0;
 	int sign = 0;
 	int opponentid = 0;
 
@@ -103,9 +104,9 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		imbs.Read(&receivedAccumulationMovement.y, 30);
 		imbs.Read(&sign, 1);
 		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
-		//imbs.Read(&receivedAngle, 64);
-		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement);
-		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, 0);
+		imbs.Read(&receivedAngle, 9);
+		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement, receivedAngle);
+		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, receivedAngle);
 		//player->UpdateAngle(receivedAngle);
 		break;
 	case PlayerInfo::PT_GAMESTART:

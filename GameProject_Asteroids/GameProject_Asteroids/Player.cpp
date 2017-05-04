@@ -19,8 +19,8 @@ void Player::RestartAccumuledMovement()
 
 int Player::GetAngle()
 {
-	int _angle = angle*FLOATtoINT;
-	return angle;
+	int _angle = (int)angle;
+	return _angle;
 }
 
 
@@ -38,7 +38,7 @@ void Player::Update(float deltaTime)
 		}
 	}
 	for (int i = 0; i < MAX_BULLETS; i++) {
-		bulletPool[i].Update(deltaTime, entitieSprite.angle*DEG2RAD);
+		bulletPool[i].Update(deltaTime, angle*DEG2RAD);
 		bulletPool[i].firstShoot = false;
 	}
 	if (IM.IsKeyDown<'q'>()) {
@@ -79,7 +79,8 @@ void Player::UpdateSpeed(float deltaTime) {
 }
 
 
-void Player::UpdatePosition(sf::Vector2i _confirmatedMovement){ 
+void Player::UpdatePosition(sf::Vector2i _confirmatedMovement, int _angle){ 
+	entitieSprite.angle = _angle;
 	sf::Vector2f confirmatedMovement;
 	confirmatedMovement.x = _confirmatedMovement.x / (int)FLOATtoINT;
 	confirmatedMovement.y = _confirmatedMovement.y / (int)FLOATtoINT;
@@ -98,10 +99,6 @@ void Player::UpdatePosition(sf::Vector2i _confirmatedMovement){
 	entitieSprite.transform.y = position.y;
 }
 
-void Player::UpdateAngle(float _angle)
-{
-	entitieSprite.angle = _angle;
-}
 
 void Player::FireWeapon(int bullet)
 {
@@ -158,12 +155,12 @@ void Player::UpdateAngle()
 {
 	mouseCoords = IM.GetMouseCoords();
 
-	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) entitieSprite.angle -= 0.008f;
-	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) entitieSprite.angle += 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_LEFT>() || IM.IsKeyHold<'a'>()) angle -= 0.008f;
+	if (IM.IsKeyHold<KEY_BUTTON_RIGHT>() || IM.IsKeyHold<'d'>()) angle += 0.008f;
 	
-	if (entitieSprite.angle <= 0) entitieSprite.angle = 360;
-	else if (entitieSprite.angle >= 360) entitieSprite.angle = 0;
-	//UpdateAngle(angle);
+	if (angle <= 0) angle = 360;
+	else if (angle >= 360) angle = 0;
+	entitieSprite.angle = angle;
 }
 
 

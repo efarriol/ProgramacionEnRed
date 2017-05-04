@@ -47,8 +47,7 @@ public:
 		MOUSE
 	};
 	ControlState controlState;
-	void UpdatePosition(sf::Vector2i _confirmatedVelocity);
-	void UpdateAngle(float _angle);
+	void UpdatePosition(sf::Vector2i _confirmatedVelocity, int _angle);
 
 private:
 	Vector2D desiredVelocity = 0;
