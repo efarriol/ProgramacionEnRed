@@ -80,6 +80,7 @@ void Player::UpdateSpeed(float deltaTime) {
 
 
 void Player::UpdatePosition(sf::Vector2i _confirmatedMovement, int _angle){ 
+	angle = _angle;
 	entitieSprite.angle = _angle;
 	sf::Vector2f confirmatedMovement;
 	confirmatedMovement.x = _confirmatedMovement.x / (int)FLOATtoINT;

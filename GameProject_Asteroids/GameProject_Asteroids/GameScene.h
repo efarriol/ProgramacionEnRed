@@ -23,7 +23,7 @@ public:
 	void Draw(void) override;
 
 private:
-
+	bool setupDone = false;
 	Button backButton;
 	Button continueButton;
 	Button exitButton;

@@ -48,6 +48,7 @@ public:
 	};
 	ControlState controlState;
 	void UpdatePosition(sf::Vector2i _confirmatedVelocity, int _angle);
+	std::string name;
 
 private:
 	Vector2D desiredVelocity = 0;
@@ -58,7 +59,6 @@ private:
 	bool canShoot;
 	float inmortalTime;
 	float blinkTime; //parpadeo
-	std::string name;
 	Bullets* bulletPool;
 
 	MouseCoords mouseCoords;

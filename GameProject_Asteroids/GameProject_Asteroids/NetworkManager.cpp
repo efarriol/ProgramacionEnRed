@@ -37,6 +37,7 @@ bool NetworkManager::ConnectionEstablishment(Player* &player, OnlinePlayer* &onl
 		OutputMemoryBitStream ombs;
 		ombs.Write(player->id, 1);
 		ombs.Write(PlayerInfo::PacketType::PT_HELLO, 3);
+		ombs.WriteString(player->name);
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 	}
 
@@ -67,7 +68,6 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		if (player->GetAccumuledMovement().y >= 0) movementOmbs.Write(POSITIVE, 1);
 		else movementOmbs.Write(NEGATIVE, 1);
 		movementOmbs.Write(player->GetAngle(), 9);
-		std::cout << player->GetAngle() << std::endl;
 		socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
 		player->RestartAccumuledMovement();
 		deltaClock.restart();
