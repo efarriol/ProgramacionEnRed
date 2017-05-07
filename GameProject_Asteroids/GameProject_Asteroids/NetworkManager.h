@@ -8,6 +8,7 @@
 #include <PlayersInfo.h>
 #include "Player.h"
 #include "OnlinePlayer.h"
+#include <CriticalMessage.h>
 
 #define NM NetworkManager::Instance()
 #define POSITIVE 1
@@ -24,7 +25,9 @@ private:
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	bool firstClock = true;
-
+	std::vector <MovementMessage> movementMessages;
+	int idCount = 0;
+	sf::Vector2i absolutePos = sf::Vector2i(0, 0);
 public:
 	inline static NetworkManager &Instance(void) {
 		static NetworkManager networkManager;
@@ -35,6 +38,7 @@ public:
 	~NetworkManager();
 	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer);
 	void IngameConnection(Player* &player, OnlinePlayer* &onlinePlayer);
+	void SendMovementMessage(int messageId);
 	void Disconnect();
 };
 

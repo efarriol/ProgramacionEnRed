@@ -54,21 +54,10 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	deltaTime = deltaClock.getElapsedTime();
 
 	if (deltaTime.asMilliseconds() > 100) {
-		//acumulation and send...
-		/*std::cout << "x:" << player->GetAccumuledMovement().x << std::endl;
-		std::cout << "y: " << player->GetAccumuledMovement().y << std::endl;
-*/
-		OutputMemoryBitStream movementOmbs;
-		movementOmbs.Write(player->id, 1);
-		movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
-		movementOmbs.Write(player->GetAccumuledMovement().x, 30);
-		if (player->GetAccumuledMovement().x >= 0) movementOmbs.Write(POSITIVE, 1);
-		else movementOmbs.Write(NEGATIVE, 1);
-		movementOmbs.Write(player->GetAccumuledMovement().y, 30);
-		if (player->GetAccumuledMovement().y >= 0) movementOmbs.Write(POSITIVE, 1);
-		else movementOmbs.Write(NEGATIVE, 1);
-		movementOmbs.Write(player->GetAngle(), 9);
-		socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
+		absolutePos = sf::Vector2i(player->GetPosition().x, player->GetPosition().y);
+		movementMessages.push_back(MovementMessage(idCount, player->GetAccumuledMovement(), absolutePos, player->GetAngle()));
+		SendMovementMessage(idCount);
+		idCount++;
 		player->RestartAccumuledMovement();
 		deltaClock.restart();
 	}
@@ -122,6 +111,23 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	default:
 		break;
 	}
+}
+
+void NetworkManager::SendMovementMessage(int messageId){
+	OutputMemoryBitStream movementOmbs;
+	movementOmbs.Write(player->id, 1);
+	movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
+	movementOmbs.Write(movementMessages[messageId].id);
+	movementOmbs.Write(movementMessages[messageId].delta.x, 30);
+	if (movementMessages[messageId].delta.x >= 0) movementOmbs.Write(POSITIVE, 1);
+	else movementOmbs.Write(NEGATIVE, 1);
+	movementOmbs.Write(movementMessages[messageId].delta.y, 30);
+	if (movementMessages[messageId].delta.y >= 0) movementOmbs.Write(POSITIVE, 1);
+	else movementOmbs.Write(NEGATIVE, 1);
+	movementOmbs.Write(movementMessages[messageId].absolutePos.x, 10);
+	movementOmbs.Write(movementMessages[messageId].absolutePos.y, 10);
+	movementOmbs.Write(movementMessages[messageId].angle, 9);
+	socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
 }
 
 void NetworkManager::Disconnect()

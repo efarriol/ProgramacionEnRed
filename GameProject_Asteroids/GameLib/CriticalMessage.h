@@ -1,5 +1,15 @@
 #pragma once
 #include "PlayersInfo.h"
+
+struct MovementMessage {
+	int id = 0;
+	sf::Vector2i delta = sf::Vector2i(0,0);
+	sf::Vector2i absolutePos = sf::Vector2i(0, 0);
+	int angle = 0;
+	MovementMessage(int _id, sf::Vector2i _delta, sf::Vector2i _absolutePos, int _angle) : id(_id), delta(_delta), absolutePos(_absolutePos), angle(_angle) {};
+};
+
+
 class CriticalMessage
 {
 public:
