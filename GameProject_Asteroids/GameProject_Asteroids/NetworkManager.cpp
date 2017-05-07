@@ -56,7 +56,7 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	if (deltaTime.asMilliseconds() > 100) {
 		absolutePos = sf::Vector2i(player->GetPosition().x, player->GetPosition().y);
 		movementMessages.push_back(MovementMessage(idCount, player->GetAccumuledMovement(), absolutePos, player->GetAngle()));
-		SendMovementMessage(idCount);
+		SendMovementMessage(idCount, player);
 		idCount++;
 		player->RestartAccumuledMovement();
 		deltaClock.restart();
@@ -70,7 +70,6 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
 	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
 	int id = 0;
-	int messageId = 0;
 	if (messageSize > 0) {
 		imbs.Read(&id, 1);
 		imbs.Read(&packetType, 3);
@@ -79,7 +78,12 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	sf::Vector2i receivedAccumulationMovement = sf::Vector2i(0, 0);
 	int receivedAngle = 0;
 	int sign = 0;
-	int opponentid = 0;
+	int opponentid = 0;	
+	int criticalId = 0;
+
+	bool acknowledged = false;
+
+	std::vector<int> criticalIds;
 
 	OutputMemoryBitStream ombs;
 	switch (packetType)
@@ -94,16 +98,29 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		imbs.Read(&sign, 1);
 		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
 		imbs.Read(&receivedAngle, 9);
-		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement, receivedAngle);
-		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, receivedAngle);
+		imbs.Read(&criticalId, 30);
+		for (int i = 0; i < criticalIds.size(); i++) {
+			if (criticalId == criticalIds[i]) acknowledged = true;
+		}
+		if(!acknowledged){
+			if (id == player->id) player->UpdatePosition(receivedAccumulationMovement, receivedAngle);
+			else if (id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, receivedAngle);
+		}
+
+		criticalIds.push_back(criticalId);
+		ombs.Write(id, 1);
+		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+		ombs.Write(criticalId, 30);
+		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		//player->UpdateAngle(receivedAngle);
 		break;
 	case PlayerInfo::PT_GAMESTART:
 		imbs.Read(&opponentid, 1);
-		imbs.Read(&messageId, 5);
+		imbs.Read(&criticalId, 30);
+		criticalIds.push_back(criticalId);
 		ombs.Write(id , 1);
 		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
-		ombs.Write(messageId, 5);
+		ombs.Write(criticalId, 30);
 		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 		break;
 	case PlayerInfo::PT_DISCONNECT:
@@ -113,11 +130,11 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	}
 }
 
-void NetworkManager::SendMovementMessage(int messageId){
+void NetworkManager::SendMovementMessage(int messageId, Player* &player){
 	OutputMemoryBitStream movementOmbs;
 	movementOmbs.Write(player->id, 1);
 	movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
-	movementOmbs.Write(movementMessages[messageId].id);
+	movementOmbs.Write(movementMessages[messageId].id, 70);		//CONTROLAR MAX ID
 	movementOmbs.Write(movementMessages[messageId].delta.x, 30);
 	if (movementMessages[messageId].delta.x >= 0) movementOmbs.Write(POSITIVE, 1);
 	else movementOmbs.Write(NEGATIVE, 1);

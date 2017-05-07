@@ -38,7 +38,7 @@ public:
 	virtual void Draw();
 	void Reset();
 	Bullets& GetCurrentBullet(int i);
-	int id = NULL;
+	int id = 9;
 	int lifes = 0;
 	int score = 0;
 	bool inmortal;

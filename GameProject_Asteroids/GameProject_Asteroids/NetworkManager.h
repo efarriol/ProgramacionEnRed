@@ -21,7 +21,7 @@ private:
 	sf::IpAddress serverIP = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
-	Player *player;
+	//Player *player;
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	bool firstClock = true;
@@ -38,7 +38,7 @@ public:
 	~NetworkManager();
 	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer);
 	void IngameConnection(Player* &player, OnlinePlayer* &onlinePlayer);
-	void SendMovementMessage(int messageId);
+	void SendMovementMessage(int messageId, Player* &player);
 	void Disconnect();
 };
 

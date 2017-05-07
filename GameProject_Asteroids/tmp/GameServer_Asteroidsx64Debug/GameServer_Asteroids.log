@@ -1,5 +1,1 @@
-﻿  GameServer.cpp
-c:\users\pcasamiquela\documents\repos\programacionenred\gameproject_asteroids\gameserver_asteroids\gameserver.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\pcasamiquela\documents\repos\programacionenred\gameproject_asteroids\gameserver_asteroids\gameserver.cpp(46): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-  GameServer_Asteroids.vcxproj -> C:\Users\pcasamiquela\Documents\Repos\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameServer_Asteroids.exe
-  GameServer_Asteroids.vcxproj -> C:\Users\pcasamiquela\Documents\Repos\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameServer_Asteroids.pdb (Partial PDB)
+﻿
