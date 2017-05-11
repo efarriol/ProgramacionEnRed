@@ -24,6 +24,7 @@ private:
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	bool firstClock = true;
+	sf::Vector2i absolutePos = sf::Vector2i(0, 0);
 
 public:
 	inline static NetworkManager &Instance(void) {

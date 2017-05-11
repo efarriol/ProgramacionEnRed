@@ -16,6 +16,7 @@ public:
 
 	void DoWrap(Vector2D &position);
 	Vector2D GetPosition();
+	Vector2D GetPixelsPosition();
 	
 	void Draw();
 };

@@ -50,6 +50,7 @@ int main() {
 		}
 		int messageId = 0;
 		int sign = 0;
+		sf::Vector2i absolutePos = sf::Vector2i(0, 0);
 		OutputMemoryBitStream ombs;
 		switch (packetType)
 		{
@@ -84,6 +85,8 @@ int main() {
 			imbs.Read(&player[playerID].accumulatedMovement.y, 30);
 			imbs.Read(&sign, 1);
 			if (sign == NEGATIVE) player[playerID].accumulatedMovement.y *= -1;
+			imbs.Read(&absolutePos.x, 10);
+			imbs.Read(&absolutePos.y, 10);
 			imbs.Read(&player[playerID].angle, 9);
 			ombs.Write(playerID, 1); 
 			ombs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
@@ -93,6 +96,8 @@ int main() {
 			ombs.Write(player[playerID].accumulatedMovement.y, 30);
 			if (player[playerID].accumulatedMovement.y >= 0) ombs.Write(POSITIVE, 1);
 			else ombs.Write(NEGATIVE, 1);
+			ombs.Write(absolutePos.x, 10);
+			ombs.Write(absolutePos.y, 10);
 			ombs.Write(player[playerID].angle, 9);
 			//CRITICAL?
 			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);

@@ -29,7 +29,6 @@ void Player::Update(float deltaTime)
 	UpdateSpeed(deltaTime);
 	UpdateAngle();
 	DoWrap(position);
-	//UpdatePosition();
 	if (canShoot) {
 		if (IM.IsKeyDown<KEY_BUTTON_SPACE>()) {
 			FireWeapon(bulletCounter);
@@ -78,8 +77,18 @@ void Player::UpdateSpeed(float deltaTime) {
 	accumuledMovement.y += desiredVelocity.y*FLOATtoINT;
 }
 
+void Player::UpdatePosition() {
+	position.x += desiredVelocity.x;
+	position.y -= desiredVelocity.y;
 
-void Player::UpdatePosition(sf::Vector2i _confirmatedMovement, int _angle){ 
+	entitieSprite.transform.x = position.x;
+	entitieSprite.transform.y = position.y;
+}
+
+void Player::UpdatePosition(sf::Vector2i _confirmatedMovement, sf::Vector2i absolutePos,int _angle){ 
+	
+	position.x = absolutePos.x;
+	position.y = absolutePos.y;
 	angle = _angle;
 	entitieSprite.angle = _angle;
 	sf::Vector2f confirmatedMovement;

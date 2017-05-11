@@ -53,28 +53,35 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	}
 	deltaTime = deltaClock.getElapsedTime();
 
-	if (deltaTime.asMilliseconds() > 100) {
+	
 		//acumulation and send...
 		/*std::cout << "x:" << player->GetAccumuledMovement().x << std::endl;
 		std::cout << "y: " << player->GetAccumuledMovement().y << std::endl;
 */
-		OutputMemoryBitStream movementOmbs;
-		movementOmbs.Write(player->id, 1);
-		movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
-		movementOmbs.Write(player->GetAccumuledMovement().x, 30);
-		if (player->GetAccumuledMovement().x >= 0) movementOmbs.Write(POSITIVE, 1);
-		else movementOmbs.Write(NEGATIVE, 1);
-		movementOmbs.Write(player->GetAccumuledMovement().y, 30);
-		if (player->GetAccumuledMovement().y >= 0) movementOmbs.Write(POSITIVE, 1);
-		else movementOmbs.Write(NEGATIVE, 1);
-		movementOmbs.Write(player->GetAngle(), 9);
-		socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
-		player->RestartAccumuledMovement();
-		deltaClock.restart();
+
+		player->UpdatePosition();
+		if (deltaTime.asMilliseconds() > 500 && (player->GetAccumuledMovement().x != 0 || player->GetAccumuledMovement().y != 0)) {
+			absolutePos = sf::Vector2i((int)player->GetPixelsPosition().x, (int)player->GetPixelsPosition().y);
+			OutputMemoryBitStream movementOmbs;
+			movementOmbs.Write(player->id, 1);
+			movementOmbs.Write(PlayerInfo::PacketType::PT_MOVEMENT, 3);
+			movementOmbs.Write(player->GetAccumuledMovement().x, 30);
+			if (player->GetAccumuledMovement().x >= 0) movementOmbs.Write(POSITIVE, 1);
+			else movementOmbs.Write(NEGATIVE, 1);
+			movementOmbs.Write(player->GetAccumuledMovement().y, 30);
+			if (player->GetAccumuledMovement().y >= 0) movementOmbs.Write(POSITIVE, 1);
+			else movementOmbs.Write(NEGATIVE, 1);
+			movementOmbs.Write(absolutePos.x, 10);
+			movementOmbs.Write(absolutePos.y, 10);
+			movementOmbs.Write(player->GetAngle(), 9);
+			socket.send(movementOmbs.GetBufferPtr(), movementOmbs.GetByteLength(), serverIP, 5001);
+			player->RestartAccumuledMovement();
+			deltaClock.restart();
 	}
 
-
+																///////////////////////NOTREADY?
 	//Receive
+	absolutePos = sf::Vector2i(0, 0);
 	char messageBuffer[2000];
 	size_t messageSize = 0;
 	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
@@ -104,9 +111,11 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 		imbs.Read(&receivedAccumulationMovement.y, 30);
 		imbs.Read(&sign, 1);
 		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
+		imbs.Read(&absolutePos.x, 10);
+		imbs.Read(&absolutePos.y, 10);
 		imbs.Read(&receivedAngle, 9);
-		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement, receivedAngle);
-		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, receivedAngle);
+		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
+		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
 		//player->UpdateAngle(receivedAngle);
 		break;
 	case PlayerInfo::PT_GAMESTART:

@@ -41,3 +41,11 @@ Vector2D Entities::GetPosition()
 	centredPosition.y = position.y + height / 2;
 	return centredPosition;
 }
+
+Vector2D Entities::GetPixelsPosition()
+{
+	Vector2D centredPosition;
+	centredPosition.x = position.x;
+	centredPosition.y = position.y;
+	return centredPosition;
+}

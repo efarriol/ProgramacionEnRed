@@ -47,15 +47,16 @@ public:
 		MOUSE
 	};
 	ControlState controlState;
-	void UpdatePosition(sf::Vector2i _confirmatedVelocity, int _angle);
+	void UpdatePosition(sf::Vector2i _confirmatedVelocity, sf::Vector2i absolutePos, int _angle);
+	void UpdatePosition();
 	std::string name;
 
 private:
-	Vector2D desiredVelocity = 0;
-	Vector2D previousVelocity = 0;
+	Vector2D desiredVelocity = 0.0f;
+	Vector2D previousVelocity = 0.0f;
 	sf::Vector2i accumuledMovement = sf::Vector2i(0, 0);
-	float speedCounter = 0;
-	float angle = 0;
+	float speedCounter = 0.0f;
+	float angle = 0.0f;
 	bool canShoot;
 	float inmortalTime;
 	float blinkTime; //parpadeo
