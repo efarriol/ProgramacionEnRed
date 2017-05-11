@@ -19,7 +19,7 @@ public:
 		lifes = _lifes;
 	};
 	~OnlinePlayer();
-	void UpdatePosition(sf::Vector2i _accumulatedMovement, sf::Vector2i absolutePos, int _angle);
+	void UpdatePosition(std::vector<sf::Vector2i> &absolutePositions, int angle);
 	void DoWrap(Vector2D & position);
 	int id=0;
 	int lifes;

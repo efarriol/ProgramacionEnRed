@@ -21,26 +21,28 @@ bool NetworkManager::ConnectionEstablishment(Player* &player, OnlinePlayer* &onl
 	//Receive
 	char messageBuffer[2000];
 	size_t messageSize = 0;
-	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
-	InputMemoryBitStream imbs(messageBuffer, messageSize*8);
+	status = socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
 	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
-	if (messageSize > 0) {
-		imbs.Read(&player->id, 1);
-		imbs.Read(&packetType, 3);
-	}
+	if (status == sf::Socket::Status::Done) {
+		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
+		if (messageSize > 0) {
+			imbs.Read(&player->id, 1);
+			imbs.Read(&packetType, 3);
+		}
 
-	if (packetType == PlayerInfo::PacketType::PT_GAMESTART) {
-		imbs.Read(&onlinePlayer->id, 1);
-		return true;
+		if (packetType == PlayerInfo::PacketType::PT_GAMESTART) {
+			imbs.Read(&onlinePlayer->id, 1);
+			return true;
+		}
+		else if (packetType == PlayerInfo::PacketType::PT_WELCOME) isWelcomed = true;
 	}
-	else if (packetType != PlayerInfo::PacketType::PT_WELCOME) {
-		OutputMemoryBitStream ombs;
-		ombs.Write(player->id, 1);
-		ombs.Write(PlayerInfo::PacketType::PT_HELLO, 3);
-		ombs.WriteString(player->name);
-		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
-	}
-
+		if (!isWelcomed) {
+			OutputMemoryBitStream ombs;
+			ombs.Write(player->id, 1);
+			ombs.Write(PlayerInfo::PacketType::PT_HELLO, 3);
+			ombs.WriteString(player->name);
+			socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+		}
 	return false;
 }
 
@@ -60,6 +62,8 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 */
 
 		player->UpdatePosition();
+		onlinePlayer->UpdatePosition(absolutePositions, receivedAngle);
+
 		if (deltaTime.asMilliseconds() > 500 && (player->GetAccumuledMovement().x != 0 || player->GetAccumuledMovement().y != 0)) {
 			absolutePos = sf::Vector2i((int)player->GetPixelsPosition().x, (int)player->GetPixelsPosition().y);
 			OutputMemoryBitStream movementOmbs;
@@ -81,55 +85,57 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 
 																///////////////////////NOTREADY?
 	//Receive
-	absolutePos = sf::Vector2i(0, 0);
 	char messageBuffer[2000];
 	size_t messageSize = 0;
-	socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
-	InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
-	PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
-	int id = 0;
-	int messageId = 0;
-	if (messageSize > 0) {
-		imbs.Read(&id, 1);
-		imbs.Read(&packetType, 3);
-	}
+	status = socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
+	if (status == sf::Socket::Status::Done) {
+		absolutePos = sf::Vector2i(0, 0);
+		InputMemoryBitStream imbs(messageBuffer, messageSize * 8);
+		PlayerInfo::PacketType packetType = PlayerInfo::PacketType::PT_EMPTY;
+			int id = 0;
+			int messageId = 0;
+			if (messageSize > 0) {
+				imbs.Read(&id, 1);
+				imbs.Read(&packetType, 3);
+			}
 
-	sf::Vector2i receivedAccumulationMovement = sf::Vector2i(0, 0);
-	int receivedAngle = 0;
-	int sign = 0;
-	int opponentid = 0;
+			sf::Vector2i receivedAccumulationMovement = sf::Vector2i(0, 0);
+			int sign = 0;
+			int opponentid = 0;
 
-	OutputMemoryBitStream ombs;
-	switch (packetType)
-	{
-	case PlayerInfo::PT_PING:
-		break;
-	case PlayerInfo::PT_MOVEMENT:
-		imbs.Read(&receivedAccumulationMovement.x, 30);
-		imbs.Read(&sign, 1);
-		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
-		imbs.Read(&receivedAccumulationMovement.y, 30);
-		imbs.Read(&sign, 1);
-		if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
-		imbs.Read(&absolutePos.x, 10);
-		imbs.Read(&absolutePos.y, 10);
-		imbs.Read(&receivedAngle, 9);
-		if(id == player->id) player->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
-		else if(id == onlinePlayer->id) onlinePlayer->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
-		//player->UpdateAngle(receivedAngle);
-		break;
-	case PlayerInfo::PT_GAMESTART:
-		imbs.Read(&opponentid, 1);
-		imbs.Read(&messageId, 5);
-		ombs.Write(id , 1);
-		ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
-		ombs.Write(messageId, 5);
-		socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
-		break;
-	case PlayerInfo::PT_DISCONNECT:
-		break;
-	default:
-		break;
+			OutputMemoryBitStream ombs;
+			switch (packetType)
+			{
+			case PlayerInfo::PT_PING:
+				break;
+			case PlayerInfo::PT_MOVEMENT:
+				imbs.Read(&receivedAccumulationMovement.x, 30);
+				imbs.Read(&sign, 1);
+				if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
+				imbs.Read(&receivedAccumulationMovement.y, 30);
+				imbs.Read(&sign, 1);
+				if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
+				imbs.Read(&absolutePos.x, 10);
+				imbs.Read(&absolutePos.y, 10);
+				imbs.Read(&receivedAngle, 9);
+				if (id == player->id) player->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
+				else if (id == onlinePlayer->id) {
+					absolutePositions.push_back(absolutePos);
+				}				
+				break;
+			case PlayerInfo::PT_GAMESTART:
+				imbs.Read(&opponentid, 1);
+				imbs.Read(&messageId, 5);
+				ombs.Write(id, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_ACK, 3);
+				ombs.Write(messageId, 5);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+				break;
+			case PlayerInfo::PT_DISCONNECT:
+				break;
+			default:
+				break;
+		}
 	}
 }
 
