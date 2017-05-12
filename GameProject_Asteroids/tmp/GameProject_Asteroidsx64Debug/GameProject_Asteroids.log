@@ -1,3 +1,10 @@
-﻿  GameProject_Asteroids.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.exe
-  GameProject_Asteroids.vcxproj -> C:\Users\efarriol\Desktop\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.pdb (Partial PDB)
-  0 File(s) copied
+﻿  NetworkManager.cpp
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\player.h(11): warning C4005: 'MAX_SPEED': macro redefinition
+  d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\bullets.h(5): note: see previous definition of 'MAX_SPEED'
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\onlineplayer.h(8): warning C4005: 'FLOATtoINT': macro redefinition
+  d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\player.h(13): note: see previous definition of 'FLOATtoINT'
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(27): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+d:\pol_b\documents\enti\sourcetree\programacionenred\programacionenred\gameproject_asteroids\gameproject_asteroids\networkmanager.cpp(93): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+  GameProject_Asteroids.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.exe
+  GameProject_Asteroids.vcxproj -> D:\pol_b\Documents\Enti\SourceTree\ProgramacionEnRed\ProgramacionEnRed\GameProject_Asteroids\\bin\x64Debug\GameProject_Asteroids.pdb (Partial PDB)
+  0 archivo(s) copiado(s)

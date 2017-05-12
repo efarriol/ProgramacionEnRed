@@ -6,6 +6,7 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Network.hpp>
 #define FLOATtoINT 100000000
+#define LAMBDA_CONST 0.0005f
 
 class OnlinePlayer : public Entities
 {
@@ -19,9 +20,12 @@ public:
 		lifes = _lifes;
 	};
 	~OnlinePlayer();
-	void UpdatePosition(std::vector<sf::Vector2i> &absolutePositions, int angle);
+	void UpdatePosition(std::vector<sf::Vector3i> &absolutePositions, float &lambda);
+	void UpdateAngle(int currentAngle, int newAngle, float &lambda);
+	void UpdateAngle(int _angle);
 	void DoWrap(Vector2D & position);
-	int id=0;
+	int id = 0;
+	int playerAngle = 0;
 	int lifes;
 	int score;
 };

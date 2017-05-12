@@ -27,9 +27,11 @@ private:
 	bool firstClock = true;
 	sf::Vector2i absolutePos = sf::Vector2i(0, 0);
 	bool isWelcomed = false;
-	std::vector <sf::Vector2i> absolutePositions; 
+	std::vector <sf::Vector3i> absolutePositions; 
 	int receivedAngle = 0;
-	int absoluteoCount = 0;
+	int receiveOpponentAngle = 0;
+	float lambda = 0;
+	float angleLambda;
 public:
 	inline static NetworkManager &Instance(void) {
 		static NetworkManager networkManager;

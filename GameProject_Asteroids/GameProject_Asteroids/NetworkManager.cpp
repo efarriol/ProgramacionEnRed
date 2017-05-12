@@ -62,9 +62,9 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 */
 
 		player->UpdatePosition();
-		onlinePlayer->UpdatePosition(absolutePositions, receivedAngle);
+		onlinePlayer->UpdatePosition(absolutePositions, lambda);
 
-		if (deltaTime.asMilliseconds() > 500 && (player->GetAccumuledMovement().x != 0 || player->GetAccumuledMovement().y != 0)) {
+		if (deltaTime.asMilliseconds() > 200) {
 			absolutePos = sf::Vector2i((int)player->GetPixelsPosition().x, (int)player->GetPixelsPosition().y);
 			OutputMemoryBitStream movementOmbs;
 			movementOmbs.Write(player->id, 1);
@@ -83,8 +83,8 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 			deltaClock.restart();
 	}
 
-																///////////////////////NOTREADY?
 	//Receive
+	bool pointIsInVector = false;
 	char messageBuffer[2000];
 	size_t messageSize = 0;
 	status = socket.receive(messageBuffer, sizeof(messageBuffer), messageSize, senderIP, senderPort);
@@ -117,10 +117,19 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 				if (sign == NEGATIVE)receivedAccumulationMovement.x *= -1;
 				imbs.Read(&absolutePos.x, 10);
 				imbs.Read(&absolutePos.y, 10);
-				imbs.Read(&receivedAngle, 9);
-				if (id == player->id) player->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
+				if (id == player->id) {
+					imbs.Read(&receivedAngle, 9);
+					player->UpdatePosition(receivedAccumulationMovement, absolutePos, receivedAngle);
+				}
 				else if (id == onlinePlayer->id) {
-					absolutePositions.push_back(absolutePos);
+					imbs.Read(&receiveOpponentAngle, 9);
+					for (int i = 0; i < absolutePositions.size(); i++) {
+						if (absolutePositions[i].x == absolutePos.x && absolutePositions[i].y == absolutePos.y) {
+							onlinePlayer->UpdateAngle(receiveOpponentAngle);
+							pointIsInVector = true;
+						}
+					}
+					if (!pointIsInVector) absolutePositions.push_back(sf::Vector3i(absolutePos.x, absolutePos.y, receiveOpponentAngle));
 				}				
 				break;
 			case PlayerInfo::PT_GAMESTART:
