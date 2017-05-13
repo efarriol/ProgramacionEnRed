@@ -13,7 +13,7 @@ NetworkManager::~NetworkManager()
 
 }
 
-bool NetworkManager::ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer)
+bool NetworkManager::ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer, AsteroidsManager* &asteroidsManager)
 {
 	sf::sleep(sf::milliseconds(50));
 
@@ -31,7 +31,33 @@ bool NetworkManager::ConnectionEstablishment(Player* &player, OnlinePlayer* &onl
 		}
 
 		if (packetType == PlayerInfo::PacketType::PT_GAMESTART) {
+			int messageId = 0;
+			std::vector<Asteroid*> tempAsteroids;
+			int numAsteroids = 0;
+
 			imbs.Read(&onlinePlayer->id, 1);
+			imbs.Read(&messageId, 5);
+			imbs.Read(&numAsteroids, 4);
+
+			for (int i = 0; i < numAsteroids; i++) {
+				int id = 0;
+				sf::Vector2i asteroidPosition = sf::Vector2i(0, 0);
+				sf::Vector2i asteroidDirection = sf::Vector2i(0, 0);
+				int speed = 0; 
+				int sign = 0;
+				imbs.Read(&id, 4);
+				imbs.Read(&asteroidPosition.x, 30);
+				imbs.Read(&asteroidPosition.y, 30);
+				imbs.Read(&asteroidDirection.x, 10);
+				imbs.Read(&sign, 1);
+				if (sign == NEGATIVE) asteroidDirection.x *= -1;
+				imbs.Read(&asteroidDirection.y, 10);
+				imbs.Read(&sign, 1);
+				if (sign == NEGATIVE) asteroidDirection.y *= -1;
+				imbs.Read(&speed, 3);
+				tempAsteroids.push_back(new Asteroid(Vector2D(asteroidPosition.x, asteroidPosition.y), Vector2D(asteroidDirection.x, asteroidDirection.y), speed));
+			}
+			asteroidsManager = new AsteroidsManager(tempAsteroids);
 			return true;
 		}
 		else if (packetType == PlayerInfo::PacketType::PT_WELCOME) isWelcomed = true;

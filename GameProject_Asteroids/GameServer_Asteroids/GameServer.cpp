@@ -13,14 +13,22 @@
 #include <Windows.h>
 #include <PlayersInfo.h>
 #include "CriticalMessage.h"
+#include "ServerAsteroids.h"
 #define POSITIVE 1
 #define NEGATIVE 0
+#define MAX_ASTEROIDS 5
 
 int main() {
 	srand(time(NULL));
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
 	sf::IpAddress senderIP;
 	std::vector<CriticalMessage*> criticalMessages;
+	std::vector<ServerAsteroids*> asteroidsPool;
+
+	for (int i = 0; i < MAX_ASTEROIDS; i++) {
+		asteroidsPool.push_back(new ServerAsteroids(i));
+	}
+
 	//PlayerInfo
 	PlayerInfo player[2];
 	bool setupDone = false;
@@ -118,11 +126,24 @@ int main() {
 			switch (criticalMessages[i]->packetType) {
 			case PlayerInfo::PacketType::PT_GAMESTART:
 				ombs2.Write(criticalMessages[i]->opponentId, 1);
+				ombs2.Write(i, 5);
+				ombs2.Write(asteroidsPool.size(), 4);
+				for (int j = 0; j < asteroidsPool.size(); j++) {
+					ombs2.Write(asteroidsPool[j]->id, 4);
+					ombs2.Write(asteroidsPool[j]->position.x, 30);
+					ombs2.Write(asteroidsPool[j]->position.y, 30);
+					ombs2.Write(asteroidsPool[j]->randomDirection.x, 10);
+					if (asteroidsPool[j]->randomDirection.x >= 0) ombs2.Write(POSITIVE, 1);
+					else ombs2.Write(NEGATIVE, 1);
+					ombs2.Write(asteroidsPool[j]->randomDirection.y, 10);
+					if (asteroidsPool[j]->randomDirection.y >= 0) ombs2.Write(POSITIVE, 1);
+					else ombs2.Write(NEGATIVE, 1);
+					ombs2.Write(asteroidsPool[j]->speed, 3);
+				}
 				break;
 			case PlayerInfo::PacketType::PT_MOVEMENT:
 				break;
 			}
-			ombs2.Write(i, 5);
 			socket.send(ombs2.GetBufferPtr(), ombs2.GetByteLength(), player[criticalMessages[i]->id].ipAdress, player[criticalMessages[i]->id].port);
 		}
 	}

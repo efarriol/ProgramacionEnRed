@@ -6,18 +6,15 @@
 
 class Asteroid : public Entities{
 public:
-	Asteroid();
+	Asteroid(Vector2D _position, Vector2D _randomDirection, int _speed);
 	~Asteroid();
 
 	void Update(float deltaTime);
-	void Setup();
+	void Setup(Vector2D _position, Vector2D _randomDirection, int _speed);
 	void ChangeSprite(ObjectID objectID, int newWidth, int newHight);
 	std::string asteroidState;
-	double speed;
-	void RandomizeDirection();
-	void InverseDirection();
+	float speed;
 	int id;
-	Vector2D playerPosition;
 
 private:
 	Vector2D randomDirection;

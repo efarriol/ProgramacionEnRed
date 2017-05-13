@@ -3,9 +3,9 @@
 
 
 
-AsteroidsManager::AsteroidsManager(int _numAsteroids, Player& _player, float asteroidsVelocity, float _incrementalSpeed, int _targetLevelAsteroids)
+AsteroidsManager::AsteroidsManager(std::vector<Asteroid*> asteroids)
 {
-	numAsteroids = _numAsteroids;
+	/*numAsteroids = _numAsteroids;
 	player = &_player;
 	incrementalSpeed = _incrementalSpeed;
 	timeLapse = 0;
@@ -13,154 +13,156 @@ AsteroidsManager::AsteroidsManager(int _numAsteroids, Player& _player, float ast
 	targetLevelAsteroids = _targetLevelAsteroids;
 	level = 1;
 	numBigAsteroids = numAsteroids;
-	initialSpeed = asteroidsVelocity;
+	initialSpeed = asteroidsVelocity;*/
 
-	asteroidsPool = new Asteroid[numAsteroids];
-	for (int i = 0; i < numAsteroids; i++) {
-		asteroidsPool[i].speed = initialSpeed;
-		asteroidsPool[i].id = i;
-	}
+	//asteroidsPool = new Asteroid[numAsteroids];
+	asteroidsPool = asteroids;
+
+	//for (int i = 0; i < numAsteroids; i++) {
+	//	asteroidsPool[i].speed = initialSpeed;
+	//	asteroidsPool[i].id = i;
+	//}
 }
 
 AsteroidsManager::~AsteroidsManager()
 {
-	delete[] asteroidsPool;
+	//delete[] asteroidsPool;
 }
 
 void AsteroidsManager::Update()
 {
-	for (int i = 0; i < numAsteroids; i++) {
-		asteroidsPool[i].Update(TM.GetDeltaTime() / 100000);
+	for (int i = 0; i < asteroidsPool.size(); i++) {
+		asteroidsPool[i]->Update(TM.GetDeltaTime() / 100000);
 		//CollisionController(asteroidsPool[i]);
-		asteroidsPool[i].playerPosition = player->GetPosition();
+		//asteroidsPool[i].playerPosition = player->GetPosition();
 	}
 	//if (IM.IsKeyDown<MOUSE_BUTTON_RIGHT>())CreateAsteroid();
-	timeLapse += TM.GetDeltaTime()*0.001f;
+	//timeLapse += TM.GetDeltaTime()*0.001f;
 	
-	if (timeLapse >= incrementalSpeed && numBigAsteroids <= targetLevelAsteroids) {
+	/*if (timeLapse >= incrementalSpeed && numBigAsteroids <= targetLevelAsteroids) {
 		CreateAsteroid();
 		timeLapse = 0;
-	}
+	}*/
 
 }
 
 void AsteroidsManager::CollisionController(Asteroid& currentAsteroid)
 {
-	Bullets* currentBullet;
-	Vector2D distanceFromAsteroid;
-	float distance;
-	//Player Collisions
-	if (!player->inmortal) {
-		distanceFromAsteroid.x = player->GetPosition().x - currentAsteroid.GetPosition().x;
-		distanceFromAsteroid.y = player->GetPosition().y - currentAsteroid.GetPosition().y;
+	//Bullets* currentBullet;
+	//Vector2D distanceFromAsteroid;
+	//float distance;
+	////Player Collisions
+	//if (!player->inmortal) {
+	//	distanceFromAsteroid.x = player->GetPosition().x - currentAsteroid.GetPosition().x;
+	//	distanceFromAsteroid.y = player->GetPosition().y - currentAsteroid.GetPosition().y;
 
-		distance = distanceFromAsteroid.Length();
-		if (distance <= PLAYER_RADIUS + ASTEROID_RADIUS) {
-			player->lifes--;
-			player->Reset();
-			DivideAsteroid(currentAsteroid);
-		}
-	}
+	//	distance = distanceFromAsteroid.Length();
+	//	if (distance <= PLAYER_RADIUS + ASTEROID_RADIUS) {
+	//		player->lifes--;
+	//		player->Reset();
+	//		DivideAsteroid(currentAsteroid);
+	//	}
+	//}
 
-	//BulletCollisions
-	for (int j = 0; j < MAX_BULLETS; j++) {
-		currentBullet = &player->GetCurrentBullet(j);
-		if (currentBullet->isActive) {
-			distanceFromAsteroid.x = currentBullet->GetPosition().x - currentAsteroid.GetPosition().x;
-			distanceFromAsteroid.y = currentBullet->GetPosition().y - currentAsteroid.GetPosition().y;
-			distance = distanceFromAsteroid.Length();
-			//cout << currentBullet->GetPosition(); << endl;
-			if (distance <= ASTEROID_RADIUS) {
-				//Bullet Impact
-				currentBullet->Reset();
-				DivideAsteroid(currentAsteroid);
-			}
-		}
-	}
+	////BulletCollisions
+	//for (int j = 0; j < MAX_BULLETS; j++) {
+	//	currentBullet = &player->GetCurrentBullet(j);
+	//	if (currentBullet->isActive) {
+	//		distanceFromAsteroid.x = currentBullet->GetPosition().x - currentAsteroid.GetPosition().x;
+	//		distanceFromAsteroid.y = currentBullet->GetPosition().y - currentAsteroid.GetPosition().y;
+	//		distance = distanceFromAsteroid.Length();
+	//		//cout << currentBullet->GetPosition(); << endl;
+	//		if (distance <= ASTEROID_RADIUS) {
+	//			//Bullet Impact
+	//			currentBullet->Reset();
+	//			DivideAsteroid(currentAsteroid);
+	//		}
+	//	}
+	//}
 }
 
-void AsteroidsManager::DivideAsteroid(Asteroid & currentAsteroid)
-{
-	if (currentAsteroid.asteroidState == "BIG") {
-		player->score += 20;
-		currentAsteroid.ChangeSprite(ObjectID::MEDIUM_ASTEROID1, 39, 39);
-		currentAsteroid.asteroidState = "MEDIUM";
-		currentAsteroid.speed *= 1.7f;
-		currentAsteroid.RandomizeDirection();
-		CreateAsteroidFromAsteroid(currentAsteroid);
-		destroyedAsteroids++;
-
-	}
-	else if (currentAsteroid.asteroidState == "MEDIUM") {
-		player->score += 50;
-		currentAsteroid.ChangeSprite(ObjectID::SMALL_ASTEROID1, 20, 20);
-		currentAsteroid.asteroidState = "SMALL";
-		currentAsteroid.speed *= 1.5f;
-		currentAsteroid.RandomizeDirection();
-		CreateAsteroidFromAsteroid(currentAsteroid);
-
-	}
-	else if (currentAsteroid.asteroidState == "SMALL") {
-		player->score += 100;
-		DeleteAsteroid(currentAsteroid);
-	}
-}
+//void AsteroidsManager::DivideAsteroid(Asteroid & currentAsteroid)
+//{
+//	if (currentAsteroid.asteroidState == "BIG") {
+//		player->score += 20;
+//		currentAsteroid.ChangeSprite(ObjectID::MEDIUM_ASTEROID1, 39, 39);
+//		currentAsteroid.asteroidState = "MEDIUM";
+//		currentAsteroid.speed *= 1.7f;
+//		currentAsteroid.RandomizeDirection();
+//		CreateAsteroidFromAsteroid(currentAsteroid);
+//		destroyedAsteroids++;
+//
+//	}
+//	else if (currentAsteroid.asteroidState == "MEDIUM") {
+//		player->score += 50;
+//		currentAsteroid.ChangeSprite(ObjectID::SMALL_ASTEROID1, 20, 20);
+//		currentAsteroid.asteroidState = "SMALL";
+//		currentAsteroid.speed *= 1.5f;
+//		currentAsteroid.RandomizeDirection();
+//		CreateAsteroidFromAsteroid(currentAsteroid);
+//
+//	}
+//	else if (currentAsteroid.asteroidState == "SMALL") {
+//		player->score += 100;
+//		DeleteAsteroid(currentAsteroid);
+//	}
+//}
 
 
 void AsteroidsManager::CreateAsteroid()
 {
-	numAsteroids++;
-	
-	numBigAsteroids++;
-	Asteroid* temp = new Asteroid[numAsteroids];
-	for (int i = 0; i < numAsteroids - 1; i++) {
-		temp[i] = asteroidsPool[i];
-	}
-	temp[numAsteroids-1].speed = initialSpeed;
-	temp[numAsteroids - 1].playerPosition = player->GetPosition();
-	temp[numAsteroids - 1].Setup();
-	temp[numAsteroids - 1].id = numAsteroids - 1;
-	asteroidsPool = temp;
+	//numAsteroids++;
+	//
+	//numBigAsteroids++;
+	//Asteroid* temp = new Asteroid[numAsteroids];
+	//for (int i = 0; i < numAsteroids - 1; i++) {
+	//	temp[i] = asteroidsPool[i];
+	//}
+	//temp[numAsteroids-1].speed = initialSpeed;
+	//temp[numAsteroids - 1].playerPosition = player->GetPosition();
+	//temp[numAsteroids - 1].Setup();
+	//temp[numAsteroids - 1].id = numAsteroids - 1;
+	//asteroidsPool = temp;
 }
 
 void AsteroidsManager::CreateAsteroidFromAsteroid(Asteroid& currentAsteroid)
 {
-	numAsteroids++;
-	Asteroid* temp = new Asteroid[numAsteroids];
-	for (int i = 0; i < numAsteroids - 1; i++) {
-		temp[i] = asteroidsPool[i];
-	}
-	temp[numAsteroids - 1] = currentAsteroid;
-	temp[numAsteroids - 1].id = numAsteroids - 1;
-	temp[numAsteroids - 1].InverseDirection();
-	asteroidsPool = temp;
+	//numAsteroids++;
+	//Asteroid* temp = new Asteroid[numAsteroids];
+	//for (int i = 0; i < numAsteroids - 1; i++) {
+	//	temp[i] = asteroidsPool[i];
+	//}
+	//temp[numAsteroids - 1] = currentAsteroid;
+	//temp[numAsteroids - 1].id = numAsteroids - 1;
+	//temp[numAsteroids - 1].InverseDirection();
+	//asteroidsPool = temp;
 }
 
 
 
 void AsteroidsManager::DeleteAsteroid(Asteroid & currentAsteroid)
 {
-	int it = 0;
-	bool eliminated = false;
-	numAsteroids--;
-	if (numAsteroids > 0) {
-	Asteroid* temp = new Asteroid[numAsteroids];
-		for (int i = 0; i < numAsteroids; i++) {
-			if (i == currentAsteroid.id) {
-				it++;
-				eliminated = true;
-			}
-			temp[i] = asteroidsPool[it];
-			if (eliminated) temp[i].id--;
-			it++;
-		}
-		asteroidsPool = temp;
-	}
-	else {
-		currentAsteroid.Setup();
-		numAsteroids++;
-		NextLevel();
-	}
+	//int it = 0;
+	//bool eliminated = false;
+	//numAsteroids--;
+	//if (numAsteroids > 0) {
+	//Asteroid* temp = new Asteroid[numAsteroids];
+	//	for (int i = 0; i < numAsteroids; i++) {
+	//		if (i == currentAsteroid.id) {
+	//			it++;
+	//			eliminated = true;
+	//		}
+	//		temp[i] = asteroidsPool[it];
+	//		if (eliminated) temp[i].id--;
+	//		it++;
+	//	}
+	//	asteroidsPool = temp;
+	//}
+	//else {
+	//	currentAsteroid.Setup();
+	//	numAsteroids++;
+	//	NextLevel();
+	//}
 }
 
 void AsteroidsManager::NextLevel()
@@ -201,8 +203,8 @@ void AsteroidsManager::Draw()
 	{ SCREEN_WIDTH - 50, 50, 1, 1 },
 	{ 255, 255, 255 });
 
-	for (int i = 0; i < numAsteroids; i++) {
-		asteroidsPool[i].Draw();
+	for (int i = 0; i < asteroidsPool.size(); i++) {
+		asteroidsPool[i]->Draw();
 
 		//Render Asteroids Sphere Collsion
 

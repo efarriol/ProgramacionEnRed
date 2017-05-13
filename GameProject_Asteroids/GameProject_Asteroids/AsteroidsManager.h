@@ -5,14 +5,14 @@
 class AsteroidsManager
 {
 public:
-	AsteroidsManager(int numAsteroids, Player &_player, float asteroidsVelocity, float _incrementalSpeed, int _targetLevelAsteroids);
+	AsteroidsManager(std::vector<Asteroid*> asteroids);
 	~AsteroidsManager();
 	void Update();
 	void Draw();
 	int GetLevel();
+	std::vector<Asteroid*> asteroidsPool;
 
 private:
-	Asteroid* asteroidsPool;
 	Player* player;
 
 	int numAsteroids;

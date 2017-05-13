@@ -8,6 +8,7 @@
 #include <PlayersInfo.h>
 #include "Player.h"
 #include "OnlinePlayer.h"
+#include "AsteroidsManager.h"
 
 #define NM NetworkManager::Instance()
 #define POSITIVE 1
@@ -40,7 +41,7 @@ public:
 
 	NetworkManager();
 	~NetworkManager();
-	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer);
+	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer, AsteroidsManager* &asteroidsManager);
 	void IngameConnection(Player* &player, OnlinePlayer* &onlinePlayer);
 	void Disconnect();
 };

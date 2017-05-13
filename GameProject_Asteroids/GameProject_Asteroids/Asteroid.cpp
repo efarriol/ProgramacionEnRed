@@ -2,36 +2,19 @@
 
 
 
-Asteroid::Asteroid()
+Asteroid::Asteroid(Vector2D _position, Vector2D _randomDirection, int _speed)
 {
-	playerPosition = Vector2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-	Setup();
+	Setup(_position, _randomDirection, _speed);
 }
 
-void Asteroid::Setup() {
-
-	//Randomize a far position from player
-	int randCorner = rand() % 4 + 1;
-	switch (randCorner)
-	{
-	case 1:
-		position = Vector2D(rand() % SCREEN_WIDTH, rand() % int(playerPosition.y-150)); //Random position inside up zone
-		break;
-	case 2:
-		position = Vector2D(rand() % int(playerPosition.x - 200), rand() % SCREEN_HEIGHT); //Random position inside left zone
-		break;
-	case 3:
-		position = Vector2D(rand() % SCREEN_WIDTH, rand() % (SCREEN_HEIGHT - int(playerPosition.y + 150)) + int(playerPosition.y + 150)); //Random position inside bottom zone
-		break;
-	case 4:
-		position = Vector2D(rand() % (SCREEN_WIDTH - int(playerPosition.x + 150)) + int(playerPosition.x + 150), rand() % SCREEN_HEIGHT); //Random position right zone
-		break;
-	}
-
-	RandomizeDirection();
+void Asteroid::Setup(Vector2D _position, Vector2D _randomDirection, int _speed) {
 	width = 92;
 	height = 92;
 	asteroidState = "BIG";
+	position = _position;
+	randomDirection = _randomDirection;
+	randomDirection.Normalize();
+	speed = _speed/1000.0f;
 	int randomSprite = rand() % (3) + 1;
 	switch (randomSprite)
 	{
@@ -54,19 +37,6 @@ void Asteroid::ChangeSprite(ObjectID objectID, int newWidth, int newHight)
 	height = newHight;
 	entitieSprite = { { int(position.x),int(position.y),width,height }, 0, objectID};
 }
-
-
-void Asteroid::RandomizeDirection()
-{
-	randomDirection = Vector2D(rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT) - position; //Random Vector
-	randomDirection.Normalize();
-}
-
-void Asteroid::InverseDirection() {
-	randomDirection.x *= -1;
-	randomDirection.y *= -1;
-}
-
 
 Asteroid::~Asteroid()
 {

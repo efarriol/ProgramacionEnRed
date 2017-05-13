@@ -21,7 +21,6 @@ GameScene::GameScene(void) :	backButton(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 1.4f +
 void GameScene::Setup() {
 	player = new Player(Vector2D(SCREEN_WIDTH/2, SCREEN_HEIGHT/2), 30, 39, playerLifes);
 	onlinePlayer = new OnlinePlayer(Vector2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 30, 39, playerLifes);
-	asteroidsManager = new AsteroidsManager(numAsteroids, *player, asteroidsVelocity, incrementalSpeed, targetLevelAsteroid);
 	//ovniManager = new OvniManager(*player, ovniSpeed, ovniSpawnTime);
 	inGameMenu = false;
 	ReadFromFile("./../res/lvl/medium.xml");
@@ -54,7 +53,7 @@ void GameScene::Update(void) {
 
 		case LOBBY:
 			Setup();
-			if (NM.ConnectionEstablishment(player, onlinePlayer)) {
+			if (NM.ConnectionEstablishment(player, onlinePlayer, asteroidsManager)) {
 				currentState = PLAY;
 			}
 			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();
