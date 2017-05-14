@@ -133,6 +133,9 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 			switch (packetType)
 			{
 			case PlayerInfo::PT_PING:
+				ombs.Write(player->id, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_PING, 4);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), senderIP, senderPort);
 				break;
 			case PlayerInfo::PT_MOVEMENT:
 				imbs.Read(&receivedAccumulationMovement.x, 30);
@@ -167,6 +170,7 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
 				break;
 			case PlayerInfo::PT_DISCONNECT:
+				Disconnect(player, true);
 				break;
 			default:
 				break;
@@ -174,7 +178,12 @@ void NetworkManager::IngameConnection(Player* &player, OnlinePlayer* &onlinePlay
 	}
 }
 
-void NetworkManager::Disconnect()
+void NetworkManager::Disconnect(Player* &player, bool partner)
 {
-	exit(0);
+	OutputMemoryBitStream ombs;
+	ombs.Write(player->id, 1);
+	ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 4);
+	socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), serverIP, 5001);
+	if (partner) SM.SetCurScene<EndScene>();
+	else exit(0);
 }

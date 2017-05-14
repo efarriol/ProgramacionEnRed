@@ -56,7 +56,7 @@ void GameScene::Update(void) {
 			if (NM.ConnectionEstablishment(player, onlinePlayer, asteroidsManager)) {
 				currentState = PLAY;
 			}
-			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();
+			if (exitButton2.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect(player, false);
 			break;
 		case PLAY:
 			if (IM.IsKeyDown<KEY_BUTTON_ESCAPE>())inGameMenu = true;
@@ -72,7 +72,7 @@ void GameScene::Update(void) {
 			inGameMenu = false; 
 			mouseCoords.x = 0;
 		}
-		if (exitButton.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect();		
+		if (exitButton.ClickButton(mouseCoords.x, mouseCoords.y)) NM.Disconnect(player, false);		
 	}
 }
 

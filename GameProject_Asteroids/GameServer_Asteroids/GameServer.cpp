@@ -24,7 +24,13 @@ int main() {
 	sf::IpAddress senderIP;
 	std::vector<CriticalMessage*> criticalMessages;
 	std::vector<ServerAsteroids*> asteroidsPool;
-
+	sf::Clock deltaClock;
+	sf::Time deltaTime;
+	sf::Clock deltaClockPlayer1;
+	sf::Time deltaTimePlayer1;
+	sf::Clock deltaClockPlayer2;
+	sf::Time deltaTimePlayer2;
+	deltaClock.restart();
 	for (int i = 0; i < MAX_ASTEROIDS; i++) {
 		asteroidsPool.push_back(new ServerAsteroids(i));
 	}
@@ -43,6 +49,9 @@ int main() {
 		std::cout << "Can't bind to port 5000" << std::endl;
 	}
 	while (true) {
+		deltaTime = deltaClock.getElapsedTime();
+		deltaTimePlayer1 = deltaClockPlayer1.getElapsedTime();
+		deltaTimePlayer2 = deltaClockPlayer2.getElapsedTime();
 
 		PlayerInfo::PacketType packetType;
 		packetType = PlayerInfo::PacketType::PT_EMPTY;
@@ -68,6 +77,8 @@ int main() {
 				for (int i = 0; i < criticalMessages.size(); i++) if (messageId == criticalMessages[i]->id) criticalMessages.erase(criticalMessages.begin() + i);
 				break;
 			case PlayerInfo::PT_PING:
+				if (playerID == 0) deltaClockPlayer1.restart();
+				else if (playerID == 1) deltaClockPlayer2.restart();
 				break;
 			case PlayerInfo::PT_HELLO:
 				if (playersCount < 2 && senderPort != player[0].port && senderPort != player[1].port) {
@@ -84,6 +95,9 @@ int main() {
 				else if (senderPort == player[1].port && !setupDone) {
 					criticalMessages.push_back(new CriticalMessage(player[0].id, PlayerInfo::PacketType::PT_GAMESTART, player[1].id));
 					criticalMessages.push_back(new CriticalMessage(player[1].id, PlayerInfo::PacketType::PT_GAMESTART, player[0].id));
+					deltaClock.restart();
+					deltaClockPlayer1.restart();
+					deltaClockPlayer2.restart();
 					setupDone = true;
 				}
 				break;
@@ -113,9 +127,41 @@ int main() {
 				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
 				break;
 			case PlayerInfo::PT_DISCONNECT:
+				ombs.Write(playerID, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 4);
+				if (playerID == 0) {
+					socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
+					player[0].disconnected = true;
+				}
+				else {
+					socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
+					player[1].disconnected = true;
+				}
 				break;
 			default:
 				break;
+			}
+		}
+		if (setupDone) {
+			OutputMemoryBitStream ombs;
+			if (deltaTime.asMilliseconds() >= 1000) {
+				ombs.Write(0, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_PING, 4);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
+				deltaClock.restart();
+			}
+			if (deltaTimePlayer1.asMilliseconds() >= 5000) {
+				ombs.Write(playerID, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 4);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
+				player[0].disconnected = true;
+			}
+			else if (deltaTimePlayer2.asMilliseconds() >= 5000) {
+				ombs.Write(playerID, 1);
+				ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 4);
+				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
+				player[0].disconnected = true;
 			}
 		}
 		//Send criticalMessages
@@ -145,6 +191,11 @@ int main() {
 				break;
 			}
 			socket.send(ombs2.GetBufferPtr(), ombs2.GetByteLength(), player[criticalMessages[i]->id].ipAdress, player[criticalMessages[i]->id].port);
+		}
+		if (player[0].disconnected && player[1].disconnected) {
+			socket.unbind();
+			for (int i = 0; i < asteroidsPool.size(); i++) delete asteroidsPool[i];
+			exit(0);
 		}
 	}
 }

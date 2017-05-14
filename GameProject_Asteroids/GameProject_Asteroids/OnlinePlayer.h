@@ -6,7 +6,7 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Network.hpp>
 #define FLOATtoINT 100000000
-#define LAMBDA_CONST 0.0005f
+#define LAMBDA_CONST 0.0015f
 
 class OnlinePlayer : public Entities
 {

@@ -40,6 +40,7 @@ public:
 	sf::Time timeoutTime;
 	bool setupDone = false; 
 	MovementInfo movementInfo;
+	bool disconnected = false;
 
 	//Constructor
 	PlayerInfo() {	

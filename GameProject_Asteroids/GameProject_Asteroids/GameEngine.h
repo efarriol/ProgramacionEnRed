@@ -3,6 +3,7 @@
 #include "MenuScene.h"
 #include "GameScene.h"
 #include "RankingScene.h"
+#include "EndScene.h"
 
 namespace GameEngine {
 	
@@ -23,6 +24,7 @@ namespace GameEngine {
 		SM.AddScene<MenuScene>();
 		SM.AddScene<GameScene>();
 		SM.AddScene<RankingScene>();
+		SM.AddScene<EndScene>();
 		SM.SetCurScene<MenuScene>();
 	}
 	

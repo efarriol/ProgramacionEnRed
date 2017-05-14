@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "OnlinePlayer.h"
 #include "AsteroidsManager.h"
+#include "EndScene.h"
 
 #define NM NetworkManager::Instance()
 #define POSITIVE 1
@@ -22,7 +23,6 @@ private:
 	sf::IpAddress senderIP;
 	sf::Socket::Status status;
 	unsigned short senderPort;
-	Player *player;
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
 	bool firstClock = true;
@@ -43,6 +43,6 @@ public:
 	~NetworkManager();
 	bool ConnectionEstablishment(Player* &player, OnlinePlayer* &onlinePlayer, AsteroidsManager* &asteroidsManager);
 	void IngameConnection(Player* &player, OnlinePlayer* &onlinePlayer);
-	void Disconnect();
+	void Disconnect(Player* &player, bool partner);
 };
 

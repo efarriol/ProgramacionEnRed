@@ -43,6 +43,9 @@
     <Filter Include="Model\Entities\OnlinePlayer">
       <UniqueIdentifier>{8893c827-ad5d-417a-a77e-69fa35eb2db0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model\Scenes\EndScene">
+      <UniqueIdentifier>{9b5f264e-b3eb-4de6-afec-3958763d6f26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -82,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="OnlinePlayer.cpp">
       <Filter>Model\Entities\OnlinePlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="EndScene.cpp">
+      <Filter>Model\Scenes\EndScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="OnlinePlayer.h">
       <Filter>Model\Entities\OnlinePlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="EndScene.h">
+      <Filter>Model\Scenes\EndScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
