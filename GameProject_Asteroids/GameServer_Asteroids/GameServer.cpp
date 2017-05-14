@@ -157,11 +157,11 @@ int main() {
 				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[1].ipAdress, player[1].port);
 				player[0].disconnected = true;
 			}
-			else if (deltaTimePlayer2.asMilliseconds() >= 5000) {
+			if (deltaTimePlayer2.asMilliseconds() >= 5000) {
 				ombs.Write(playerID, 1);
 				ombs.Write(PlayerInfo::PacketType::PT_DISCONNECT, 4);
 				socket.send(ombs.GetBufferPtr(), ombs.GetByteLength(), player[0].ipAdress, player[0].port);
-				player[0].disconnected = true;
+				player[1].disconnected = true;
 			}
 		}
 		//Send criticalMessages
